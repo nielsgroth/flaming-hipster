@@ -1,0 +1,29 @@
+<project name="My Web Service Build" default="fullBuild">
+ 
+    <target name="01wsimport">
+ 
+        <exec executable="wsimport">
+ 
+            <arg line="-keep -s ./src -p gossip.stat.client.soap http://87.77.4.63:8000/gossip?wsdl"/>
+ 
+        </exec>
+        
+
+    </target>
+    <target name="02createJar" depends="01wsimport"><jar destfile="C:\Users\Tomasz\Dropbox\Uni\Diplomarbeit\Exec\gossip.jar" basedir="src">
+	<manifest>
+		<attribute name='"Main-Class"' value="gossip.main.Main"></attribute></manifest></jar></target>
+    <target name="03sendJarToDestination" depends="02createJar">
+    	<exec executable="pscp">
+    		<arg
+    			line="-pw *H1mm3l. C:\Users\Tomasz\Dropbox\Uni\Diplomarbeit\Exec\gossip.jar tomasz3@andorra.imp.fu-berlin.de:/home/bude/tomasz3/gossip/gossip.jar">
+    		</arg>
+    	</exec>
+    </target>
+    <target name="fullBuild"
+    	depends="03sendJarToDestination,02createJar,01wsimport">
+</target>
+
+
+
+</project>

@@ -12,7 +12,10 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.util.Enumeration;
 
 /**
  *
@@ -22,23 +25,35 @@ public class Main {
 
     /**
      * @param args the command line arguments
+     * @throws SocketException 
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws SocketException {
         
         switch(args[0]) {
         case "": 
         	System.err.println("No arguments!");
         	break;
         case "server":
-        	System.out.println("Starting StatServer at: " + (args.length > 1 ? args[1] : "hard coded usually localhost:8000/gossip"));
             StatServer.startServer(args.length > 1 ? args[1] : null);
+            /*
+            Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
+            while (interfaces.hasMoreElements()){
+                NetworkInterface current = interfaces.nextElement();
+                System.out.println(current);
+                if (!current.isUp() || current.isLoopback() || current.isVirtual()) continue;
+                Enumeration<InetAddress> addresses = current.getInetAddresses();
+                while (addresses.hasMoreElements()){
+                    InetAddress current_addr = addresses.nextElement();
+                    if (current_addr.isLoopbackAddress()) continue;
+                    System.out.println(current_addr.getHostAddress());
+                }
+            }*/
             break;
         case "client" :
         	int basePort = 9000;
             int maxClients = 1000;
             boolean seed = true;
             InetAddress seedIP = null;
-            String statUrl = "http://localhost:8000/gossip";
             if (args.length > 1) {
                 basePort = Integer.parseInt(args[1]);
                 if (args.length > 2) {
