@@ -39,6 +39,22 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link GetXML }
+     * 
+     */
+    public GetXML createGetXML() {
+        return new GetXML();
+    }
+
+    /**
+     * Create an instance of {@link GetXMLResponse }
+     * 
+     */
+    public GetXMLResponse createGetXMLResponse() {
+        return new GetXMLResponse();
+    }
+
+    /**
      * Create an instance of {@link SendListResponse }
      * 
      */
@@ -55,27 +71,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link GetXMLResponse }
+     * Create an instance of {@link SendList }
      * 
      */
-    public GetXMLResponse createGetXMLResponse() {
-        return new GetXMLResponse();
-    }
-
-    /**
-     * Create an instance of {@link Node }
-     * 
-     */
-    public Node createNode() {
-        return new Node();
-    }
-
-    /**
-     * Create an instance of {@link GetXML }
-     * 
-     */
-    public GetXML createGetXML() {
-        return new GetXML();
+    public SendList createSendList() {
+        return new SendList();
     }
 
     /**
@@ -87,11 +87,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link SendList }
+     * Create an instance of {@link Node }
      * 
      */
-    public SendList createSendList() {
-        return new SendList();
+    public Node createNode() {
+        return new Node();
     }
 
     /**

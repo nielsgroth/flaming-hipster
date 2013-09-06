@@ -1,4 +1,4 @@
-<project name="My Web Service Build" default="fullBuild">
+<project name="My Web Service Build" default="05sendJarToDestination">
  
     <target name="01wsimport">
  
@@ -10,19 +10,27 @@
         
 
     </target>
-    <target name="02createJar" depends="01wsimport"><jar destfile="C:\Users\Tomasz\Dropbox\Uni\Diplomarbeit\Exec\gossip.jar" basedir="src">
+    <target name="04createJar" depends="03compile"><jar destfile="C:\Users\Tomasz\Dropbox\Uni\Diplomarbeit\Exec\gossip.jar" basedir="C:\Users\Tomasz\Dropbox\Uni\Diplomarbeit\Exec\Build">
 	<manifest>
 		<attribute name='"Main-Class"' value="gossip.main.Main"></attribute></manifest></jar></target>
-    <target name="03sendJarToDestination" depends="02createJar">
+    <target name="05sendJarToDestination" depends="04createJar">
     	<exec executable="pscp">
     		<arg
-    			line="-pw *H1mm3l. C:\Users\Tomasz\Dropbox\Uni\Diplomarbeit\Exec\gossip.jar tomasz3@andorra.imp.fu-berlin.de:/home/bude/tomasz3/gossip/gossip.jar">
+    			line="-pw *H1mm3l. C:\Users\Tomasz\Dropbox\Uni\Diplomarbeit\Exec\gossip.jar tomasz3@andorra.imp.fu-berlin.de:/home/mi/tomasz3/gossip/gossip.jar">
     		</arg>
     	</exec>
     </target>
-    <target name="fullBuild"
-    	depends="03sendJarToDestination,02createJar,01wsimport">
-</target>
+    <target name="02clean" description="Delete all build artifacts."
+    	depends="01wsimport">
+    	<delete
+    		dir="C:\Users\Tomasz\Dropbox\Uni\Diplomarbeit\Exec\Build">
+    	</delete>
+    	<mkdir
+    		dir="C:\Users\Tomasz\Dropbox\Uni\Diplomarbeit\Exec\Build">
+    	</mkdir>
+    </target>
+    <target name="03compile" depends="02clean">
+    	<javac srcdir="src" destdir="C:\Users\Tomasz\Dropbox\Uni\Diplomarbeit\Exec\Build"></javac></target>
 
 
 
