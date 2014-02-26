@@ -34,7 +34,21 @@ public class Main {
         	System.err.println("No arguments!");
         	break;
         case "server":
-            StatServer.startServer(args.length > 1 ? args[1] : null);
+        	NetworkInterface serverInterface = NetworkInterface.getByName(args.length > 1 ? args[1] : "eth0");
+        	boolean found=false;
+        	InetAddress serverAddress= null;
+        	final String IPV4_REGEX = "^/(25[0-5]|2[0-4]\\d|[0-1]?\\d?\\d)(\\.(25[0-5]|2[0-4]\\d|[0-1]?\\d?\\d)){3}$";
+        	Enumeration<InetAddress> serverAddresses = serverInterface.getInetAddresses();
+        	while(serverAddresses.hasMoreElements() && !found) {
+        		serverAddress = serverAddresses.nextElement();
+        		
+        		if (serverAddress.toString().matches(IPV4_REGEX)){
+        			found = true;
+        		}
+        	}
+        	String serverAddressString = serverAddress.toString().replace("/","");
+        	System.out.println("Starting server as " + serverAddressString);
+            StatServer.startServer(args.length > 2 ? args[2] : (found ? "http://" + serverAddressString + ":8000/wsdl" :null));
             /*
             Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
             while (interfaces.hasMoreElements()){
