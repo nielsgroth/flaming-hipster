@@ -19,7 +19,7 @@ import java.util.Enumeration;
 
 /**
  *
- * @author Tomasz
+ * @author Tomasz3
  */
 public class Main {
 
