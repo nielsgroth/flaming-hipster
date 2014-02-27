@@ -47,14 +47,14 @@ public class NeighborCache {
         List<Neighbor> subset = new ArrayList<Neighbor>(l);
         subset.add(self);
 
-        //Nachbarn durchschütteln
+        //Nachbarn durchschÃ¼tteln
         Collections.shuffle(neighbors);
 
         int i = 0;
         //TODO: endlos
         //Hier war eine Endlosschleife
         //if (subset.size() >= leff && i >= neighbors.size()) {
-        while (subset.size() < leff && i < neighbors.size()) { // TODO i < neighbor.size überflüssig
+        while (subset.size() < leff && i < neighbors.size()) { // TODO i < neighbor.size Ã¼berflÃ¼ssig
             Neighbor nb = neighbors.get(i++);
             if (nb != currentTarget) {
                 nb.tag();
@@ -93,7 +93,7 @@ public class NeighborCache {
      * Removes the already known peers from parameter in
      * @param in
      */
-    // TODO Überlegungen zum Alter siehe Notes
+    // TODO Ãœberlegungen zum Alter siehe Notes
     private void removeKnownFrom(List<Neighbor> in) {
         /* LÃ¶scht die in diesem Cache enthaltenen Duplikate IN DER EINGABE */
         Set<Neighbor.CompareNeighbor> uniqs = new HashSet<Neighbor.CompareNeighbor>();
@@ -115,7 +115,7 @@ public class NeighborCache {
     private static void removeDuplicates(List<Neighbor> in) {
         Set<Neighbor.CompareNeighbor> comps = new HashSet<Neighbor.CompareNeighbor>(); //durch das Hashset werden duplikate entfernt
         for (Neighbor n : in) {
-            Neighbor.CompareNeighbor cn = new Neighbor.CompareNeighbor(n); //TODO überflüssig
+            Neighbor.CompareNeighbor cn = new Neighbor.CompareNeighbor(n); //TODO Ã¼berflÃ¼ssig
             comps.add(new Neighbor.CompareNeighbor(n));
         }
 

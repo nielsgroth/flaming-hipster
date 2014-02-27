@@ -35,33 +35,20 @@ public class Main {
         	break;
         case "server":
         	NetworkInterface serverInterface = NetworkInterface.getByName(args.length > 1 ? args[1] : "eth0");
-        	boolean found=false;
+        	boolean addressFound=false;
         	InetAddress serverAddress= null;
         	final String IPV4_REGEX = "^/(25[0-5]|2[0-4]\\d|[0-1]?\\d?\\d)(\\.(25[0-5]|2[0-4]\\d|[0-1]?\\d?\\d)){3}$";
         	Enumeration<InetAddress> serverAddresses = serverInterface.getInetAddresses();
-        	while(serverAddresses.hasMoreElements() && !found) {
+        	while(serverAddresses.hasMoreElements() && !addressFound) {
         		serverAddress = serverAddresses.nextElement();
         		
         		if (serverAddress.toString().matches(IPV4_REGEX)){
-        			found = true;
+        			addressFound = true;
         		}
         	}
         	String serverAddressString = serverAddress.toString().replace("/","");
         	System.out.println("Starting server as " + serverAddressString);
-            StatServer.startServer(args.length > 2 ? args[2] : (found ? "http://" + serverAddressString + ":8000/wsdl" :null));
-            /*
-            Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
-            while (interfaces.hasMoreElements()){
-                NetworkInterface current = interfaces.nextElement();
-                System.out.println(current);
-                if (!current.isUp() || current.isLoopback() || current.isVirtual()) continue;
-                Enumeration<InetAddress> addresses = current.getInetAddresses();
-                while (addresses.hasMoreElements()){
-                    InetAddress current_addr = addresses.nextElement();
-                    if (current_addr.isLoopbackAddress()) continue;
-                    System.out.println(current_addr.getHostAddress());
-                }
-            }*/
+            StatServer.startServer(args.length > 2 ? args[2] : (addressFound ? "http://" + serverAddressString + ":8000/gossip" :null));
             break;
         case "client" :
         	int basePort = 9000;

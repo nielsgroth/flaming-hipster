@@ -33,7 +33,7 @@ public class CyclonPeer implements Runnable {
         try {
             neighbors = new NeighborCache();
             rand = new Random();
-            sock = new DatagramSocket(port,ip); //TODO ip einfügen! --> done!
+            sock = new DatagramSocket(port,ip); //TODO ip einfÃ¼gen! --> done!
             neighbors.self = new Neighbor(InetAddress.getLocalHost(), sock.getLocalPort());
             StatServerService _s = new StatServerService();
             s = _s.getStatServerPort();
@@ -88,7 +88,7 @@ public class CyclonPeer implements Runnable {
                 byte[] inbytes = Arrays.copyOf(p.getData(), p.getLength());
                 List<Neighbor> receivedSubset = NeighborCache.neighborListFromShuffleBytes(inbytes);
                 int id = NeighborCache.shuffleIdFromShuffleBytes(inbytes);
-                printDebug("Shuffle-Packet " + id + " von " + p.getSocketAddress() + " mit den Einträgen "
+                printDebug("Shuffle-Packet " + id + " von " + p.getSocketAddress() + " mit den EintrÃ¤gen "
                         + receivedSubset + " erhalten.");
 
                 //Ist das eine Antwort oder eine neue Shuffleanfrage?
@@ -139,7 +139,7 @@ public class CyclonPeer implements Runnable {
             sock.send(request);
             printDebug("Anfrage abgeschickt an" + neighbors.currentTarget);
         } else {
-            printDebug("Würde Anfrage an sich schicken, darf nicht sein!");
+            printDebug("WÃ¼rde Anfrage an sich schicken, darf nicht sein!");
         }
 
     }
