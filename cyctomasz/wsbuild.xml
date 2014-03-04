@@ -1,4 +1,4 @@
-<project name="StatServer Build" default="05sendJarToDestination">
+<project name="Client Build" default="05sendJarToDestination">
 	
 	<property name="buildpath" value="/home/tomasz/Dropbox/uni/diplomarbeit/exec/"/>
 	<property name="NetworkInterfaceName" value="wlan0"/>
@@ -9,20 +9,38 @@
 			<arg value=" ifconfig ${NetworkInterfaceName} | grep 'inet addr:' | cut -d: -f2 | awk '{ print $1}'"/>
 		</exec>
 	</target>
+	
+	
     <target name="01wsimport" depends="00getStatServer">
- 
         <exec executable="wsimport">
- 
-            <arg line="-keep -s ./src -p gossip.stat.client.soap http://${statServerIP}:8000/gossipStatServer?wsdl"/>
- 
+            <arg line="-target 2.0 -keep -s ./src -p gossip.stat.client.soap http://${statServerIP}:8000/gossipStatServer?wsdl"/>
         </exec>
-        
-
+    </target>
+	
+	
+    <target name="02clean" description="Delete old build artifacts."
+    	depends="01wsimport">
+    	<delete
+    		dir="${buildpath}build/client">
+    	</delete>
+    	<mkdir
+    		dir="${buildpath}build/client">
+    	</mkdir>
+    </target>
+	
+	
+    <target name="03compile" depends="02clean">
+    	<javac 	srcdir="src/gossip/stat/client"
+    			destdir="${buildpath}build/client"
+    			executable="/opt/java/64/jdk1.6.0_45/bin/javac"
+    			fork="true"
+    			taskname="javac1.6">
+    	</javac>
     </target>
 	
 	
     <target name="04createJar" depends="03compile">
-    	<jar destfile="${buildpath}cyclonClient.jar" basedir="${buildpath}build">
+    	<jar destfile="${buildpath}cyclonClient.jar" basedir="${buildpath}build/client">
 			<manifest>
 				<attribute name='Main-Class' value="gossip.stat.client.Main"></attribute>
 			</manifest>
@@ -38,27 +56,5 @@
     	</exec>
     </target>
 	
-	
-    <target name="02clean" description="Delete old build artifacts."
-    	depends="01wsimport">
-    	<delete
-    		dir="${buildpath}build">
-    	</delete>
-    	<mkdir
-    		dir="${buildpath}build">
-    	</mkdir>
-    </target>
-	
-	
-    <target name="03compile" depends="02clean">
-    	<javac 	srcdir="src/gossip/stat/client"
-    			destdir="${buildpath}build"
-    			executable="/opt/java/64/jdk1.6.0_45/bin/javac"
-    			fork="true"
-    			taskname="javac1.6">
-    	</javac>
-    </target>
-
-
 
 </project>
