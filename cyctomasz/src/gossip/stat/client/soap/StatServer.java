@@ -7,7 +7,6 @@ import javax.jws.WebParam;
 import javax.jws.WebResult;
 import javax.jws.WebService;
 import javax.xml.bind.annotation.XmlSeeAlso;
-import javax.xml.ws.Action;
 import javax.xml.ws.RequestWrapper;
 import javax.xml.ws.ResponseWrapper;
 
@@ -27,18 +26,6 @@ public interface StatServer {
 
     /**
      * 
-     * @return
-     *     returns java.lang.String
-     */
-    @WebMethod
-    @WebResult(targetNamespace = "")
-    @RequestWrapper(localName = "getXML", targetNamespace = "http://server.stat.gossip/", className = "gossip.stat.client.soap.GetXML")
-    @ResponseWrapper(localName = "getXMLResponse", targetNamespace = "http://server.stat.gossip/", className = "gossip.stat.client.soap.GetXMLResponse")
-    @Action(input = "http://server.stat.gossip/StatServer/getXMLRequest", output = "http://server.stat.gossip/StatServer/getXMLResponse")
-    public String getXML();
-
-    /**
-     * 
      * @param arg0
      * @return
      *     returns gossip.stat.client.soap.Node
@@ -47,7 +34,6 @@ public interface StatServer {
     @WebResult(targetNamespace = "")
     @RequestWrapper(localName = "getNode", targetNamespace = "http://server.stat.gossip/", className = "gossip.stat.client.soap.GetNode")
     @ResponseWrapper(localName = "getNodeResponse", targetNamespace = "http://server.stat.gossip/", className = "gossip.stat.client.soap.GetNodeResponse")
-    @Action(input = "http://server.stat.gossip/StatServer/getNodeRequest", output = "http://server.stat.gossip/StatServer/getNodeResponse")
     public Node getNode(
         @WebParam(name = "arg0", targetNamespace = "")
         String arg0);
@@ -60,11 +46,21 @@ public interface StatServer {
     @WebMethod
     @RequestWrapper(localName = "sendList", targetNamespace = "http://server.stat.gossip/", className = "gossip.stat.client.soap.SendList")
     @ResponseWrapper(localName = "sendListResponse", targetNamespace = "http://server.stat.gossip/", className = "gossip.stat.client.soap.SendListResponse")
-    @Action(input = "http://server.stat.gossip/StatServer/sendListRequest", output = "http://server.stat.gossip/StatServer/sendListResponse")
     public void sendList(
         @WebParam(name = "id", targetNamespace = "")
         String id,
         @WebParam(name = "edgeList", targetNamespace = "")
         List<String> edgeList);
+
+    /**
+     * 
+     * @return
+     *     returns java.lang.String
+     */
+    @WebMethod
+    @WebResult(targetNamespace = "")
+    @RequestWrapper(localName = "getXML", targetNamespace = "http://server.stat.gossip/", className = "gossip.stat.client.soap.GetXML")
+    @ResponseWrapper(localName = "getXMLResponse", targetNamespace = "http://server.stat.gossip/", className = "gossip.stat.client.soap.GetXMLResponse")
+    public String getXML();
 
 }

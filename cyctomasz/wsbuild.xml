@@ -1,6 +1,6 @@
 <project name="StatServer Build" default="05sendJarToDestination">
 	
-	<property name="buildpath" value="home/tomasz/Dropbox/uni/diplomarbeit/exec/"/>
+	<property name="buildpath" value="/home/tomasz/Dropbox/uni/diplomarbeit/exec/"/>
 	<property name="NetworkInterfaceName" value="wlan0"/>
 
 	<target name="00getStatServer">
@@ -13,22 +13,32 @@
  
         <exec executable="wsimport">
  
-            <arg line="-keep -s ./src -p gossip.stat.client.soap http://${statServerIP}:8000/gossip?wsdl"/>
+            <arg line="-keep -s ./src -p gossip.stat.client.soap http://${statServerIP}:8000/gossipStatServer?wsdl"/>
  
         </exec>
         
 
     </target>
-    <target name="04createJar" depends="03compile"><jar destfile="${buildpath}gossip.jar" basedir="${buildpath}build">
-	<manifest>
-		<attribute name='"Main-Class"' value="gossip.main.Main"></attribute></manifest></jar></target>
+	
+	
+    <target name="04createJar" depends="03compile">
+    	<jar destfile="${buildpath}cyclonClient.jar" basedir="${buildpath}build">
+			<manifest>
+				<attribute name='Main-Class' value="gossip.stat.client.Main"></attribute>
+			</manifest>
+    	</jar>
+    </target>
+	
+	
     <target name="05sendJarToDestination" depends="04createJar">
     	<exec executable="sshpass">
     		<arg
-    			line="-p *H1mm3l. scp ${buildpath}gossip.jar tomasz3@uhu.imp.fu-berlin.de:/home/mi/tomasz3/testbed/gossip.jar">
+    			line="-p *H1mm3l. scp ${buildpath}cyclonClient.jar uhu:/home/tomasz3/testbed/cyclonClient.jar">
     		</arg>
     	</exec>
     </target>
+	
+	
     <target name="02clean" description="Delete old build artifacts."
     	depends="01wsimport">
     	<delete
@@ -38,8 +48,16 @@
     		dir="${buildpath}build">
     	</mkdir>
     </target>
+	
+	
     <target name="03compile" depends="02clean">
-    	<javac srcdir="src" destdir="${buildpath}build"></javac></target>
+    	<javac 	srcdir="src/gossip/stat/client"
+    			destdir="${buildpath}build"
+    			executable="/opt/java/64/jdk1.6.0_45/bin/javac"
+    			fork="true"
+    			taskname="javac1.6">
+    	</javac>
+    </target>
 
 
 

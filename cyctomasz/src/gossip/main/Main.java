@@ -29,12 +29,12 @@ public class Main {
      */
     public static void main(String[] args) throws SocketException {
         
-        switch(args[0]) {
+/*        switch(args[0]) {
         case "": 
         	System.err.println("No arguments!");
         	break;
         case "server":
-        	NetworkInterface serverInterface = NetworkInterface.getByName(args.length > 1 ? args[1] : "eth0");
+  */      	NetworkInterface serverInterface = NetworkInterface.getByName(args.length > 1 ? args[1] : "eth0");
         	boolean addressFound=false;
         	InetAddress serverAddress= null;
         	final String IPV4_REGEX = "^/(25[0-5]|2[0-4]\\d|[0-1]?\\d?\\d)(\\.(25[0-5]|2[0-4]\\d|[0-1]?\\d?\\d)){3}$";
@@ -48,8 +48,8 @@ public class Main {
         	}
         	String serverAddressString = serverAddress.toString().replace("/","");
         	System.out.println("Starting server as " + serverAddressString);
-            StatServer.startServer(args.length > 2 ? args[2] : (addressFound ? "http://" + serverAddressString + ":8000/gossip" :null));
-            break;
+            StatServer.startServer(args.length > 2 ? args[2] : (addressFound ? "http://" + serverAddressString + ":8000/gossipStatServer" :null));
+/*            break;
         case "client" :
         	int basePort = 9000;
             int maxClients = 1000;
@@ -95,6 +95,6 @@ public class Main {
             }
             break;
         default : System.err.println("Unknown argument " + args[0]);
-        }
+        }*/
     }
 }
