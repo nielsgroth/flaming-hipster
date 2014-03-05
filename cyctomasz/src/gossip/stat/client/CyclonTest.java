@@ -27,12 +27,15 @@ public class CyclonTest {
                 while (true && portOffset < maxClients) {
                 	// TODO use specified Network interface!!!
                     try {
+                    	System.out.println("I'm totally here now: CyclonTest:30");
                         Random r = new Random();
-                        CyclonPeer p = new CyclonPeer(InetAddress.getLocalHost(), basePort + (portOffset++),statServerAddress);
+                        CyclonPeer p = new CyclonPeer(InetAddress.getLocalHost(), basePort + (portOffset++), statServerAddress);
                         if (portOffset > 1) {
+                        	System.out.println("I'm totally here now: CyclonTest:34");
                             p.addSeedNode(InetAddress.getLocalHost(), basePort + r.nextInt(portOffset - 1));
                         }
                         else if (!isSeed) {
+                        	System.out.println("I'm totally here now: CyclonTest:38");
                         	p.addSeedNode(seedIP, basePort + r.nextInt(portOffset - 1));
                         }
                         new Thread(p).start();
@@ -44,6 +47,7 @@ public class CyclonTest {
 
             }
         };
+        System.out.println("I'm totally here now: CyclonTest:50");
         new Thread(peerFactory).start();
     }
 }

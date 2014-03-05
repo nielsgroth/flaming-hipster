@@ -34,7 +34,8 @@ public class Main {
         boolean seed = (cmd.hasOption("i") ? false : true);
         InetAddress seedIP = null;
     	InetAddress statServerAddress = null;
-        if (cmd.hasOption("s")) { try {
+        if (cmd.hasOption("s")) { 
+        	try {
 			statServerAddress = InetAddress.getByName(cmd.getOptionValue("s"));
 		} catch (UnknownHostException e) {
 			System.err.println("Unkown statistics server host: " + cmd.getOptionValue("c") + " Exiting.");
@@ -49,9 +50,9 @@ public class Main {
 				System.exit(1);
 			}
         // Set StatServer
-        
+        System.out.println("trying to use " + statServerAddress.getHostName() + " as statServer");
         try {
-            CyclonTest.runCyclon(basePort, maxClients, seed, seedIP,statServerAddress);
+            CyclonTest.runCyclon(basePort, maxClients, seed, seedIP, statServerAddress);
         } catch (IOException e) {
             e.printStackTrace();
         }
