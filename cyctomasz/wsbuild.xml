@@ -34,14 +34,25 @@
     			destdir="${buildpath}build/client"
     			executable="/opt/java/64/jdk1.6.0_45/bin/javac"
     			fork="true"
+    			classpath="lib/*"
     			taskname="javac1.6">
     	</javac>
     </target>
 	
 	
     <target name="04createClientJar" depends="03compileClient">
-    	<jar destfile="${buildpath}cyclonClient.jar" basedir="${buildpath}build/client">
-			<manifest>
+    	<jar 
+    		destfile="${buildpath}cyclonClient.jar" 
+    		basedir="${buildpath}build/client">
+			<restrict>
+				<name name="**/*.class"/>
+				<archives>
+					<zips>
+						<fileset dir="lib" includes="**/*.jar"/>
+					</zips>
+				</archives>
+			</restrict>	
+    		<manifest>
 				<attribute name='Main-Class' value="gossip.stat.client.Main"></attribute>
 			</manifest>
     	</jar>
@@ -78,9 +89,22 @@
 	
 	
 	<target name="12createServerJar" depends="11compileServer">
-		<jar destfile="${buildpath}cyclonServer.jar" basedir="${buildpath}build/server">
+		<jar 
+			destfile="${buildpath}cyclonServer.jar" 
+			basedir="${buildpath}build/server">
+			<restrict>
+				<name name="**/*.class"/>
+				<archives>
+					<zips>
+						<fileset dir="lib" includes="**/*.jar"/>
+					</zips>
+				</archives>
+			</restrict>	
 			<manifest>
-				<attribute name='Main-Class' value="gossip.stat.server.Main"></attribute>
+				<attribute 
+					name='Main-Class' 
+					value="gossip.stat.server.Main">
+				</attribute>
 			</manifest>
 		</jar>
 	</target>
@@ -97,7 +121,7 @@
 	<target name="14runServer" depends="13sendServerJarToDestination">
 		<exec executable="sshpass">
 			<arg
-			    line="-p *H1mm3l. ssh uhu java -jar /home/tomasz3/testbed/cyclonServer.jar -p 80010"/>
+			    line="-p *H1mm3l. ssh uhu ssh root@t9-213 java -jar /home/tomasz3/testbed/cyclonServer.jar -p 8000 -n eth0"/>
 		</exec>
 	</target>
 

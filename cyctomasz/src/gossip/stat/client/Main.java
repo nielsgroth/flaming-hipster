@@ -3,87 +3,55 @@ package gossip.stat.client;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-
-import javax.sound.sampled.Line;
-
-//import org.apache.commons.cli.*;
+import org.apache.commons.cli.*;
 
 public class Main {
 
 	public static void main(String[] args) {
-/*		// create Options
+		//create Options Object
 		Options options = new Options();
 		
-		// add Options
-		Option help = new Option("help","print this message");
-		Option seed = new Option("seed", "don't know yet, JACK!");
-		Option statServerIP = OptionBuilder.withArgName("IP4 address")
-										.hasArg()
-										.withDescription("use given IP4 address as StatServer")
-										.create("statServerIP");
+		// specify options
+		options.addOption("s", true, "StatServer Address. Default ???");
+		options.addOption("p", true, "base port for client. Default 9000");
+		options.addOption("c", true, "Number of clients. If more than one specified, will try to use base port++ as ports. Default 1");
+		options.addOption("i", true, "bootstrap client, gives the first simulated client an existing client in the network. Default none" );
+		options.addOption("t", true, "Test scenario. Default none");
 		
-		Option statServerPort = OptionBuilder.withArgName("port")
-											.hasArg()
-											.withDescription("use given port at Statserver")
-											.create("statServerPort");
-		
-		Option basePort = OptionBuilder.withArgName("port")
-									.hasArg()
-									.withDescription("use given port as basePort")
-									.create("basePort");
-		Option maxClients = OptionBuilder.withArgName("number of nodes simulated")
-										.hasArg()
-										.withDescription("use as max number of nodes simulated")
-										.create("maxClients");
-		// create all Options
-		options.addOption(statServerIP);
-		options.addOption(statServerPort);
-		options.addOption(basePort);
-		options.addOption(maxClients);
-		options.addOption(seed);
-		options.addOption(help);
-		//create the parser
-		CommandLineParser parser = new GnuParser();
+		// read Options from command line
+		CommandLineParser parser = new PosixParser();
+		CommandLine cmd = null;
 		try {
-			//parse the command line arguments
-			CommandLine line = parser.parse(options, args);
-			if (line.hasOption("basePort")) {
-				
-			}
-		} catch (ParseException exp) {
-			// something went wrong
-			System.err.println("Parsing failed. Reason: " +exp.getMessage());
+			cmd = parser.parse(options,args);
+		} catch (ParseException e) {
+			e.printStackTrace();
+			System.exit(1);;
 		}
-		// automatically generate the help statement
-		HelpFormatter formatter = new HelpFormatter();
-		formatter.printHelp( "cyclonClient", options );
 		
-		//read the options
-*/		
-		// TODO Auto-generated method stub
-		int basePort = 9000;
-        int maxClients = 20;
-        boolean seed = true;
+		//Initialize options with default or command line entry
+		int basePort = (cmd.hasOption("p") ? Integer.parseInt(cmd.getOptionValue("p")) : 9000);
+        int maxClients = (cmd.hasOption("c") ? Integer.parseInt(cmd.getOptionValue("c")) : 1);
+        boolean seed = (cmd.hasOption("i") ? false : true);
         InetAddress seedIP = null;
-        if (args.length > 0) {
-            basePort = Integer.parseInt(args[0]);
-            if (args.length > 1) {
-            	maxClients = Integer.parseInt(args[1]);
-            	if (args.length > 2) {
-            		seed=Boolean.parseBoolean(args[2]);
-            		if (args.length > 3) {
-            			try {
-							seedIP = InetAddress.getByName(args[3]);
-						} catch (UnknownHostException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-            		}
-                }
-            }
+    	InetAddress statServerAddress = null;
+        if (cmd.hasOption("s")) { try {
+			statServerAddress = InetAddress.getByName(cmd.getOptionValue("s"));
+		} catch (UnknownHostException e) {
+			System.err.println("Unkown statistics server host: " + cmd.getOptionValue("c") + " Exiting.");
+			System.exit(1);
+		}
         }
+        if (!seed)
+			try {
+				seedIP = InetAddress.getByName(cmd.getOptionValue("i"));
+			} catch (UnknownHostException e1) {
+				System.err.println("Unkown seed host: " + cmd.getOptionValue("c") + " Exiting.");
+				System.exit(1);
+			}
+        // Set StatServer
+        
         try {
-            CyclonTest.runCyclon(basePort, maxClients, seed, seedIP);
+            CyclonTest.runCyclon(basePort, maxClients, seed, seedIP,statServerAddress);
         } catch (IOException e) {
             e.printStackTrace();
         }

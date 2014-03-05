@@ -4,13 +4,11 @@ import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.util.Enumeration;
-
 import org.apache.commons.cli.*;
 
 public class Main {
 
 	public static void main(String[] args) {
-		// TODO Add options
 		
 		Options options = new Options();
 		
@@ -24,19 +22,16 @@ public class Main {
 		try {
 			cmd = parser.parse(options,args);
 		} catch (ParseException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			System.exit(1);;
 		}
 		
 		if (cmd.hasOption("a")) System.out.println("option a has following argument: " + cmd.getOptionValue("a"));
-		else System.out.println("failed");
 		
       	NetworkInterface serverInterface = null;
 		try {
 			serverInterface = NetworkInterface.getByName(cmd.hasOption("n") ? cmd.getOptionValue("n") : "eth0");
 		} catch (SocketException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			System.exit(1);
 		}
@@ -55,7 +50,10 @@ public class Main {
     	String serverAddressString = serverAddress.toString().replace("/","");
     	//print the IP-address if found
     	String serverPortString = (cmd.hasOption("p") ? cmd.getOptionValue("p"): "8000");
-    	if (!serverPortString.matches("[1-9999]")) System.err.println("port must be between 1 and 9999");
+    	if (!serverPortString.matches("^[1-9][0-9]{0,5}$")){
+    		System.err.println("port must be between 1 and 99999");
+    		System.exit(0);
+    	}
      	if (addressFound)  System.out.println("Starting server at " + serverAddressString + " port: " + serverPortString);
     	else System.out.println("Starting server at default address");
         StatServer.startServer(addressFound ? ("http://" + serverAddressString + ":" + serverPortString + "/gossipStatServer") :null);;

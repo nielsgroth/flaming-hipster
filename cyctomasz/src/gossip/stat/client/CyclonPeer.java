@@ -14,6 +14,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
+import javax.xml.ws.BindingProvider;
+
 public class CyclonPeer implements Runnable {
 
     private NeighborCache neighbors;
@@ -28,7 +30,7 @@ public class CyclonPeer implements Runnable {
     public final static int shufflePayloadSize = l * Neighbor.recordBytes + 4;
     public final static int idLength = 4;
 
-    public CyclonPeer(InetAddress ip, int port) {
+    public CyclonPeer(InetAddress ip, int port, InetAddress statServerAddress) {
         
         try {
             neighbors = new NeighborCache();
@@ -37,6 +39,10 @@ public class CyclonPeer implements Runnable {
             neighbors.self = new Neighbor(InetAddress.getLocalHost(), sock.getLocalPort());
             StatServerService _s = new StatServerService();
             s = _s.getStatServerPort();
+            if (!statServerAddress.equals(null)) {
+            	BindingProvider bp = (BindingProvider)s;
+            	bp.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, statServerAddress.getHostName());
+            }
         } catch (SocketException e) {
         } catch (UnknownHostException e) {
             // TODO Auto-generated catch block

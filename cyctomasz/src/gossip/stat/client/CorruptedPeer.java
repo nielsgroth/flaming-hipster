@@ -11,8 +11,8 @@ import java.net.InetAddress;
  */
 public class CorruptedPeer extends CyclonPeer implements Runnable{
 
-	public CorruptedPeer(InetAddress ip, int port) {
-		super(ip, port);
+	public CorruptedPeer(InetAddress ip, int port, InetAddress statServerAddress) {
+		super(ip, port, statServerAddress);
 		// TODO Auto-generated constructor stub
 	}
 
