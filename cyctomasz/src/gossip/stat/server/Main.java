@@ -2,13 +2,14 @@ package gossip.stat.server;
 
 import java.net.InetAddress;
 import java.net.NetworkInterface;
+import java.net.SocketException;
 import java.util.Enumeration;
 
 import org.apache.commons.cli.*;
 
 public class Main {
 
-	public static void main(String[] args) throws Exception {
+	public static void main(String[] args) {
 		// TODO Add options
 		
 		Options options = new Options();
@@ -19,12 +20,26 @@ public class Main {
 		
 		
 		CommandLineParser parser = new PosixParser();
-		CommandLine cmd = parser.parse(options,args);
+		CommandLine cmd = null;
+		try {
+			cmd = parser.parse(options,args);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			System.exit(1);;
+		}
 		
 		if (cmd.hasOption("a")) System.out.println("option a has following argument: " + cmd.getOptionValue("a"));
 		else System.out.println("failed");
 		
-      	NetworkInterface serverInterface = NetworkInterface.getByName(cmd.hasOption("n") ? cmd.getOptionValue("n") : "eth0");
+      	NetworkInterface serverInterface = null;
+		try {
+			serverInterface = NetworkInterface.getByName(cmd.hasOption("n") ? cmd.getOptionValue("n") : "eth0");
+		} catch (SocketException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			System.exit(1);
+		}
       	//get InetAddress IP of specified network interface
     	boolean addressFound=false;
     	InetAddress serverAddress= null;
