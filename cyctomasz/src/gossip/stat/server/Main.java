@@ -1,9 +1,19 @@
 package gossip.stat.server;
 
+import gossip.stat.client.soap.StatServerService;
+
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.net.InetAddress;
+import java.net.MalformedURLException;
 import java.net.NetworkInterface;
 import java.net.SocketException;
+import java.net.URL;
+import java.net.UnknownHostException;
 import java.util.Enumeration;
+
+import javax.xml.namespace.QName;
+
 import org.apache.commons.cli.*;
 
 public class Main {
@@ -12,8 +22,8 @@ public class Main {
 		
 		Options options = new Options();
 		
-		options.addOption("a",true,"TestOption with Argument");
-		options.addOption("n",true,"Use this Network Interface's InetAdress as endpoint. Default eth0");
+		options.addOption("a", true, "TestOption with Argument");
+		options.addOption("n", true, "Use this Network Interface's InetAdress as endpoint. Default eth0");
 		options.addOption("p", true, "Use this port as endpoint. Default 8000");
 		
 		

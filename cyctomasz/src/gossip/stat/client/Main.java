@@ -1,8 +1,16 @@
 package gossip.stat.client;
 
+import gossip.stat.client.soap.StatServerService;
+
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.net.InetAddress;
+import java.net.URL;
 import java.net.UnknownHostException;
+
+import javax.xml.namespace.QName;
+
 import org.apache.commons.cli.*;
 
 public class Main {
@@ -17,6 +25,7 @@ public class Main {
 		options.addOption("c", true, "Number of clients. If more than one specified, will try to use base port++ as ports. Default 1");
 		options.addOption("i", true, "bootstrap client, gives the first simulated client an existing client in the network. Default none" );
 		options.addOption("t", true, "Test scenario. Default none");
+		options.addOption("o", true, "start in output mode instead. Argument is name of output file. Default ./outputCyclon.xml");
 		
 		// read Options from command line
 		CommandLineParser parser = new PosixParser();
@@ -27,6 +36,29 @@ public class Main {
 			e.printStackTrace();
 			System.exit(1);;
 		}
+		
+		// run output mode instead
+		if (cmd.hasOption("o")) {
+			String fileName = ((cmd.getOptionValue("o").equals("")||cmd.getOptionValue("o").equals(null)) ? "outputCyclon.xml" : cmd.getOptionValue("o")); 
+            try {
+            	InetAddress statServerAddress = InetAddress.getByName(cmd.hasOption("s") ? cmd.getOptionValue("s"): "" );
+                StatServerService _s = new StatServerService
+    					(new URL("http://" + statServerAddress.getHostName() + ":8000/gossipStatServer?wsdl"),
+    							new QName("http://server.stat.gossip/", "StatServerService"));
+                gossip.stat.client.soap.StatServer s = _s.getStatServerPort();                    
+                BufferedWriter out = new BufferedWriter(new FileWriter(fileName));
+                out.write(s.getXML());
+                out.close();
+                System.out.println("XML Output written to "+fileName);
+                System.exit(0);
+            } catch (UnknownHostException e) {
+            	System.err.println("Unkown statistics server host: " + cmd.getOptionValue("s") + " Exiting.");
+    			System.exit(1);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+		}
+		
 		
 		//Initialize options with default or command line entry
 		int basePort = (cmd.hasOption("p") ? Integer.parseInt(cmd.getOptionValue("p")) : 9000);
