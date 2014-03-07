@@ -11,13 +11,11 @@ import java.net.MalformedURLException;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
-import java.net.UnknownHostException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
 import javax.xml.namespace.QName;
-import javax.xml.ws.BindingProvider;
 
 public class CyclonPeer implements Runnable {
 
@@ -33,18 +31,18 @@ public class CyclonPeer implements Runnable {
     public final static int shufflePayloadSize = l * Neighbor.recordBytes + 4;
     public final static int idLength = 4;
 
-    public CyclonPeer(InetAddress ip, int port, InetAddress statServerAddress) {
+    public CyclonPeer(InetAddress ip, int port, InetAddress statServerAddress, int statServerPort) {
         
         try {
             neighbors = new NeighborCache();
             rand = new Random();
             sock = new DatagramSocket(port,ip); //TODO ip einfügen! --> done!
-            neighbors.self = new Neighbor(InetAddress.getLocalHost(), sock.getLocalPort());
+            neighbors.self = new Neighbor(ip, port);
             StatServerService _s = null;
             if (!statServerAddress.equals(null)){
 				try {
 					_s = new StatServerService
-					(new URL("http://" + statServerAddress.getHostName() + ":8000/gossipStatServer?wsdl"),
+					(new URL("http://" + statServerAddress.getHostName() + ":" + statServerPort + "/gossipStatServer?wsdl"),
 							new QName("http://server.stat.gossip/", "StatServerService"));
 				} catch (MalformedURLException e) {
 					// TODO Auto-generated catch block
@@ -55,10 +53,7 @@ public class CyclonPeer implements Runnable {
             }
             s = _s.getStatServerPort();
         } catch (SocketException e) {
-        } catch (UnknownHostException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+        } 
     }
 
     @Override

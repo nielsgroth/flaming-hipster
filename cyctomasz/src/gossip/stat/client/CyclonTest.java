@@ -2,8 +2,7 @@ package gossip.stat.client;
 
 import java.io.IOException;
 import java.net.InetAddress;
-import java.util.LinkedList;
-import java.util.List;
+import java.net.NetworkInterface;
 import java.util.Random;
 
 public class CyclonTest {
@@ -12,15 +11,11 @@ public class CyclonTest {
      * @param args
      * @throws IOException 
      */
-    public static void runCyclon(final int basePort, final int maxClients, final boolean isSeed,  final InetAddress seedIP, final InetAddress statServerAddress) throws IOException {
+    public static void runCyclon(final int basePort, final int maxClients, final boolean isSeed,  final InetAddress seedIP, final InetAddress statServerAddress, final int statServerPort) throws IOException {
 
         Runnable peerFactory = new Runnable() {
 
-            private List<Integer> activePeers = new LinkedList<Integer>();
-            //private int basePort = 9000;
             private int portOffset = 0;
-            //private int maxClients = 1000;
-            
             
             @Override
             public void run() {
@@ -28,12 +23,12 @@ public class CyclonTest {
                 	// TODO use specified Network interface!!!
                     try {
                         Random r = new Random();
-                        CyclonPeer p = new CyclonPeer(InetAddress.getLocalHost(), basePort + (portOffset++), statServerAddress);
+                        CyclonPeer p = new CyclonPeer(NetworkInterface.getByName("wlan0").getInetAddresses().nextElement(), basePort + (portOffset++), statServerAddress, statServerPort);
                         if (portOffset > 1) {
                             p.addSeedNode(InetAddress.getLocalHost(), basePort + r.nextInt(portOffset - 1));
                         }
                         else if (!isSeed) {
-                        	p.addSeedNode(seedIP, basePort + r.nextInt(portOffset - 1));
+                        	p.addSeedNode(seedIP, basePort);
                         }
                         new Thread(p).start();
                         Thread.sleep(r.nextInt(1500));

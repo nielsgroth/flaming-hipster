@@ -4,17 +4,11 @@
  */
 package gossip.main;
 
-import gossip.stat.client.CyclonTest;
-import gossip.stat.client.soap.StatServerService;
 import gossip.stat.server.StatServer;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
-import java.net.UnknownHostException;
 import java.util.Enumeration;
 
 /**

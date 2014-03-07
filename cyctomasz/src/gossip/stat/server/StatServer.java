@@ -107,7 +107,7 @@ public class StatServer {
         if (endpointUrl==null){
             endpointUrl = "http://87.77.4.63:8000/gossip";
         } 
-        Endpoint endpoint = Endpoint.publish(endpointUrl, s);
+        Endpoint.publish(endpointUrl, s);
 
 //        runTest(s);
 

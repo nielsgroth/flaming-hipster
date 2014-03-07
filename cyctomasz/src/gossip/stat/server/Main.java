@@ -1,20 +1,16 @@
 package gossip.stat.server;
 
-import gossip.stat.client.soap.StatServerService;
-
-import java.io.BufferedWriter;
-import java.io.FileWriter;
 import java.net.InetAddress;
-import java.net.MalformedURLException;
 import java.net.NetworkInterface;
 import java.net.SocketException;
-import java.net.URL;
-import java.net.UnknownHostException;
 import java.util.Enumeration;
 
-import javax.xml.namespace.QName;
-
-import org.apache.commons.cli.*;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
+import org.apache.commons.cli.PosixParser;
 
 public class Main {
 
@@ -22,9 +18,9 @@ public class Main {
 		
 		Options options = new Options();
 		
-		options.addOption("a", true, "TestOption with Argument");
 		options.addOption("n", true, "Use this Network Interface's InetAdress as endpoint. Default eth0");
 		options.addOption("p", true, "Use this port as endpoint. Default 8000");
+		options.addOption("h", false, "Display this message");
 		
 		
 		CommandLineParser parser = new PosixParser();
@@ -36,13 +32,19 @@ public class Main {
 			System.exit(1);;
 		}
 		
-		if (cmd.hasOption("a")) System.out.println("option a has following argument: " + cmd.getOptionValue("a"));
+		// automatically generate the help statement
+		HelpFormatter formatter = new HelpFormatter();
+		if (cmd.hasOption("h")) {
+			formatter.printHelp("cyclonClient", options);
+			System.exit(0);
+		}
 		
       	NetworkInterface serverInterface = null;
 		try {
 			serverInterface = NetworkInterface.getByName(cmd.hasOption("n") ? cmd.getOptionValue("n") : "eth0");
 		} catch (SocketException e) {
 			e.printStackTrace();
+			formatter.printHelp("cyclonClient", options);
 			System.exit(1);
 		}
       	//get InetAddress IP of specified network interface
