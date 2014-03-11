@@ -6,14 +6,19 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
 import java.net.URL;
 import java.net.UnknownHostException;
+import java.util.Enumeration;
 
 import javax.xml.namespace.QName;
 
 import org.apache.commons.cli.*;
 
 public class Main {
+
+	private static final String IPV4_REGEX = "^/(25[0-5]|2[0-4]\\d|[0-1]?\\d?\\d)(\\.(25[0-5]|2[0-4]\\d|[0-1]?\\d?\\d)){3}$";
 
 	public static void main(String[] args) {
 		//create Options Object
@@ -28,6 +33,7 @@ public class Main {
 		options.addOption("o", true, "start in output mode instead. Argument is name of output file. Default ./outputCyclon.xml");
 		options.addOption("q", true, "StatServer port. Default 8000");
 		options.addOption("h", false, "Display this message");
+		options.addOption("n", true, "Use this networkInterface. Default wlan0");
 
 		
 		// read Options from command line
@@ -71,6 +77,21 @@ public class Main {
             }
 		} else {
 			//Initialize options for normal mode
+			String networkInterfaceName = (cmd.hasOption("n") ? cmd.getOptionValue("n") : "wlan0" );
+			InetAddress networkInterfaceIP = null;
+			boolean foundAddress = false;
+			Enumeration<InetAddress> inetAddresses = null;
+			try {
+				inetAddresses = NetworkInterface.getByName(networkInterfaceName).getInetAddresses();
+			} catch (SocketException e2) {
+				// TODO Auto-generated catch block
+				e2.printStackTrace();
+			}
+			while (!foundAddress && inetAddresses.hasMoreElements()) {
+				networkInterfaceIP = inetAddresses.nextElement();
+				foundAddress=networkInterfaceIP.getHostAddress().matches(IPV4_REGEX);
+			}
+			
 			int basePort = (cmd.hasOption("p") ? Integer.parseInt(cmd.getOptionValue("p")) : 9000);
 	        int maxClients = (cmd.hasOption("c") ? Integer.parseInt(cmd.getOptionValue("c")) : 1);
 	        boolean seed = !cmd.hasOption("i");
@@ -94,7 +115,7 @@ public class Main {
 	        // run normal mode
 	        System.out.println("trying to use " + statServerAddress.getHostName() + " Port: " + statServerPort + " as statServer");
 	        try {
-	            CyclonTest.runCyclon(basePort, maxClients, seed, seedIP, statServerAddress, statServerPort);
+	            CyclonTest.runCyclon(basePort, maxClients, seed, seedIP, statServerAddress, statServerPort, networkInterfaceIP);
 	        } catch (IOException e) {
 	            e.printStackTrace();
 	        }

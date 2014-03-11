@@ -11,10 +11,13 @@ public class CyclonTest {
      * @param args
      * @throws IOException 
      */
-    public static void runCyclon(final int basePort, final int maxClients, final boolean isSeed,  final InetAddress seedIP, final InetAddress statServerAddress, final int statServerPort) throws IOException {
+    public static void runCyclon(final int basePort, final int maxClients, final boolean isSeed,  
+    		final InetAddress seedIP, final InetAddress statServerAddress, final int statServerPort, 
+    		final InetAddress networkInterfaceIP) throws IOException {
 
         Runnable peerFactory = new Runnable() {
-
+        	
+        	
             private int portOffset = 0;
             
             @Override
@@ -23,7 +26,7 @@ public class CyclonTest {
                 	// TODO use specified Network interface!!!
                     try {
                         Random r = new Random();
-                        CyclonPeer p = new CyclonPeer(NetworkInterface.getByName("wlan0").getInetAddresses().nextElement(), basePort + (portOffset++), statServerAddress, statServerPort);
+                        CyclonPeer p = new CyclonPeer(networkInterfaceIP, basePort + (portOffset++), statServerAddress, statServerPort);
                         if (portOffset > 1) {
                             p.addSeedNode(InetAddress.getLocalHost(), basePort + r.nextInt(portOffset - 1));
                         }
