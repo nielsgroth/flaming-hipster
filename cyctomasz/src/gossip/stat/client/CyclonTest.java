@@ -2,7 +2,6 @@ package gossip.stat.client;
 
 import java.io.IOException;
 import java.net.InetAddress;
-import java.net.NetworkInterface;
 import java.util.Random;
 
 public class CyclonTest {

@@ -1,24 +1,26 @@
 package gossip.stat.client;
 
 import gossip.stat.client.soap.StatServerService;
+import gossip.stat.tools.Util;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.InetAddress;
-import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.net.URL;
 import java.net.UnknownHostException;
-import java.util.Enumeration;
 
 import javax.xml.namespace.QName;
 
-import org.apache.commons.cli.*;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
+import org.apache.commons.cli.PosixParser;
 
 public class Main {
-
-	private static final String IPV4_REGEX = "^/(25[0-5]|2[0-4]\\d|[0-1]?\\d?\\d)(\\.(25[0-5]|2[0-4]\\d|[0-1]?\\d?\\d)){3}$";
 
 	public static void main(String[] args) {
 		//create Options Object
@@ -79,19 +81,12 @@ public class Main {
 			//Initialize options for normal mode
 			String networkInterfaceName = (cmd.hasOption("n") ? cmd.getOptionValue("n") : "wlan0" );
 			InetAddress networkInterfaceIP = null;
-			boolean foundAddress = false;
-			Enumeration<InetAddress> inetAddresses = null;
 			try {
-				inetAddresses = NetworkInterface.getByName(networkInterfaceName).getInetAddresses();
-			} catch (SocketException e2) {
+				networkInterfaceIP = Util.getLocalAddressbyName(networkInterfaceName);
+			} catch (SocketException e3) {
 				// TODO Auto-generated catch block
-				e2.printStackTrace();
+				e3.printStackTrace();
 			}
-			while (!foundAddress && inetAddresses.hasMoreElements()) {
-				networkInterfaceIP = inetAddresses.nextElement();
-				foundAddress=networkInterfaceIP.getHostAddress().matches(IPV4_REGEX);
-			}
-			
 			int basePort = (cmd.hasOption("p") ? Integer.parseInt(cmd.getOptionValue("p")) : 9000);
 	        int maxClients = (cmd.hasOption("c") ? Integer.parseInt(cmd.getOptionValue("c")) : 1);
 	        boolean seed = !cmd.hasOption("i");
