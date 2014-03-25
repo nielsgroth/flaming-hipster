@@ -1,9 +1,9 @@
 package gossip.stat.server;
 
+import gossip.stat.tools.Util;
+
 import java.net.InetAddress;
-import java.net.NetworkInterface;
 import java.net.SocketException;
-import java.util.Enumeration;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -39,26 +39,19 @@ public class Main {
 			System.exit(0);
 		}
 		
-      	NetworkInterface serverInterface = null;
+
+      	//get InetAddress IP of specified network interface
+		InetAddress serverAddress = null;
 		try {
-			serverInterface = NetworkInterface.getByName(cmd.hasOption("n") ? cmd.getOptionValue("n") : "eth0");
-		} catch (SocketException e) {
-			e.printStackTrace();
-			formatter.printHelp("cyclonClient", options);
+			serverAddress = Util.getLocalAddressbyName(cmd.hasOption("n") ? cmd.getOptionValue("n") : "eth0");
+		} catch (SocketException e3) {
+			// TODO Auto-generated catch block
+			e3.printStackTrace();
+		} 
+		if (serverAddress.equals(null)) {
+			System.out.println("no IPV4 Address found on Network Interface " + (cmd.hasOption("n") ? cmd.getOptionValue("n") : "eth0"));
 			System.exit(1);
 		}
-      	//get InetAddress IP of specified network interface
-    	boolean addressFound=false;
-    	InetAddress serverAddress= null;
-    	final String IPV4_REGEX = "^/(25[0-5]|2[0-4]\\d|[0-1]?\\d?\\d)(\\.(25[0-5]|2[0-4]\\d|[0-1]?\\d?\\d)){3}$";
-    	Enumeration<InetAddress> serverAddresses = serverInterface.getInetAddresses();
-    	while(serverAddresses.hasMoreElements() && !addressFound) {
-    		serverAddress = serverAddresses.nextElement();
-    		
-    		if (serverAddress.toString().matches(IPV4_REGEX)){
-    			addressFound = true;
-    		}
-    	}
     	String serverAddressString = serverAddress.toString().replace("/","");
     	//print the IP-address if found
     	String serverPortString = (cmd.hasOption("p") ? cmd.getOptionValue("p"): "8000");
@@ -66,9 +59,8 @@ public class Main {
     		System.err.println("port must be between 1 and 99999");
     		System.exit(0);
     	}
-     	if (addressFound)  System.out.println("Starting server at " + serverAddressString + " port: " + serverPortString);
-    	else System.out.println("Starting server at default address");
-        StatServer.startServer(addressFound ? ("http://" + serverAddressString + ":" + serverPortString + "/gossipStatServer") :null);;
+    	System.out.println("Starting server at " + serverAddressString + " port: " + serverPortString);
+        StatServer.startServer("http://" + serverAddressString + ":" + serverPortString + "/gossipStatServer");;
 	}
 
 }

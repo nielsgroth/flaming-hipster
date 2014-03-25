@@ -36,6 +36,7 @@ public class Main {
 		options.addOption("q", true, "StatServer port. Default 8000");
 		options.addOption("h", false, "Display this message");
 		options.addOption("n", true, "Use this networkInterface. Default wlan0");
+		options.addOption("x", true, "Cache size. Default 20");
 
 		
 		// read Options from command line
@@ -95,6 +96,7 @@ public class Main {
 	        if (cmd.hasOption("s")) { 
 	        	try {
 				statServerAddress = InetAddress.getByName(cmd.getOptionValue("s"));
+		        System.out.println("trying to use " + statServerAddress.getHostName() + " Port: " + statServerPort + " as statServer");
 			} catch (UnknownHostException e) {
 				System.err.println("Unkown statistics server host: " + cmd.getOptionValue("c") + " Exiting.");
 				System.exit(1);
@@ -108,7 +110,7 @@ public class Main {
 					System.exit(1);
 				}
 	        // run normal mode
-	        System.out.println("trying to use " + statServerAddress.getHostName() + " Port: " + statServerPort + " as statServer");
+
 	        try {
 	            CyclonTest.runCyclon(basePort, maxClients, seed, seedIP, statServerAddress, statServerPort, networkInterfaceIP);
 	        } catch (IOException e) {

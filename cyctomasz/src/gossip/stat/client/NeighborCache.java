@@ -198,7 +198,7 @@ public class NeighborCache {
          */
         int i = 1;
         while (!request.isEmpty()) {
-            neighbors.remove(response.get(i));
+            neighbors.remove(response.get(i)); // TODO: wird hier immer der gleiche entfernt?
             neighbors.add(request.remove(0));
         }
 

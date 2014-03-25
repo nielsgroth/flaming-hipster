@@ -26,16 +26,20 @@
     	<mkdir
     		dir="${buildpath}build/client">
     	</mkdir>
+    	<copy todir="${buildpath}build/client">
+    		<fileset dir="src"/>
+    	</copy>
     </target>
 	
 	
     <target name="03compileClient" depends="02cleanClientBuild">
-    	<javac 	srcdir="src/gossip/stat/client"
-    			destdir="${buildpath}build/client"
+    	<javac 	destdir="${buildpath}build/client"
     			executable="/opt/java/64/jdk1.6.0_45/bin/javac"
     			fork="true"
     			classpath="lib/*"
     			taskname="javac1.6">
+    		<src path="src/gossip/stat/client"/>
+    		<src path="src/gossip/stat/tools"/>
     	</javac>
     </target>
 	
@@ -79,11 +83,12 @@
 	
 	
 	<target name="11compileServer" depends="10cleanServerBuild">
-    	<javac 	srcdir="src/gossip/stat/server"
-    			destdir="${buildpath}build/server"
+    	<javac 	destdir="${buildpath}build/server"
     			executable="/opt/java/64/jdk1.6.0_45/bin/javac"
     			fork="true"
     			classpath="lib/*">
+    		<src path="src/gossip/stat/server"/>
+    		<src path="src/gossip/stat/tools"/>
     	</javac>
 	</target>
 	

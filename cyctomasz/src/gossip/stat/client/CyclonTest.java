@@ -1,5 +1,7 @@
 package gossip.stat.client;
 
+import gossip.stat.tools.Util;
+
 import java.io.IOException;
 import java.net.InetAddress;
 import java.util.Random;
@@ -27,7 +29,7 @@ public class CyclonTest {
                         Random r = new Random();
                         CyclonPeer p = new CyclonPeer(networkInterfaceIP, basePort + (portOffset++), statServerAddress, statServerPort);
                         if (portOffset > 1) {
-                            p.addSeedNode(InetAddress.getLocalHost(), basePort + r.nextInt(portOffset - 1));
+                            p.addSeedNode(networkInterfaceIP, basePort + r.nextInt(portOffset - 1));
                         }
                         else if (!isSeed) {
                         	p.addSeedNode(seedIP, basePort);

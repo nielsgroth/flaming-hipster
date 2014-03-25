@@ -24,10 +24,10 @@ public class CyclonPeer implements Runnable {
     private DatagramSocket sock;
     private int pendingShuffleId;
     private StatServer s;
-    public static final int MTU = 1500;
-    public final static int c = 50;
-    public final static int l = 10;
-    public final static int socketTimeout = 3000;
+    public static final int MTU = 1500;				// Maximum Transmission Unit: maximum size of datagram packet
+    public final static int c = 5;	 				// cache size
+    public final static int l = 3;					// message size
+    public final static int socketTimeout = 3000; 	//sleep before shuffling again
     public final static int shufflePayloadSize = l * Neighbor.recordBytes + 4;
     public final static int idLength = 4;
 
@@ -39,7 +39,7 @@ public class CyclonPeer implements Runnable {
             sock = new DatagramSocket(port,ip); //TODO ip einfügen! --> done!
             neighbors.self = new Neighbor(ip, port);
             StatServerService _s = null;
-            if (!statServerAddress.equals(null)){
+            if (statServerAddress != null){
 				try {
 					_s = new StatServerService
 					(new URL("http://" + statServerAddress.getHostName() + ":" + statServerPort + "/gossipStatServer?wsdl"),
@@ -84,12 +84,6 @@ public class CyclonPeer implements Runnable {
             //Statistikdaten an Statistik-Server senden
             s.sendList(neighbors.self.getId(), neighbors.buildStatList());
             try {
-                //Thread.sleep(socketTimeout);
-                /*try {
-                    shuffleInit();
-                } catch (IOException shuffleException) {
-                    shuffleException.printStackTrace();
-                }*/
                 List<Neighbor> responseList;
                 DatagramPacket p = new DatagramPacket(new byte[MTU], MTU);
                 sock.setSoTimeout(socketTimeout);
@@ -156,7 +150,7 @@ public class CyclonPeer implements Runnable {
 
     }
     /** 
-     * Must be called before the Thread is started! 
+     * Must be called before the Thread is started, for bootstrapping purposes. 
      * There is no check for duplicates.
      * 
      * The first neighbor is added, by adding the previous generated client.
