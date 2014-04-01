@@ -1,0 +1,31 @@
+% This file was created with JabRef 2.7b.
+% Encoding: UTF8
+
+@TECHREPORT{Guenes+:2008TR,
+  author = {Mesut G\"une\c{s} and Bastian Blywis and Felix Juraschek and Philipp
+	Schmidt},
+  title = {Concept and Design of the Hybrid Distributed Embedded Systems Testbed},
+  institution = {Freie Universit\"at Berlin},
+  year = {2008},
+  number = {TR-B-08-10},
+  owner = {jurasch},
+  timestamp = {2008.07.16}
+}
+
+@TECHREPORT{John+:InetTraffic,
+  author = {Wolfgang John and Sven Trafvelin},
+  title = {Heuristics to Classify Internet Backbone Traffic based on Connection
+	Patterns},
+  institution = {ICOIN '08: Proceedings of the 22nd international Conference on Information
+	Networking, Busan, Korea},
+  year = {2008},
+  owner = {tomasz},
+  timestamp = {2014.03.30}
+}
+
+@OTHER{bittorrent,
+  owner = {tomasz},
+  timestamp = {2014.03.30},
+  url = {http://www.bittorrent.com/intl/de/company/ybout/ces_2012_150m_users}
+}
+

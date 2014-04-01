@@ -1,0 +1,59 @@
+\chapter{Fitting Phase-Type Distributions} 
+\label{cha:theoretical_background}
+
+This is the main chapter of the thesis and containes the solution
+idea, theory and {\em the meat of it}.
+%==============================================================================
+\section{Markov Chains and Phase-type Distributions}
+\label{sec:MCandPH}
+%==============================================================================
+Here you should place the theory that the reader should know about
+for your work.
+
+
+\section{A fast Fitting Algorithm}
+\label{sec:fitting}
+%==============================================================================
+This section describes your solution.
+
+
+
+\section{Implementation}
+\label{sec:implementation}
+%==============================================================================
+If you want to explain your implementation in a rather abstract way,
+this needs a separate section.
+
+If you work on protocols you may use this graph:
+\begin{figure}[ht]
+	\centering
+	\begin{bytefield}{32}
+		\bitheader{0-31}\\
+		\wordgroupr{Header}
+			\bitbox{16}{Source}\bitbox{16}{Destination}\\
+			\wordbox{1}{Acknowledgement}\\
+			\wordbox{1}{Sequencenumber}
+		\endwordgroupr \\
+		\wordbox[lrt]{1}{Data} \\
+		\skippedwords \\
+		\wordbox[lrb]{1}{} \\
+	\end{bytefield}
+	\caption[Packet Format]{Packet Format of the protocol specified in this section}
+	\label{fig:bytefield}
+\end{figure}
+
+
+Program code should appear like this.
+
+%%% listings with same name share a linecounter %%%
+%%% include source code from external file: \lstinputlisting[<Options>]{path/file.php} %%%
+\begin{lstlisting}[caption=Useless code,label=lst:useless, name=useless, language=Promela]
+int main(int argc, char** argv) {
+    int i;
+    for(i=0; i<10; i++) { (*@\label{lstref:loop}@*)
+        printf("I will graduate!\n");
+    }
+    return 0;
+}
+\end{lstlisting}
+

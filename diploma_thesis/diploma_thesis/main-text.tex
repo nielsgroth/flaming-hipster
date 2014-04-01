@@ -1,0 +1,65 @@
+%%% optionally include ngerman in the document class options list
+\documentclass[english, paper=a4, 11pt, cleardoublepage=empty, twoside,
+openright, BCOR=7mm, DIV12, index=totoc, listof=totoc, bibliography=totoc, headinclude=false]{scrreprt}
+\usepackage[utf8]{inputenc}
+
+%%% uncomment only one of the following two lines %%%
+%\usepackage[ngerman]{babel}
+ \usepackage[english]{babel}
+
+\usepackage[T1]{fontenc}
+\usepackage{format}
+
+\title{Experimental Evalutation of Gossip-Based Application Layer Cyclon in the
+Wireless Ad-Hoc DES-Testbed}
+\author{Tomasz Jacewski}
+\matrikelno{4078087}
+\thesis{Diploma Thesis}
+\profName{Prof. Dr. Katinka Wolter}
+\automark[section]{chapter}
+\begin{document}
+	%===================================
+	% Titlepage
+	%===================================
+	\pagenumbering{roman}
+	\maketitle
+	\cleardoublepage
+	
+	%===================================
+	% Official parts
+	%===================================
+	\affirmation
+	\input{text/abstract}
+	\cleardoublepage
+	
+	\tableofcontents
+	\printglossaries
+    \cleardoublepage
+    \pagenumbering{arabic}
+    
+	%===================================
+	% Main part of the text
+	%===================================	
+	
+    %\input{text/0-Template} %%% read this!!!
+    \input{text/01-introduction}
+    \input{text/02-from-p2p-to-cyclon}
+    \input{text/03-properties}
+    \input{text/04-methodology}
+    \input{text/05-results}
+    \input{text/06-evaluation}
+    \input{text/07-conclusion}
+	%\input{text/1-motivation}
+    %\input{text/2-related-work}
+    %\input{text/3-implementation}
+    %\input{text/4-experiments}
+    %\input{text/5-evaluation}
+    %\input{text/6-conclusion}
+	
+	
+	%===================================
+	% Bibliography, insert bia bibtex
+	%===================================
+	\bibliographystyle{alpha}
+	\bibliography{bibliography}
+\end{document}
