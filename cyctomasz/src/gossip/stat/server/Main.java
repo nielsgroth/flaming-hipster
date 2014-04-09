@@ -3,7 +3,9 @@ package gossip.stat.server;
 import gossip.stat.tools.Util;
 
 import java.net.InetAddress;
+import java.net.NetworkInterface;
 import java.net.SocketException;
+import java.util.Enumeration;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -21,6 +23,7 @@ public class Main {
 		options.addOption("n", true, "Use this Network Interface's InetAdress as endpoint. Default eth0");
 		options.addOption("p", true, "Use this port as endpoint. Default 8000");
 		options.addOption("h", false, "Display this message");
+		options.addOption("i", false, "shows all available interfaces");
 		
 		
 		CommandLineParser parser = new PosixParser();
@@ -37,18 +40,30 @@ public class Main {
 		if (cmd.hasOption("h")) {
 			formatter.printHelp("cyclonClient", options);
 			System.exit(0);
+		}	
+		//print all available interfaces
+		if (cmd.hasOption("i")) {
+			try {
+				Enumeration<NetworkInterface> networkInterfaces = NetworkInterface.getNetworkInterfaces();
+				while (networkInterfaces.hasMoreElements()){
+					System.out.println(networkInterfaces.nextElement().getDisplayName());
+				}
+			} catch (SocketException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				System.exit(1);
+			}
+			System.exit(0);
 		}
-		
-
       	//get InetAddress IP of specified network interface
 		InetAddress serverAddress = null;
-		try {
+		try { 
 			serverAddress = Util.getLocalAddressbyName(cmd.hasOption("n") ? cmd.getOptionValue("n") : "eth0");
 		} catch (SocketException e3) {
 			// TODO Auto-generated catch block
 			e3.printStackTrace();
 		} 
-		if (serverAddress.equals(null)) {
+		if (serverAddress == null) {
 			System.out.println("no IPV4 Address found on Network Interface " + (cmd.hasOption("n") ? cmd.getOptionValue("n") : "eth0"));
 			System.exit(1);
 		}

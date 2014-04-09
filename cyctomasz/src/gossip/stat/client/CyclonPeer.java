@@ -32,11 +32,11 @@ public class CyclonPeer implements Runnable {
     public final static int idLength = 4;
 
     public CyclonPeer(InetAddress ip, int port, InetAddress statServerAddress, int statServerPort) {
-        
+        //CyclonPeer initialization phase
         try {
             neighbors = new NeighborCache();
             rand = new Random();
-            sock = new DatagramSocket(port,ip); //TODO ip einfügen! --> done!
+            sock = new DatagramSocket(port,ip);
             neighbors.self = new Neighbor(ip, port);
             StatServerService _s = null;
             if (statServerAddress != null){
@@ -45,7 +45,6 @@ public class CyclonPeer implements Runnable {
 					(new URL("http://" + statServerAddress.getHostName() + ":" + statServerPort + "/gossipStatServer?wsdl"),
 							new QName("http://server.stat.gossip/", "StatServerService"));
 				} catch (MalformedURLException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
             } else {
@@ -53,6 +52,7 @@ public class CyclonPeer implements Runnable {
             }
             s = _s.getStatServerPort();
         } catch (SocketException e) {
+        	e.printStackTrace();
         } 
     }
 
@@ -63,24 +63,23 @@ public class CyclonPeer implements Runnable {
 
 			@Override
 			public void run() {
-				while(true) {
+				while(!Thread.currentThread().isInterrupted()) {
 					try {
 						shuffleInit();
 						Thread.sleep(socketTimeout);
 					} catch (IOException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+						break;
 					}
 				}
 			}
     		
     	};
-    	new Thread(r).start();
+    	Thread shuffleThread = new Thread(r);
+    	shuffleThread.start();
     	
-        while (true) {
+        while (!Thread.currentThread().isInterrupted()) {
             //Statistikdaten an Statistik-Server senden
             s.sendList(neighbors.self.getId(), neighbors.buildStatList());
             try {
@@ -122,12 +121,15 @@ public class CyclonPeer implements Runnable {
                 printDebug("Socket timed out, shuffle id: " + pendingShuffleId);
                 pendingShuffleId = 0;
             } catch (IOException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }/* catch (InterruptedException e){
                 
             }*/
         }
+        //an external interrupt occurred: TODO mark this node as dead at StatServer
+        shuffleThread.interrupt();
+        s.sendList(neighbors.self.getId(), neighbors.buildStatList());
+        
     }
 
     public void shuffleInit() throws IOException {

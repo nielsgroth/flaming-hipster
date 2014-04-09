@@ -31,7 +31,7 @@ public class Main {
 		options.addOption("p", true, "base port for client. Default 9000");
 		options.addOption("c", true, "Number of clients. If more than one specified, will try to use base port++ as ports. Default 1");
 		options.addOption("i", true, "bootstrap client, gives the first simulated client an existing client in the network. Default none" );
-		options.addOption("t", true, "Test scenario. Default none");
+		options.addOption("t", true, "Test scenario. Default static");
 		options.addOption("o", true, "start in output mode instead. Argument is name of output file. Default ./outputCyclon.xml");
 		options.addOption("q", true, "StatServer port. Default 8000");
 		options.addOption("h", false, "Display this message");
@@ -111,8 +111,19 @@ public class Main {
 				}
 	        // run normal mode
 
+	        
+	        //start test scenario. Default static
 	        try {
-	            CyclonTest.runCyclon(basePort, maxClients, seed, seedIP, statServerAddress, statServerPort, networkInterfaceIP);
+	        	if(cmd.hasOption("t")) {
+	        		if(cmd.getOptionValue("t")=="static"){
+	        			CyclonStatic.runCyclon(basePort, maxClients, seed, seedIP, statServerAddress, statServerPort, networkInterfaceIP);
+	        		}
+	        		if(cmd.getOptionValue("t")=="churn"){
+	        			
+	        		}
+	        	}else {
+	        		CyclonStatic.runCyclon(basePort, maxClients, seed, seedIP, statServerAddress, statServerPort, networkInterfaceIP);
+	        	}
 	        } catch (IOException e) {
 	            e.printStackTrace();
 	        }

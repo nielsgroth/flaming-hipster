@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.util.Random;
 
-public class CyclonTest {
+public class CyclonStatic {
 
     /**
      * @param args
@@ -24,7 +24,6 @@ public class CyclonTest {
             @Override
             public void run() {
                 while (true && portOffset < maxClients) {
-                	// TODO use specified Network interface!!!
                     try {
                         Random r = new Random();
                         CyclonPeer p = new CyclonPeer(networkInterfaceIP, basePort + (portOffset++), statServerAddress, statServerPort);
