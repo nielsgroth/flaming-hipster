@@ -1,5 +1,7 @@
 package gossip.stat.client;
 
+import gossip.stat.client.olsrd.IRoutingTable;
+import gossip.stat.client.olsrd.OLSRDRoutingTable;
 import gossip.stat.tools.Util;
 
 import java.io.IOException;
@@ -30,8 +32,9 @@ public class CyclonStatic {
                         if (portOffset > 1) {
                             p.addSeedNode(networkInterfaceIP, basePort + r.nextInt(portOffset - 1));
                         }
-                        else if (!isSeed) {
-                        	p.addSeedNode(seedIP, basePort);
+                        else {
+                        	IRoutingTable routTab = new OLSRDRoutingTable();
+                        	p.addSeedNode(routTab.getBootstrapNode(), basePort);
                         }
                         new Thread(p).start();
                         Thread.sleep(r.nextInt(1500));

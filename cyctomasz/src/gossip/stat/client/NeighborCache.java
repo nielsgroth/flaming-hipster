@@ -257,4 +257,7 @@ public class NeighborCache {
     public String toString() {
         return neighbors.toString();
     }
+    void removeNeighbor(Neighbor removethis) {
+    	neighbors.remove(removethis);
+    }
 }

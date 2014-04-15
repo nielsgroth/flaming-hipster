@@ -32,7 +32,7 @@ public class CyclonChurn {
 		                            Random ontime = new Random();
 		                            CyclonPeer p = new CyclonPeer(networkInterfaceIP, basePort + (portOffset++), statServerAddress, statServerPort);
 		                            if (portOffset > 1) {
-		                                p.addSeedNode(networkInterfaceIP, basePort + portOffset - ontime.nextInt(currentlyRunning));
+		                                p.addSeedNode(networkInterfaceIP, basePort + portOffset -1);
 		                            }
 		                            else if (!isSeed) {
 		                            	p.addSeedNode(seedIP, basePort);
@@ -40,7 +40,7 @@ public class CyclonChurn {
 		                            Thread peerThread = new Thread(p);
 		                            peerThread.start();
 		                            currentlyRunning++;
-		                            Thread.sleep((300-(ontime.nextInt(150))*1000));
+		                            Thread.sleep((300-ontime.nextInt(150))*1000);
 		                            peerThread.interrupt();
 		                            currentlyRunning--;
 		                            

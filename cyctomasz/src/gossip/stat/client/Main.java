@@ -36,7 +36,6 @@ public class Main {
 		options.addOption("q", true, "StatServer port. Default 8000");
 		options.addOption("h", false, "Display this message");
 		options.addOption("n", true, "Use this networkInterface. Default wlan0");
-		options.addOption("x", true, "Cache size. Default 20");
 
 		
 		// read Options from command line
@@ -60,7 +59,7 @@ public class Main {
 		
 		// run output mode instead
 		if (cmd.hasOption("o")) {
-			String fileName = ((cmd.getOptionValue("o").equals("")||cmd.getOptionValue("o").equals(null)) ? "outputCyclon.xml" : cmd.getOptionValue("o")); 
+			String fileName = ((cmd.getOptionValue("o").equals("")||cmd.getOptionValue("o")==null) ? "outputCyclon.xml" : cmd.getOptionValue("o")); 
             try {
             	InetAddress statServerAddress = InetAddress.getByName(cmd.hasOption("s") ? cmd.getOptionValue("s"): "" );
                 StatServerService _s = new StatServerService
@@ -115,11 +114,11 @@ public class Main {
 	        //start test scenario. Default static
 	        try {
 	        	if(cmd.hasOption("t")) {
-	        		if(cmd.getOptionValue("t")=="static"){
+	        		if(cmd.getOptionValue("t").equals("static")){
 	        			CyclonStatic.runCyclon(basePort, maxClients, seed, seedIP, statServerAddress, statServerPort, networkInterfaceIP);
 	        		}
-	        		if(cmd.getOptionValue("t")=="churn"){
-	        			
+	        		if(cmd.getOptionValue("t").equals("churn")){
+	        			CyclonChurn.runCyclon(basePort, maxClients, seed, seedIP, statServerAddress, statServerPort, networkInterfaceIP);
 	        		}
 	        	}else {
 	        		CyclonStatic.runCyclon(basePort, maxClients, seed, seedIP, statServerAddress, statServerPort, networkInterfaceIP);

@@ -1,5 +1,7 @@
 package gossip.stat.client;
 
+import gossip.stat.client.olsrd.IRoutingTable;
+import gossip.stat.client.olsrd.OLSRDRoutingTable;
 import gossip.stat.client.soap.StatServer;
 import gossip.stat.client.soap.StatServerService;
 
@@ -25,9 +27,9 @@ public class CyclonPeer implements Runnable {
     private int pendingShuffleId;
     private StatServer s;
     public static final int MTU = 1500;				// Maximum Transmission Unit: maximum size of datagram packet
-    public final static int c = 5;	 				// cache size
-    public final static int l = 3;					// message size
-    public final static int socketTimeout = 3000; 	//sleep before shuffling again
+    public final static int c = 10;	 				// cache size
+    public final static int l = 5;					// message size
+    public final static int socketTimeout = 12000; 	//sleep before shuffling again and receiving socket timeout
     public final static int shufflePayloadSize = l * Neighbor.recordBytes + 4;
     public final static int idLength = 4;
 
@@ -119,7 +121,16 @@ public class CyclonPeer implements Runnable {
 
             } catch (SocketTimeoutException e) {
                 printDebug("Socket timed out, shuffle id: " + pendingShuffleId);
-                pendingShuffleId = 0;
+                if (pendingShuffleId != 0) {
+                	pendingShuffleId = 0;
+                	printDebug("Deleting target neighbor from cache.");
+                	neighbors.removeNeighbor(neighbors.currentTarget); // unreachable neighbor is removed from neighbor cache
+                } else {
+                	IRoutingTable routingTab = new OLSRDRoutingTable();
+                	addSeedNode(routingTab.getBootstrapNode(), neighbors.self.getPort()); 
+                	// TODO get my own port is not ideal
+                } 
+                
             } catch (IOException e) {
                 e.printStackTrace();
             }/* catch (InterruptedException e){
