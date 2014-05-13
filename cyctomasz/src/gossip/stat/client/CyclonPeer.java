@@ -5,7 +5,9 @@ import gossip.stat.client.olsrd.OLSRDRoutingTable;
 import gossip.stat.client.soap.StatServer;
 import gossip.stat.client.soap.StatServerService;
 
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
@@ -16,6 +18,9 @@ import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.SynchronousQueue;
+import java.util.concurrent.TimeUnit;
 
 import javax.xml.namespace.QName;
 
@@ -26,12 +31,14 @@ public class CyclonPeer implements Runnable {
     private DatagramSocket sock;
     private int pendingShuffleId;
     private StatServer s;
+    private BlockingQueue<Boolean> responseReceived= new SynchronousQueue<Boolean>();
     public static final int MTU = 1500;				// Maximum Transmission Unit: maximum size of datagram packet
     public final static int c = 10;	 				// cache size
     public final static int l = 5;					// message size
-    public final static int socketTimeout = 12000; 	//sleep before shuffling again and receiving socket timeout
+    public final static int socketTimeout = 3000; 	// sleep before shuffling again and receiving socket timeout
     public final static int shufflePayloadSize = l * Neighbor.recordBytes + 4;
     public final static int idLength = 4;
+    
 
     public CyclonPeer(InetAddress ip, int port, InetAddress statServerAddress, int statServerPort) {
         //CyclonPeer initialization phase
@@ -68,16 +75,32 @@ public class CyclonPeer implements Runnable {
 				while(!Thread.currentThread().isInterrupted()) {
 					try {
 						shuffleInit();
-						Thread.sleep(socketTimeout);
+						Boolean response = responseReceived.poll(socketTimeout, TimeUnit.MILLISECONDS);
+						if (response==null){
+							printDebug("Deleting target neighbor from cache.");
+		                	neighbors.removeNeighbor(neighbors.currentTarget); 
+		                	// unreachable neighbor is removed from neighborCache
+						} else Thread.sleep(socketTimeout);
+						
+//						synchronized (responseReceived) {
+//							responseReceived.wait(socketTimeout);
+//							if (!responseReceived) {
+//								printDebug("Deleting target neighbor from cache.");
+//			                	neighbors.removeNeighbor(neighbors.currentTarget); 
+//			                	// unreachable neighbor is removed from neighborCache
+//							} 
+//							responseReceived = false;
+//							Thread.sleep(socketTimeout);
+//						}
 					} catch (IOException e) {
 						e.printStackTrace();
-					} catch (InterruptedException e) {
-						break;
+					} catch (InterruptedException e) { 
+						Thread.currentThread().interrupt();
 					}
 				}
-			}
-    		
+			} 		
     	};
+    	
     	Thread shuffleThread = new Thread(r);
     	shuffleThread.start();
     	
@@ -87,7 +110,7 @@ public class CyclonPeer implements Runnable {
             try {
                 List<Neighbor> responseList;
                 DatagramPacket p = new DatagramPacket(new byte[MTU], MTU);
-                sock.setSoTimeout(socketTimeout);
+                sock.setSoTimeout(socketTimeout); // TODO unnecessary ? if changed must change s.sendlist 
                 printDebug("Receiving");
                 sock.receive(p);
 
@@ -101,17 +124,21 @@ public class CyclonPeer implements Runnable {
                 //Ist das eine Antwort oder eine neue Shuffleanfrage?
 
                 if (id != 0 && id == pendingShuffleId) {
-                    neighbors.processResponseList(receivedSubset);
-                    printDebug("Antwort erhalten und eingepflegt!");
+                	if (responseReceived.offer(true)){
+                		printDebug("Antwort erhalten...");
+                        neighbors.processResponseList(receivedSubset);
+                        printDebug("... und eingepflegt!");
+                	}
 
                 } else {
+                	printDebug("Anfrage erhalten...");
                     responseList = neighbors.processRequestList(receivedSubset);
+                    printDebug("... , eingepflegt...");
                     byte[] responseBytes = NeighborCache.neighborListToShuffleBytes(responseList, id);
                     DatagramPacket response = new DatagramPacket(responseBytes, responseBytes.length);
                     response.setSocketAddress(p.getSocketAddress());
-                    //TODO: Kann das blocken?
                     sock.send(response);
-                    printDebug("Anfrage eingepflegt, Antwort abgeschickt!");
+                    printDebug("... und Antwort abgeschickt!");
                 }
 
                 printDebug("Neue Nachbarliste: " + neighbors);
@@ -120,20 +147,14 @@ public class CyclonPeer implements Runnable {
 
 
             } catch (SocketTimeoutException e) {
-                printDebug("Socket timed out, shuffle id: " + pendingShuffleId);
-                if (pendingShuffleId != 0) {
-                	pendingShuffleId = 0;
-                	printDebug("Deleting target neighbor from cache.");
-                	neighbors.removeNeighbor(neighbors.currentTarget); // unreachable neighbor is removed from neighbor cache
-                } else {
-                	IRoutingTable routingTab = new OLSRDRoutingTable();
-                	addSeedNode(routingTab.getBootstrapNode(), neighbors.self.getPort()); 
-                	// TODO get my own port is not ideal
-                } 
-                
+                printDebug("Receiveing socket timed out, shuffle id: " + pendingShuffleId);
             } catch (IOException e) {
                 e.printStackTrace();
-            }/* catch (InterruptedException e){
+            }/* catch (ConcurrentModificationException e) {
+            	printDebug("Something went wrong here!");
+            	e.printStackTrace();
+            } catch (InterruptedException e){
+            
                 
             }*/
         }
@@ -144,6 +165,11 @@ public class CyclonPeer implements Runnable {
     }
 
     public void shuffleInit() throws IOException {
+    	if (neighbors.isEmpty()) {
+    		printDebug("Neighbor cache is empty adding new neighbor from olsrd routing table");
+    		IRoutingTable routingTab = new OLSRDRoutingTable();
+        	addSeedNode(routingTab.getBootstrapNode(), neighbors.self.getPort()); 
+    	}
         pendingShuffleId = rand.nextInt();
         if (pendingShuffleId == 0) {
             pendingShuffleId++;

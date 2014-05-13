@@ -38,6 +38,7 @@ public class Node implements Serializable {
     @XStreamAlias(value="id")
     private String name;
     
+    
     @XStreamAsAttribute
     @XStreamAlias(value = "label")
     private String label;
@@ -88,8 +89,8 @@ public class Node implements Serializable {
 
     public void validate() {
         long currentTimestamp = System.currentTimeMillis() / 1000;
-        if (this.status != Node.LEFT && (currentTimestamp - this.lastUpdate) > 10) {
-            //System.out.println("Invalidating node!");
+        if (this.status != Node.LEFT && (currentTimestamp - this.lastUpdate) > 40) {
+            System.out.println("Invalidating node: " + this.name);
             this.leave();
         }
     }
@@ -99,6 +100,7 @@ public class Node implements Serializable {
         for (String s : strings) {
             edges.add(new Edge(s, this.name));
         }
+        this.left=null;
         this.status = Node.CONNECTED;
         this.lastUpdate = System.currentTimeMillis() / 1000;
         for (Edge e : edges) {
@@ -107,6 +109,9 @@ public class Node implements Serializable {
                 e.activate();
                 this.edges.add(e);
 
+            } else {
+            	if(this.edges.get(this.edges.lastIndexOf(e)).isGone())
+            	this.edges.get(this.edges.lastIndexOf(e)).activate();
             }
         }
 

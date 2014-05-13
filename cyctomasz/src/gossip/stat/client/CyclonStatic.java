@@ -2,7 +2,6 @@ package gossip.stat.client;
 
 import gossip.stat.client.olsrd.IRoutingTable;
 import gossip.stat.client.olsrd.OLSRDRoutingTable;
-import gossip.stat.tools.Util;
 
 import java.io.IOException;
 import java.net.InetAddress;

@@ -5,17 +5,20 @@ import java.net.UnknownHostException;
 import java.util.Random;
 
 public class OLSRDRoutingTable implements IRoutingTable {
-	private TxtInfo olsrdInfo = new TxtInfo("127.0.0.1", 8088);
+	private TxtInfo olsrdInfo = new TxtInfo(8088);
 	private String[][] neighbors = olsrdInfo.neighbors();
 	@Override
 	public InetAddress getBootstrapNode() {
 		Random r = new Random();
-		InetAddress bootstrapNode;
-		try {
-			bootstrapNode = InetAddress.getByName(neighbors[r.nextInt(neighbors.length)][1]);
-		}catch(UnknownHostException e){
-			bootstrapNode = null;
-			e.printStackTrace();
+		InetAddress bootstrapNode = null;
+		while(bootstrapNode==null) {
+			try {
+				if (neighbors.length>0) bootstrapNode = InetAddress.getByName(neighbors[r.nextInt(neighbors.length)][1]);
+			}catch(UnknownHostException e){
+				bootstrapNode = null;
+				e.printStackTrace();
+				System.out.println(Thread.currentThread().getName() + ": trying to get bootstrapNode again...");
+			}
 		}
 		return bootstrapNode;
 	}

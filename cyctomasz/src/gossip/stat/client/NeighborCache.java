@@ -8,10 +8,11 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Random;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * @author Maciek Lukas
@@ -19,9 +20,8 @@ import java.util.Set;
  */
 public class NeighborCache {
 
-    List<Neighbor> neighbors = new ArrayList<Neighbor>(c);
+    List<Neighbor> neighbors = new CopyOnWriteArrayList<Neighbor>();
     Neighbor self, currentTarget;
-    private Random rand = new Random();
 
     List<String> buildStatList() {
         List<String> list = new LinkedList<String>();
@@ -66,7 +66,10 @@ public class NeighborCache {
 
         return subset;
     }
-
+    /**
+     * 
+     * @return Neighbor with highest age within NeighborCache
+     */
     private Neighbor getOldestNeighbor() {
         Neighbor oldest = neighbors.get(0);
         for (Neighbor n : neighbors) {
@@ -76,7 +79,11 @@ public class NeighborCache {
         }
         return oldest;
     }
-
+    /**
+     * 
+     * @param 
+     * @return Neighbor n if nSearch exists in NeighborCache else null
+     */
     private Neighbor findNeighbor(Neighbor nSearch) {
         /**
          * Knoten anhand von IP und Port finden, Alter ignorieren
@@ -115,7 +122,6 @@ public class NeighborCache {
     private static void removeDuplicates(List<Neighbor> in) {
         Set<Neighbor.CompareNeighbor> comps = new HashSet<Neighbor.CompareNeighbor>(); //durch das Hashset werden duplikate entfernt
         for (Neighbor n : in) {
-            Neighbor.CompareNeighbor cn = new Neighbor.CompareNeighbor(n); //TODO überflüssig
             comps.add(new Neighbor.CompareNeighbor(n));
         }
 
@@ -135,7 +141,10 @@ public class NeighborCache {
          * Wir pflegen die Updates ein und schicken selbst keine Antwort.
          */
         //Den Anfrageknoten entfernen und Alter resetten
-        findNeighbor(request.remove(0)).resetAge();
+    	if (findNeighbor(request.get(0))!=null) {
+    		findNeighbor(request.remove(0)).resetAge();
+    	}
+        
 
         //Bereits bekannte Knoten und Duplikate aus dem Request entfernen
         removeKnownFrom(request);
@@ -159,12 +168,24 @@ public class NeighborCache {
                 }
             }
         }
+        
+//        Iterator<Integer> iter = l.iterator();
+//        while (iter.hasNext()) {
+//            if (iter.next().intValue() == 5) {
+//                iter.remove();
+//            }
+//        }
 
         //Die restlichen Antworten hinzufügen:
-        for (Neighbor n : request) {
-            neighbors.add(n);
-            request.remove(n);
+        Iterator<Neighbor> iter = request.iterator();
+        while(iter.hasNext()){
+        	neighbors.add(iter.next());
+        	iter.remove();
         }
+//        for (Neighbor n : request) { //FEHLER!!! ConcurrentModification!!!! TODO
+//            neighbors.add(n);
+//            Iterator<Neighbor>.remove();
+//        }
 
     }
 
@@ -196,10 +217,11 @@ public class NeighborCache {
         /* Jetzt ist unsere Liste voll. Einen der versendeten Knoten löschen;
          * den erhaltenen einfügen.
          */
-        int i = 1;
-        while (!request.isEmpty()) {
-            neighbors.remove(response.get(i)); // TODO: wird hier immer der gleiche entfernt?
+        int i = 1; // in response.get(0) steht neighbors.self drin
+        while (!(request.size()<=1)) {
+            neighbors.remove(response.get(i)); 
             neighbors.add(request.remove(0));
+            i++;
         }
 
         return response;
@@ -209,6 +231,10 @@ public class NeighborCache {
         return neighbors.size() >= c;
     }
 
+    public boolean isEmpty() {
+    	System.out.println(Thread.currentThread().getName() + ": " + "neighbors.size is " + neighbors.size()); //TODO remove
+    	return neighbors.size() <= 1;
+    }
     /**
      * @param in list of neighbors
      * @param id the id of the shuffle list
@@ -257,7 +283,7 @@ public class NeighborCache {
     public String toString() {
         return neighbors.toString();
     }
-    void removeNeighbor(Neighbor removethis) {
+    synchronized void removeNeighbor(Neighbor removethis) {
     	neighbors.remove(removethis);
     }
 }

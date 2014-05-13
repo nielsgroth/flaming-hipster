@@ -16,7 +16,7 @@ import javax.xml.ws.WebServiceException;
  * Generated source version: 2.0
  * 
  */
-@WebServiceClient(name = "StatServerService", targetNamespace = "http://server.stat.gossip/", wsdlLocation = "http://192.168.1.7:8000/gossipStatServer?wsdl")
+@WebServiceClient(name = "StatServerService", targetNamespace = "http://server.stat.gossip/", wsdlLocation = "http://10.4.63.2:8000/gossipStatServer?wsdl")
 public class StatServerService
     extends Service
 {
@@ -29,7 +29,7 @@ public class StatServerService
         URL url = null;
         WebServiceException e = null;
         try {
-            url = new URL("http://192.168.1.7:8000/gossipStatServer?wsdl");
+            url = new URL("http://10.4.63.2:8000/gossipStatServer?wsdl");
         } catch (MalformedURLException ex) {
             e = new WebServiceException(ex);
         }

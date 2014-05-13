@@ -5,7 +5,12 @@
 package gossip.stat.server;
 
 import java.io.Serializable;
-import com.thoughtworks.xstream.annotations.*;
+import java.util.Deque;
+import java.util.LinkedList;
+
+import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
+import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
 @XStreamAlias("edge")
 public class Edge implements Serializable {
@@ -25,20 +30,15 @@ public class Edge implements Serializable {
     public static final char ACTIVE = 0;
     public static final char GONE = 1;
     
-    @XStreamAsAttribute
-    @XStreamAlias(value="start")
-    private long joined;
-    
-    @XStreamAsAttribute
-    @XStreamAlias(value="end")
-    private Long left = null;
+    private Deque<EdgeSpell> spells = new LinkedList<EdgeSpell>();
+       
 
     public long getJoined() {
-        return joined;
+        return this.spells.getLast().getJoined();
     }
 
     public long getLeft() {
-        return left;
+        return this.spells.getLast().getLeft();
     }
 
     public String getSource() {
@@ -82,21 +82,23 @@ public class Edge implements Serializable {
     
 
     public void activate() {
-        this.joined = System.currentTimeMillis() / 1000;
+        this.spells.add(new EdgeSpell(System.currentTimeMillis() / 1000));
+    	//this.joined = System.currentTimeMillis() / 1000;
         this.status = Edge.ACTIVE;
     }
 
     public void deactivate() {
-        this.left = Long.valueOf(System.currentTimeMillis() / 1000);
+        this.spells.getLast().setLeft(System.currentTimeMillis() / 1000);
+    	//this.left = Long.valueOf(System.currentTimeMillis() / 1000);
         this.status = Edge.GONE;
     }
 
     public boolean isGone() {
         return this.status == Edge.GONE;
     }
-
+    
     @Override
     public String toString() {
-        return this.target + " Joined: " + this.joined + " Left: " + this.left;
+        return this.target + " Joined: " + this.getJoined() + " Left: " + this.getLeft();
     }
 }

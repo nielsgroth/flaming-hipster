@@ -37,7 +37,8 @@
     			executable="/opt/java/64/jdk1.6.0_45/bin/javac"
     			fork="true"
     			classpath="lib/*"
-    			taskname="javac1.6">
+    			taskname="javac1.6"
+    			debug="true">
     		<src path="src/gossip/stat/client"/>
     		<src path="src/gossip/stat/tools"/>
     	</javac>

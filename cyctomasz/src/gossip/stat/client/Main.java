@@ -4,8 +4,12 @@ import gossip.stat.client.soap.StatServerService;
 import gossip.stat.tools.Util;
 
 import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.URL;
@@ -23,6 +27,7 @@ import org.apache.commons.cli.PosixParser;
 public class Main {
 
 	public static void main(String[] args) {
+
 		//create Options Object
 		Options options = new Options();
 		
@@ -108,9 +113,32 @@ public class Main {
 					System.err.println("Unkown seed host: " + cmd.getOptionValue("c") + " Exiting.");
 					System.exit(1);
 				}
-	        // run normal mode
-
 	        
+	        
+			//set System.out to file for debug purposes
+
+			try {
+				File path = new File(System.getProperty("user.home") + "/consoleOut");
+				String filename = "CyclonClientConsoleOut_" + networkInterfaceIP.toString().substring(1) + ".log";
+				File file = new File(path, filename);
+				if (!file.exists()){
+					path.mkdirs();
+					file.createNewFile();
+				} else {
+					file.delete();
+					file.createNewFile();
+				}
+				System.out.println("printing output to " + file.getAbsolutePath());
+				System.setOut(new PrintStream(new FileOutputStream(file)));
+				System.setErr(System.out);
+			} catch (FileNotFoundException e) {
+	            e.printStackTrace();
+	            System.exit(0);
+	        } catch (IOException e) {
+	        	e.printStackTrace();
+	        	System.exit(0);
+	        }
+			// run normal mode
 	        //start test scenario. Default static
 	        try {
 	        	if(cmd.hasOption("t")) {

@@ -33,6 +33,9 @@ public class TxtInfo {
 		host = sethost;
 	}
 
+	public TxtInfo(int setport){
+		port = setport;
+	}
 	public TxtInfo(String sethost, int setport) {
 		host = sethost;
 		port = setport;
