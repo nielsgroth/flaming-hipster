@@ -29,7 +29,7 @@ public class Node implements Serializable {
     
     @XStreamAsAttribute
     @XStreamAlias(value="end")
-    private Long left = null;
+    private Long left = null; //TODO warum object statt simple type
     
     @XStreamOmitField
     private long lastUpdate;

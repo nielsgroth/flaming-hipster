@@ -72,6 +72,11 @@ public class CyclonPeer implements Runnable {
 
 			@Override
 			public void run() {
+				try {
+					Thread.sleep(rand.nextInt(3000));
+				} catch(InterruptedException e) {
+					Thread.currentThread().interrupt();
+				}
 				while(!Thread.currentThread().isInterrupted()) {
 					try {
 						shuffleInit();
@@ -168,7 +173,10 @@ public class CyclonPeer implements Runnable {
     	if (neighbors.isEmpty()) {
     		printDebug("Neighbor cache is empty adding new neighbor from olsrd routing table");
     		IRoutingTable routingTab = new OLSRDRoutingTable();
-        	addSeedNode(routingTab.getBootstrapNode(), neighbors.self.getPort()); 
+    		InetAddress bootstrapnode = routingTab.getBootstrapNode();
+        	addSeedNode(bootstrapnode, neighbors.self.getPort());
+        	//addSeedNode(bootstrapnode, neighbors.self.getPort()+1);
+        	//addSeedNode(bootstrapnode, neighbors.self.getPort()-1);
     	}
         pendingShuffleId = rand.nextInt();
         if (pendingShuffleId == 0) {

@@ -30,7 +30,7 @@ public class Edge implements Serializable {
     public static final char ACTIVE = 0;
     public static final char GONE = 1;
     
-    private Deque<EdgeSpell> spells = new LinkedList<EdgeSpell>();
+    private Deque<Spell> spells = new LinkedList<Spell>();
        
 
     public long getJoined() {
@@ -82,7 +82,7 @@ public class Edge implements Serializable {
     
 
     public void activate() {
-        this.spells.add(new EdgeSpell(System.currentTimeMillis() / 1000));
+        this.spells.add(new Spell(System.currentTimeMillis() / 1000));
     	//this.joined = System.currentTimeMillis() / 1000;
         this.status = Edge.ACTIVE;
     }

@@ -8,7 +8,7 @@ import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 * @author Tomasz
 */
 @XStreamAlias("spell")
-public class EdgeSpell {
+public class Spell {
     @XStreamAsAttribute
     @XStreamAlias(value="start")
     private long joined;
@@ -24,10 +24,10 @@ public class EdgeSpell {
     public long getLeft() {
         return left;
     }
-    public EdgeSpell(long joined) {
+    public Spell(long joined) {
     	this.joined=joined;
     }
-    public EdgeSpell(long joined, long left) {
+    public Spell(long joined, long left) {
     	this.joined=joined;
     	this.left=left;
     }

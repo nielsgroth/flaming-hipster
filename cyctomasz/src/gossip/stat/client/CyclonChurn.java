@@ -3,6 +3,7 @@ package gossip.stat.client;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.util.Random;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class CyclonChurn {
 
@@ -17,8 +18,8 @@ public class CyclonChurn {
         Runnable peerFactory = new Runnable() {
         	
         	
-            private volatile int portOffset = 0;
-            private volatile int currentlyRunning = 0;
+            private AtomicInteger portOffset = new AtomicInteger();
+            private AtomicInteger currentlyRunning = new AtomicInteger();
             
             @Override
             public void run() {
@@ -27,22 +28,22 @@ public class CyclonChurn {
         				 
         				@Override
         				public void run() {
-        					 while(basePort + portOffset < 20000) {
+        					 while(basePort + portOffset.get() < 20000) {
 		                        try {
 		                            Random ontime = new Random();
-		                            CyclonPeer p = new CyclonPeer(networkInterfaceIP, basePort + (portOffset++), statServerAddress, statServerPort);
-		                            if (portOffset > 1) {
-		                                p.addSeedNode(networkInterfaceIP, basePort + portOffset -1);
+		                            CyclonPeer p = new CyclonPeer(networkInterfaceIP, basePort + (portOffset.incrementAndGet()), statServerAddress, statServerPort);
+		                            if (portOffset.get() > 1) {
+		                                p.addSeedNode(networkInterfaceIP, basePort + portOffset.get() -1);
 		                            }
 		                            else if (!isSeed) {
 		                            	p.addSeedNode(seedIP, basePort);
 		                            }
 		                            Thread peerThread = new Thread(p);
 		                            peerThread.start();
-		                            currentlyRunning++;
+		                            currentlyRunning.incrementAndGet();
 		                            Thread.sleep((300-ontime.nextInt(150))*1000);
 		                            peerThread.interrupt();
-		                            currentlyRunning--;
+		                            currentlyRunning.decrementAndGet();
 		                            
 		                        }catch (InterruptedException ie) {
 		                        	interrupt();
@@ -50,15 +51,15 @@ public class CyclonChurn {
 		                        }catch (Exception e) {
 		                            e.printStackTrace();
 		                        }
-        					 }
-        				};
-        			};
+        					 }//while
+        				};//run
+        			};//runPeers
         			runPeers.start();
         			try {
                     	Random r = new Random();
                     	Thread.sleep(r.nextInt(1500));
                     } catch(InterruptedException e) {
-                    	//TODO
+                    	runPeers.interrupt();
                     }
             	}
         	}
