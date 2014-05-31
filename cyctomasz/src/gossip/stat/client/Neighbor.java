@@ -74,7 +74,6 @@ public class Neighbor {
     }
 
     public InetAddress getIp() {
-        InetSocketAddress t;
         return ip;
     }
 

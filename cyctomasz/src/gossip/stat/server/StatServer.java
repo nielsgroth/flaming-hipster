@@ -29,6 +29,7 @@ import javax.xml.ws.Endpoint;
 public class StatServer {
 
     public Map<String, Node> list = new ConcurrentHashMap<String, Node>(1000);
+    public Map<String, Node> topology = new ConcurrentHashMap<String, Node>(1000);
 
     public Node getNode(String key) {
         if (this.list.containsKey(key)) {
@@ -39,19 +40,54 @@ public class StatServer {
             return n;
         }
     }
+    public Node getTopoNode(String key) {
+    	if (this.topology.containsKey(key)) {
+    		return this.topology.get(key);
+    	} else{ 
+    		Node n = new Node(key);
+    		this.topology.put(key, n);
+    		return n;
+    	}
+    	
+    }
 
     /**
      * @param args the command line arguments
      */
     @WebMethod
+    public void sendTopology(@WebParam(name = "id") String key, @WebParam(name = "edgeList") List<String> edges){
+    	this.getTopoNode(key).updateEdges(edges);
+    }
+    @WebMethod
     public void sendList(@WebParam(name = "id") String key, @WebParam(name = "edgeList") List<String> edges) {
         System.out.println(key);
         this.getNode(key).updateEdges(edges);
     }
-    
+    @WebMethod
+    public void leave(@WebParam(name = "id")String key) {
+    	System.out.println("Node " + key + "has left the building!");
+    	this.getNode(key).leave();
+    }
     @WebMethod
     public String getXML() {
         Map<String, Node> currentList = new HashMap<String, Node>(list);
+        Set<String> nodeNames = currentList.keySet();
+        
+        XStream xs = new XStream(new DomDriver());        
+        xs.processAnnotations(Node.class);
+        xs.processAnnotations(Edge.class);
+        xs.processAnnotations(Graph.class);
+                
+        Graph graph = new Graph();
+        for (String key : nodeNames) {
+            Node current = currentList.get(key);
+            graph.addNode(current);
+        }               
+        String xml = xs.toXML(graph);
+        return xml;
+    }
+    public String getTopoXML(){
+    	Map<String, Node> currentList = new HashMap<String, Node>(topology);
         Set<String> nodeNames = currentList.keySet();
         
         XStream xs = new XStream(new DomDriver());        

@@ -36,6 +36,34 @@ public interface StatServer {
 
     /**
      * 
+     * @param arg0
+     * @return
+     *     returns gossip.stat.client.soap.Node
+     */
+    @WebMethod
+    @WebResult(targetNamespace = "")
+    @RequestWrapper(localName = "getTopoNode", targetNamespace = "http://server.stat.gossip/", className = "gossip.stat.client.soap.GetTopoNode")
+    @ResponseWrapper(localName = "getTopoNodeResponse", targetNamespace = "http://server.stat.gossip/", className = "gossip.stat.client.soap.GetTopoNodeResponse")
+    public Node getTopoNode(
+        @WebParam(name = "arg0", targetNamespace = "")
+        String arg0);
+
+    /**
+     * 
+     * @param id
+     * @param edgeList
+     */
+    @WebMethod
+    @RequestWrapper(localName = "sendTopology", targetNamespace = "http://server.stat.gossip/", className = "gossip.stat.client.soap.SendTopology")
+    @ResponseWrapper(localName = "sendTopologyResponse", targetNamespace = "http://server.stat.gossip/", className = "gossip.stat.client.soap.SendTopologyResponse")
+    public void sendTopology(
+        @WebParam(name = "id", targetNamespace = "")
+        String id,
+        @WebParam(name = "edgeList", targetNamespace = "")
+        List<String> edgeList);
+
+    /**
+     * 
      * @param id
      * @param edgeList
      */
@@ -50,6 +78,17 @@ public interface StatServer {
 
     /**
      * 
+     * @param id
+     */
+    @WebMethod
+    @RequestWrapper(localName = "leave", targetNamespace = "http://server.stat.gossip/", className = "gossip.stat.client.soap.Leave")
+    @ResponseWrapper(localName = "leaveResponse", targetNamespace = "http://server.stat.gossip/", className = "gossip.stat.client.soap.LeaveResponse")
+    public void leave(
+        @WebParam(name = "id", targetNamespace = "")
+        String id);
+
+    /**
+     * 
      * @return
      *     returns java.lang.String
      */
@@ -58,5 +97,16 @@ public interface StatServer {
     @RequestWrapper(localName = "getXML", targetNamespace = "http://server.stat.gossip/", className = "gossip.stat.client.soap.GetXML")
     @ResponseWrapper(localName = "getXMLResponse", targetNamespace = "http://server.stat.gossip/", className = "gossip.stat.client.soap.GetXMLResponse")
     public String getXML();
+
+    /**
+     * 
+     * @return
+     *     returns java.lang.String
+     */
+    @WebMethod
+    @WebResult(targetNamespace = "")
+    @RequestWrapper(localName = "getTopoXML", targetNamespace = "http://server.stat.gossip/", className = "gossip.stat.client.soap.GetTopoXML")
+    @ResponseWrapper(localName = "getTopoXMLResponse", targetNamespace = "http://server.stat.gossip/", className = "gossip.stat.client.soap.GetTopoXMLResponse")
+    public String getTopoXML();
 
 }

@@ -51,9 +51,7 @@ public class NeighborCache {
         Collections.shuffle(neighbors);
 
         int i = 0;
-        //TODO: endlos
-        //Hier war eine Endlosschleife
-        //if (subset.size() >= leff && i >= neighbors.size()) {
+        
         while (subset.size() < leff && i < neighbors.size()) { // TODO i < neighbor.size überflüssig
             Neighbor nb = neighbors.get(i++);
             if (nb != currentTarget) {
@@ -62,7 +60,6 @@ public class NeighborCache {
             }
 
         }
-        // }
 
         return subset;
     }
@@ -182,11 +179,6 @@ public class NeighborCache {
         	neighbors.add(iter.next());
         	iter.remove();
         }
-//        for (Neighbor n : request) { //FEHLER!!! ConcurrentModification!!!! TODO
-//            neighbors.add(n);
-//            Iterator<Neighbor>.remove();
-//        }
-
     }
 
     List<Neighbor> processRequestList(List<Neighbor> request) {
@@ -232,7 +224,6 @@ public class NeighborCache {
     }
 
     public boolean isEmpty() {
-    	System.out.println(Thread.currentThread().getName() + ": " + "neighbors.size is " + neighbors.size()); //TODO remove
     	return neighbors.size() <= 1;
     }
     /**

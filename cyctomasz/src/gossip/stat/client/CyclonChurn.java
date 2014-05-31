@@ -8,8 +8,14 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class CyclonChurn {
 
     /**
+     * runs Cyclon in churn mode
+     * Cyclon clients are created for a random period of time with a unique port number.
+     * there is never more than maxClients simultaneous Clients running.
+     * the port is incrementing from basePort up to 20000. No more clients are created after that.
+     * 
      * @param args
-     * @throws IOException 
+     * @throws IOException
+     * @author tomasz 
      */
     public static void runCyclon(final int basePort, final int maxClients, final boolean isSeed,  
     		final InetAddress seedIP, final InetAddress statServerAddress, final int statServerPort, 
@@ -28,9 +34,13 @@ public class CyclonChurn {
         				 
         				@Override
         				public void run() {
-        					 while(basePort + portOffset.get() < 20000) {
-		                        try {
+        					System.out.println("Starting thread " + Thread.currentThread().getName() );
+        					 while(basePort + portOffset.get() < (20000)) {
+        						 System.out.println("<<<<<<<<<<<<<<<<<<<<<<<" + Thread.currentThread().getName() + ": Starting new node with Port " + (basePort + portOffset.get()) + ">>>>>>>>>>>>>>>>>>>>>>>>>");
+        						 try {
 		                            Random ontime = new Random();
+		                            // sleep for random time for asynchronous start
+		                            Thread.sleep(ontime.nextInt(3000));
 		                            CyclonPeer p = new CyclonPeer(networkInterfaceIP, basePort + (portOffset.incrementAndGet()), statServerAddress, statServerPort);
 		                            if (portOffset.get() > 1) {
 		                                p.addSeedNode(networkInterfaceIP, basePort + portOffset.get() -1);
@@ -40,11 +50,13 @@ public class CyclonChurn {
 		                            }
 		                            Thread peerThread = new Thread(p);
 		                            peerThread.start();
-		                            currentlyRunning.incrementAndGet();
-		                            Thread.sleep((300-ontime.nextInt(150))*1000);
-		                            peerThread.interrupt();
-		                            currentlyRunning.decrementAndGet();
 		                            
+		                            currentlyRunning.incrementAndGet();
+		                            int sleep = (300-ontime.nextInt(150))*1000;
+		                            System.out.println("sleep for: " + sleep);
+		                            Thread.sleep(sleep);
+		                            peerThread.interrupt();
+		                            currentlyRunning.decrementAndGet();                            
 		                        }catch (InterruptedException ie) {
 		                        	interrupt();
 		                        	ie.printStackTrace();

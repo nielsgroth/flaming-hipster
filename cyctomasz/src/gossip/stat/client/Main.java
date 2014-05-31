@@ -74,7 +74,10 @@ public class Main {
                 BufferedWriter out = new BufferedWriter(new FileWriter(fileName));
                 out.write(s.getXML());
                 out.close();
-                System.out.println("XML Output written to "+fileName);
+                BufferedWriter outTopo = new BufferedWriter(new FileWriter(fileName + ".topo"));
+                outTopo.write(s.getTopoXML());
+                outTopo.close();
+                System.out.println("XML Output written to " + fileName + " and physical topology to " + fileName + ".topo");
                 System.exit(0);
             } catch (UnknownHostException e) {
             	System.err.println("Unkown statistics server host: " + cmd.getOptionValue("s") + " Exiting.");
@@ -89,8 +92,8 @@ public class Main {
 			try {
 				networkInterfaceIP = Util.getLocalAddressbyName(networkInterfaceName);
 			} catch (SocketException e3) {
-				// TODO Auto-generated catch block
-				e3.printStackTrace();
+				System.err.println("Unkown network Interface: " + cmd.getOptionValue("n") +  " Exiting.");
+				System.exit(1);
 			}
 			int basePort = (cmd.hasOption("p") ? Integer.parseInt(cmd.getOptionValue("p")) : 9000);
 	        int maxClients = (cmd.hasOption("c") ? Integer.parseInt(cmd.getOptionValue("c")) : 1);

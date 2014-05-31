@@ -81,9 +81,9 @@ public class TxtInfo {
 						"/gat", // gateways
 						"/hna", // Host and Network Association
 						"/int", // network interfaces
-						"/lin", // links
+						"/links", // links
 						"/mid", // MID
-						"/nei", // neighbors
+						"/neighbors", // neighbors
 						"/rou", // routes
 						"/top", // topology
 				}));
@@ -129,7 +129,7 @@ public class TxtInfo {
 	 *         Willingness, and 2 Hop Neighbors
 	 */
 	public String[][] neighbors() {
-		return command("/nei");
+		return command("/neighbors");
 	}
 
 	/**
@@ -140,7 +140,7 @@ public class TxtInfo {
 	 *         NLQ, and Cost
 	 */
 	public String[][] links() {
-		return command("/lin");
+		return command("/links");
 	}
 
 	/**
