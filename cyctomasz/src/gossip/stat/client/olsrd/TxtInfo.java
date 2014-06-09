@@ -72,7 +72,7 @@ public class TxtInfo {
 		return retlist.toArray(new String[retlist.size()]);
 	}
 
-	public String[][] command(String cmd) {
+	public String[][] command(String cmd){
 		String[] data = null;
 
 		final Set<String> supportedCommands = new HashSet<String>(
@@ -89,13 +89,20 @@ public class TxtInfo {
 				}));
 		if (!supportedCommands.contains(cmd))
 			System.out.println("Unsupported command: " + cmd);
-
-		try {
-			data = request(cmd);
-		} catch (IOException e) {
-			System.err.println("Couldn't get I/O for socket to " + host + ":"
-					+ Integer.toString(port));
+		boolean found = false;
+		while (!found) {
+			try {
+				data = request(cmd);
+			} catch (IOException e) {
+				System.err.println("Couldn't get I/O for socket to " + host + ":"
+						+ Integer.toString(port));
+				continue;
+			}
+			if(data.length>2)
+			found = true;
+			//System.out.println("data.length in while loop TxtInfo.java:103: " + data.length);
 		}
+		
 		int startpos = -1;
 		for (int i = 0; i < data.length; i++) {
 			if (data[i].startsWith("Table: ")) {
@@ -105,7 +112,7 @@ public class TxtInfo {
 		}
 		if (startpos >= data.length || startpos == -1)
 			return new String[0][0];
-		int fields = data[startpos + 1].split("\t").length;
+		int fields = data[startpos].split("\t").length;
 		String[][] ret = new String[data.length - startpos][fields];
 		for (int i = 0; i < ret.length; i++)
 			ret[i] = data[i + startpos].split("\t");

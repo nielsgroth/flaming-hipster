@@ -71,13 +71,13 @@ public class Main {
     					(new URL("http://" + statServerAddress.getHostName() + ":"+ statServerPort + "/gossipStatServer?wsdl"),
     							new QName("http://server.stat.gossip/", "StatServerService"));
                 gossip.stat.client.soap.StatServer s = _s.getStatServerPort();                    
-                BufferedWriter out = new BufferedWriter(new FileWriter(fileName));
+                BufferedWriter out = new BufferedWriter(new FileWriter(fileName + ".gexf"));
                 out.write(s.getXML());
                 out.close();
-                BufferedWriter outTopo = new BufferedWriter(new FileWriter(fileName + ".topo"));
+                BufferedWriter outTopo = new BufferedWriter(new FileWriter(fileName + ".topo.gexf"));
                 outTopo.write(s.getTopoXML());
                 outTopo.close();
-                System.out.println("XML Output written to " + fileName + " and physical topology to " + fileName + ".topo");
+                System.out.println("XML Output written to " + fileName + ".gexf and physical topology to " + fileName + ".topo.gexfs");
                 System.exit(0);
             } catch (UnknownHostException e) {
             	System.err.println("Unkown statistics server host: " + cmd.getOptionValue("s") + " Exiting.");
