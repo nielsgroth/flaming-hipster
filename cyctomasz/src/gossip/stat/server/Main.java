@@ -23,6 +23,7 @@ public class Main {
 		options.addOption("n", true, "Use this Network Interface's InetAdress as endpoint. Default eth0");
 		options.addOption("p", true, "Use this port as endpoint. Default 8000");
 		options.addOption("h", false, "Display this message");
+		options.addOption("a", true, "Analytics mode with filename to perform analysis on. No default");
 		
 		
 		CommandLineParser parser = new PosixParser();
@@ -40,7 +41,7 @@ public class Main {
 			formatter.printHelp("cyclonClient", options);
 			System.exit(0);
 		}	
-
+		
       	//get InetAddress IP of specified network interface
 		InetAddress serverAddress = null;
 		try { 

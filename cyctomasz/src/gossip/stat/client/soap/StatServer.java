@@ -22,6 +22,14 @@ public interface StatServer {
 
     /**
      * 
+     */
+    @WebMethod
+    @RequestWrapper(localName = "cleanup", targetNamespace = "http://server.stat.gossip/", className = "gossip.stat.client.soap.Cleanup")
+    @ResponseWrapper(localName = "cleanupResponse", targetNamespace = "http://server.stat.gossip/", className = "gossip.stat.client.soap.CleanupResponse")
+    public void cleanup();
+
+    /**
+     * 
      * @param arg0
      * @return
      *     returns gossip.stat.client.soap.Node
@@ -100,6 +108,17 @@ public interface StatServer {
 
     /**
      * 
+     * @param arg0
+     */
+    @WebMethod
+    @RequestWrapper(localName = "writeXML", targetNamespace = "http://server.stat.gossip/", className = "gossip.stat.client.soap.WriteXML")
+    @ResponseWrapper(localName = "writeXMLResponse", targetNamespace = "http://server.stat.gossip/", className = "gossip.stat.client.soap.WriteXMLResponse")
+    public void writeXML(
+        @WebParam(name = "arg0", targetNamespace = "")
+        String arg0);
+
+    /**
+     * 
      * @return
      *     returns java.lang.String
      */
@@ -108,5 +127,38 @@ public interface StatServer {
     @RequestWrapper(localName = "getTopoXML", targetNamespace = "http://server.stat.gossip/", className = "gossip.stat.client.soap.GetTopoXML")
     @ResponseWrapper(localName = "getTopoXMLResponse", targetNamespace = "http://server.stat.gossip/", className = "gossip.stat.client.soap.GetTopoXMLResponse")
     public String getTopoXML();
+
+    /**
+     * 
+     * @param arg0
+     */
+    @WebMethod
+    @RequestWrapper(localName = "writeTopoXML", targetNamespace = "http://server.stat.gossip/", className = "gossip.stat.client.soap.WriteTopoXML")
+    @ResponseWrapper(localName = "writeTopoXMLResponse", targetNamespace = "http://server.stat.gossip/", className = "gossip.stat.client.soap.WriteTopoXMLResponse")
+    public void writeTopoXML(
+        @WebParam(name = "arg0", targetNamespace = "")
+        String arg0);
+
+    /**
+     * 
+     * @param arg0
+     */
+    @WebMethod
+    @RequestWrapper(localName = "writeAlternativeXML", targetNamespace = "http://server.stat.gossip/", className = "gossip.stat.client.soap.WriteAlternativeXML")
+    @ResponseWrapper(localName = "writeAlternativeXMLResponse", targetNamespace = "http://server.stat.gossip/", className = "gossip.stat.client.soap.WriteAlternativeXMLResponse")
+    public void writeAlternativeXML(
+        @WebParam(name = "arg0", targetNamespace = "")
+        String arg0);
+
+    /**
+     * 
+     * @param arg0
+     */
+    @WebMethod
+    @RequestWrapper(localName = "writeResults", targetNamespace = "http://server.stat.gossip/", className = "gossip.stat.client.soap.WriteResults")
+    @ResponseWrapper(localName = "writeResultsResponse", targetNamespace = "http://server.stat.gossip/", className = "gossip.stat.client.soap.WriteResultsResponse")
+    public void writeResults(
+        @WebParam(name = "arg0", targetNamespace = "")
+        String arg0);
 
 }

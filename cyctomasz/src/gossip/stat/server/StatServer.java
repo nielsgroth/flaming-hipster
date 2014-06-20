@@ -4,6 +4,11 @@
  */
 package gossip.stat.server;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -23,7 +28,7 @@ import javax.xml.ws.Endpoint;
 
 /**
  *
- * @author Maciek
+ * @author Maciek, Tomasz
  */
 @WebService
 public class StatServer {
@@ -65,15 +70,23 @@ public class StatServer {
     }
     @WebMethod
     public void leave(@WebParam(name = "id")String key) {
-    	System.out.println("Node " + key + "has left the building!");
+    	//System.out.println("Node " + key + "has left the building!");
     	this.getNode(key).leave();
+    }
+    /**
+     * Delete statistics data from Server to start a new experiment
+     */
+    @WebMethod
+    public void cleanup(){
+    	this.list.clear();
+    	this.topology.clear();
     }
     @WebMethod
     public String getXML() {
         Map<String, Node> currentList = new HashMap<String, Node>(list);
         Set<String> nodeNames = currentList.keySet();
         
-        XStream xs = new XStream(new DomDriver());        
+        XStream xs = new XStream();        
         xs.processAnnotations(Node.class);
         xs.processAnnotations(Edge.class);
         xs.processAnnotations(Graph.class);
@@ -82,10 +95,35 @@ public class StatServer {
         for (String key : nodeNames) {
             Node current = currentList.get(key);
             graph.addNode(current);
-        }               
+        } 
         String xml = xs.toXML(graph);
         return xml;
     }
+    @WebMethod
+    public void writeXML(File fileName) {
+        Map<String, Node> currentList = new HashMap<String, Node>(list);
+        Set<String> nodeNames = currentList.keySet();
+        
+        XStream xs = new XStream();        
+        xs.processAnnotations(Node.class);
+        xs.processAnnotations(Edge.class);
+        xs.processAnnotations(Graph.class);
+                
+        Graph graph = new Graph();
+        for (String key : nodeNames) {
+            Node current = currentList.get(key);
+            graph.addNode(current);
+        } 
+        try {
+	    	BufferedWriter out = new BufferedWriter(new FileWriter(fileName + ".gexf"));
+	        out.write(xs.toXML(graph));
+	        out.close();
+    	} catch(IOException e) {
+    		e.printStackTrace();
+    	}
+       
+    }
+    @WebMethod
     public String getTopoXML(){
     	Map<String, Node> currentList = new HashMap<String, Node>(topology);
         Set<String> nodeNames = currentList.keySet();
@@ -103,6 +141,89 @@ public class StatServer {
         String xml = xs.toXML(graph);
         return xml;
     }
+    @WebMethod
+    public void writeTopoXML(File fileName){
+    	Map<String, Node> currentList = new HashMap<String, Node>(topology);
+        Set<String> nodeNames = currentList.keySet();
+        
+        XStream xs = new XStream();
+        xs.setMode(XStream.NO_REFERENCES);
+        xs.processAnnotations(Node.class);
+        xs.processAnnotations(Edge.class);
+        xs.processAnnotations(Graph.class);
+                
+        Graph graph = new Graph();
+        for (String key : nodeNames) {
+            Node current = currentList.get(key);
+            graph.addNode(current);
+        }               
+        try {
+	        BufferedWriter outTopo = new BufferedWriter(new FileWriter(fileName + ".topo.gexf"));
+	        outTopo.write(xs.toXML(graph));
+	        outTopo.close();
+    	} catch(IOException e) {
+    		e.printStackTrace();
+    	}
+    }
+    /**
+     * alternative to writeXML(File fileName) for big result files
+     * @param args the command line arguments
+     */
+    @WebMethod
+    public void writeAlternativeXML(File fileName){
+    	Map<String, Node> currentList = new HashMap<String, Node>(list);
+        Set<String> nodeNames = currentList.keySet();
+        XStream xs = new XStream();
+        
+        
+        xs.setMode(XStream.NO_REFERENCES);
+        xs.processAnnotations(Node.class);
+        xs.processAnnotations(Edge.class);
+        xs.processAnnotations(Graph.class);
+        Graph graph = new Graph();
+        for (String key : nodeNames) {
+            Node current = currentList.get(key);
+            graph.addNode(current);
+        } 
+        try {
+        	BufferedWriter outXML = new BufferedWriter(new FileWriter(fileName + ".gexf"));
+        	ObjectOutputStream out = xs.createObjectOutputStream(outXML, "graph");
+        	List<Node> nodes = graph.getNodes();
+        	List<Edge> edges = graph.getEdges();
+        	for (int i=0;i<nodes.size();i++) {
+        		out.writeObject(nodes.get(i));
+        	}
+        	for (int i =0;i<edges.size();i++){
+        		out.writeObject(edges.get(i));
+        	}
+        	out.close();
+        	outXML.close();
+        } catch(IOException e) {
+    		e.printStackTrace();
+    	}
+       	
+
+    }
+    @WebMethod
+    public void writeResults(File fileName) {
+    	this.writeAlternativeXML(fileName);
+    	//this.writeXML(fileName);
+    	this.writeTopoXML(fileName);
+    }
+/*    @WebMethod
+    public String getAnalytics(){
+    	//TODO
+    	
+    	return "";
+    }
+
+    @WebMethod
+    public void runAnalytics() {
+    	//TODO
+    	
+    	
+    	
+    }*/
 
     public static void runTest(final StatServer s) {
         final Vector<Vector<String>> nodes = new Vector<Vector<String>>();

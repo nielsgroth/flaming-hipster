@@ -6,6 +6,7 @@ package gossip.stat.server;
 
 import java.io.Serializable;
 import java.util.Deque;
+import java.util.Iterator;
 import java.util.LinkedList;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
@@ -39,6 +40,9 @@ public class Edge implements Serializable {
 
     public long getLeft() {
         return this.spells.getLast().getLeft();
+    }
+    public long getFirstJoined() {
+    	return this.spells.getFirst().getJoined();
     }
 
     public String getSource() {
@@ -80,7 +84,15 @@ public class Edge implements Serializable {
         }
     }
     
-
+    public long totalTimeExisted(){
+    	long result = 0;
+    	Iterator<Spell> spellit = this.spells.iterator();
+    	while(spellit.hasNext()){
+    		Spell currentSpell=spellit.next();
+    		result += currentSpell.getLeft() - currentSpell.getJoined();
+    	}
+    	return result;
+    }
     public void activate() {
         this.spells.add(new Spell(System.currentTimeMillis() / 1000));
     	//this.joined = System.currentTimeMillis() / 1000;

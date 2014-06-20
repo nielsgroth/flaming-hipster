@@ -104,12 +104,11 @@ public class Node implements Serializable {
         this.status = Node.CONNECTED;
         this.lastUpdate = System.currentTimeMillis() / 1000;
         for (Edge e : edges) {
-            if (!this.edges.contains(e)) {
-                //   System.out.println("List does not contain "+e);
+            if (!this.edges.contains(e)) { // new edge
                 e.activate();
                 this.edges.add(e);
 
-            } else {
+            } else { // edge already known, will be activated if necessary
             	if(this.edges.get(this.edges.lastIndexOf(e)).isGone())
             	this.edges.get(this.edges.lastIndexOf(e)).activate();
             }
