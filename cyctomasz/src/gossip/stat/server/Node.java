@@ -29,7 +29,7 @@ public class Node implements Serializable {
     
     @XStreamAsAttribute
     @XStreamAlias(value="end")
-    private Long left = null; //TODO warum object statt simple type
+    private Long left = null; 
     
     @XStreamOmitField
     private long lastUpdate;
@@ -45,11 +45,18 @@ public class Node implements Serializable {
     
     @XStreamOmitField
     public char status;
-
+    
     public List<Edge> getEdges() {
         return edges;
     }
-
+    public List<Edge> getEdges(long start, long end) {
+    	List<Edge> subEdges = new Vector<Edge>();
+    	List<Edge> edges = this.getEdges();
+    	for(int i=0;i<edges.size();i++) {
+    		subEdges.add(edges.get(i).getSubEdge(start, end));
+    	}
+    	return subEdges;
+    }
     public long getJoined() {
         return joined;
     }
@@ -59,6 +66,7 @@ public class Node implements Serializable {
     }
 
     public long getLeft() {
+    	if (left==null) return Long.MAX_VALUE;
         return left.longValue();
     }
 
@@ -81,7 +89,12 @@ public class Node implements Serializable {
         this.label = name;
 
     }
-
+    public Node(String name, long joined, long left){
+    	this.name = name;
+    	this.label = name;
+    	this.joined = joined;
+    	this.left = left;
+    }
     public void leave() {
         this.left = Long.valueOf(System.currentTimeMillis() / 1000);
         this.status = Node.LEFT;

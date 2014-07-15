@@ -64,12 +64,23 @@ public class Edge implements Serializable {
     public Edge() {
     }
 
-    public Edge(String name, String source) {
-        this.target = name;
+    public Edge(String target, String source) {
+        this.target = target;
         this.source = source;
         this.id = this.source+"_"+this.target;
     }
-
+    public Edge getSubEdge(long start, long end) {
+    	Edge subEdge = new Edge(this.getTarget(), this.getSource());
+    	Iterator<Spell> spellit = this.spells.iterator();
+    	while(spellit.hasNext()) {
+    		Spell currentSpell=spellit.next();
+    		if(currentSpell.getJoined()<end && currentSpell.getLeft()>start){
+    			subEdge.spells.add(new Spell(Math.max(currentSpell.getJoined(), start),
+    					Math.min(currentSpell.getLeft(), end)));
+    		}
+    	}
+    	return subEdge;
+    }
     @Override
     public boolean equals(Object obj) {
         
@@ -80,7 +91,7 @@ public class Edge implements Serializable {
         } else {
 //            System.out.println("Comparing this: "+this.name+" with "+((Edge) obj).name);
 //            System.out.println("OBJ Returning: "+(this.name.equals(((Edge) obj).name)));
-            return this.target.equals(((Edge) obj).target);
+            return this.target.equals(((Edge) obj).target) && this.source.equals(((Edge) obj).source);
         }
     }
     

@@ -22,6 +22,7 @@ public class Spell {
     }
 
     public long getLeft() {
+    	if(left==null) return Long.MAX_VALUE;
         return left;
     }
     public Spell(long joined) {

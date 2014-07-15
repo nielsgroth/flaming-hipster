@@ -161,4 +161,27 @@ public interface StatServer {
         @WebParam(name = "arg0", targetNamespace = "")
         String arg0);
 
+    /**
+     * 
+     * @param arg3
+     * @param arg2
+     * @param arg1
+     * @param arg0
+     * @return
+     *     returns java.lang.String
+     */
+    @WebMethod
+    @WebResult(targetNamespace = "")
+    @RequestWrapper(localName = "getAnalytics", targetNamespace = "http://server.stat.gossip/", className = "gossip.stat.client.soap.GetAnalytics")
+    @ResponseWrapper(localName = "getAnalyticsResponse", targetNamespace = "http://server.stat.gossip/", className = "gossip.stat.client.soap.GetAnalyticsResponse")
+    public String getAnalytics(
+        @WebParam(name = "arg0", targetNamespace = "")
+        long arg0,
+        @WebParam(name = "arg1", targetNamespace = "")
+        long arg1,
+        @WebParam(name = "arg2", targetNamespace = "")
+        Graph arg2,
+        @WebParam(name = "arg3", targetNamespace = "")
+        Graph arg3);
+
 }

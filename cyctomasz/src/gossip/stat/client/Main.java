@@ -37,10 +37,11 @@ public class Main {
 		options.addOption("c", true, "Number of clients. If more than one specified, will try to use base port++ as ports. Default 1");
 		options.addOption("i", true, "bootstrap client, gives the first simulated client an existing client in the network. Default none" );
 		options.addOption("t", true, "Test scenario. Default static");
-		options.addOption("o", true, "start in output mode instead. Argument is name of output file. Default ./outputCyclon.xml");
+		options.addOption("o", true, "start in output mode instead. Argument is name of output file. Default ./outputCyclon");
 		options.addOption("q", true, "StatServer port. Default 8000");
 		options.addOption("h", false, "Display this message");
 		options.addOption("n", true, "Use this networkInterface. Default wlan0");
+		options.addOption("x", false, "Cleanup server data for next experiment. Has to be combined with opton -o.");
 
 		
 		// read Options from command line
@@ -62,9 +63,30 @@ public class Main {
 		//Initialize options for both modes
 		int statServerPort = (cmd.hasOption("q") ? Integer.parseInt(cmd.getOptionValue("q")) : 8000);
 		
-		// run output mode instead
+		
+		// run in analyzer mode
+		if (cmd.hasOption("a")) {
+			String fileName= ((cmd.getOptionValue("a").equals("")||cmd.getOptionValue("o")==null) ? "outputCyclon" : cmd.getOptionValue("o"));
+			try {
+            	InetAddress statServerAddress = InetAddress.getByName(cmd.hasOption("s") ? cmd.getOptionValue("s"): "" );
+                StatServerService _s = new StatServerService
+    					(new URL("http://" + statServerAddress.getHostName() + ":"+ statServerPort + "/gossipStatServer?wsdl"),
+    							new QName("http://server.stat.gossip/", "StatServerService"));
+                gossip.stat.client.soap.StatServer s = _s.getStatServerPort();
+                //TODO read in Values
+                //TODO analyze and create output file
+                System.exit(0);
+            } catch (UnknownHostException e) {
+            	System.err.println("Unkown statistics server host: " + cmd.getOptionValue("s") + " Exiting.");
+    			System.exit(1);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+		}
+		
+		// run output mode
 		if (cmd.hasOption("o")) {
-			String fileName = ((cmd.getOptionValue("o").equals("")||cmd.getOptionValue("o")==null) ? "outputCyclon.xml" : cmd.getOptionValue("o")); 
+			String fileName = ((cmd.getOptionValue("o").equals("")||cmd.getOptionValue("o")==null) ? "outputCyclon" : cmd.getOptionValue("o")); 
             try {
             	InetAddress statServerAddress = InetAddress.getByName(cmd.hasOption("s") ? cmd.getOptionValue("s"): "" );
                 StatServerService _s = new StatServerService
@@ -72,13 +94,11 @@ public class Main {
     							new QName("http://server.stat.gossip/", "StatServerService"));
                 gossip.stat.client.soap.StatServer s = _s.getStatServerPort();   
                 s.writeResults(fileName);
-//                BufferedWriter out = new BufferedWriter(new FileWriter(fileName + ".gexf"));
-//                out.write(s.getXML());
-//                out.close();
-//                BufferedWriter outTopo = new BufferedWriter(new FileWriter(fileName + ".topo.gexf"));
-//                outTopo.write(s.getTopoXML());
-//                outTopo.close();
-                System.out.println("XML Output written to " + fileName + ".gexf and physical topology to " + fileName + ".topo.gexfs");
+                System.out.println("XML Output written to " + fileName + ".gexf and physical topology to " + fileName + ".topo.gexf");
+                if (cmd.hasOption("x")) {
+                	s.cleanup();
+                	System.out.println("Server cleaned up for next experiment.");
+                }
                 System.exit(0);
             } catch (UnknownHostException e) {
             	System.err.println("Unkown statistics server host: " + cmd.getOptionValue("s") + " Exiting.");

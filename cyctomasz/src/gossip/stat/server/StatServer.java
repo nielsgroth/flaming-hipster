@@ -4,10 +4,13 @@
  */
 package gossip.stat.server;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -204,27 +207,21 @@ public class StatServer {
        	
 
     }
+
+//    <edge target="172.16.17.2:9010" source="172.16.17.66:9010" id="172.16.17.66:9010_172.16.17.2:9010">
+//    <spells class="linked-list">
+//      <spell start="1403722909" end="1403722961"/>
+//      <spell start="1403722979" end="1403723037"/>
+//    </spells>
+//  </edge>
+    
     @WebMethod
     public void writeResults(File fileName) {
     	this.writeAlternativeXML(fileName);
     	//this.writeXML(fileName);
     	this.writeTopoXML(fileName);
     }
-/*    @WebMethod
-    public String getAnalytics(){
-    	//TODO
-    	
-    	return "";
-    }
-
-    @WebMethod
-    public void runAnalytics() {
-    	//TODO
-    	
-    	
-    	
-    }*/
-
+    
     public static void runTest(final StatServer s) {
         final Vector<Vector<String>> nodes = new Vector<Vector<String>>();
         final int max_nodes = 100;
