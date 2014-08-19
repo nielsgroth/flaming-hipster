@@ -17,6 +17,7 @@ public class Node implements Serializable {
     public static final char NO_LINKS = 2;
     public static final char CONNECTED = 3;
     public static final char LEFT = 4;
+    
     @XStreamOmitField
     private List<Edge> edges = new Vector<Edge>();
     
@@ -79,7 +80,7 @@ public class Node implements Serializable {
     }
 
     public Node() {
-        this.joined = System.currentTimeMillis() / 1000;
+        this.joined = System.nanoTime();
         this.status = Node.NEW;
     }
 
@@ -96,13 +97,13 @@ public class Node implements Serializable {
     	this.left = left;
     }
     public void leave() {
-        this.left = Long.valueOf(System.currentTimeMillis() / 1000);
+        this.left = Long.valueOf(System.nanoTime());
         this.status = Node.LEFT;
     }
 
     public void validate() {
-        long currentTimestamp = System.currentTimeMillis() / 1000;
-        if (this.status != Node.LEFT && (currentTimestamp - this.lastUpdate) > 40) {
+        long currentTimestamp = System.nanoTime();
+        if (this.status != Node.LEFT && (currentTimestamp - this.lastUpdate) > 40000) {
             System.out.println("Invalidating node: " + this.name);
             this.leave();
         }
@@ -115,22 +116,22 @@ public class Node implements Serializable {
         }
         this.left=null;
         this.status = Node.CONNECTED;
-        this.lastUpdate = System.currentTimeMillis() / 1000;
+        this.lastUpdate = System.nanoTime();
         for (Edge e : edges) {
             if (!this.edges.contains(e)) { // new edge
-                e.activate();
+                e.activate(this.getLastUpdate());
                 this.edges.add(e);
 
             } else { // edge already known, will be activated if necessary
             	if(this.edges.get(this.edges.lastIndexOf(e)).isGone())
-            	this.edges.get(this.edges.lastIndexOf(e)).activate();
+            	this.edges.get(this.edges.lastIndexOf(e)).activate(this.getLastUpdate());
             }
         }
 
         for (Edge e : this.edges) {
             if (!edges.contains(e) && !e.isGone()) {
                 //  System.out.println("Deactivating "+e);
-                e.deactivate();
+                e.deactivate(this.getLastUpdate());
             }
         }
 

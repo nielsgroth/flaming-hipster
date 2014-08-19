@@ -104,15 +104,15 @@ public class Edge implements Serializable {
     	}
     	return result;
     }
-    public void activate() {
-        this.spells.add(new Spell(System.currentTimeMillis() / 1000));
-    	//this.joined = System.currentTimeMillis() / 1000;
+    public void activate(long updatetime) {
+        this.spells.add(new Spell(updatetime));
+    	//this.joined = System.nanoTime() / 1000;
         this.status = Edge.ACTIVE;
     }
 
-    public void deactivate() {
-        this.spells.getLast().setLeft(System.currentTimeMillis() / 1000);
-    	//this.left = Long.valueOf(System.currentTimeMillis() / 1000);
+    public void deactivate(long updatetime) {
+        this.spells.getLast().setLeft(updatetime);
+    	//this.left = Long.valueOf(System.nanoTime() / 1000);
         this.status = Edge.GONE;
     }
 

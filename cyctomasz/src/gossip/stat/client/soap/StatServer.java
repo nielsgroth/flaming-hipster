@@ -87,6 +87,23 @@ public interface StatServer {
     /**
      * 
      * @param id
+     * @param lastMessageID
+     * @param edgeList
+     */
+    @WebMethod
+    @RequestWrapper(localName = "sendList2", targetNamespace = "http://server.stat.gossip/", className = "gossip.stat.client.soap.SendList2")
+    @ResponseWrapper(localName = "sendList2Response", targetNamespace = "http://server.stat.gossip/", className = "gossip.stat.client.soap.SendList2Response")
+    public void sendList2(
+        @WebParam(name = "id", targetNamespace = "")
+        String id,
+        @WebParam(name = "edgeList", targetNamespace = "")
+        List<String> edgeList,
+        @WebParam(name = "lastMessageID", targetNamespace = "")
+        int lastMessageID);
+
+    /**
+     * 
+     * @param id
      */
     @WebMethod
     @RequestWrapper(localName = "leave", targetNamespace = "http://server.stat.gossip/", className = "gossip.stat.client.soap.Leave")
@@ -116,6 +133,50 @@ public interface StatServer {
     public void writeXML(
         @WebParam(name = "arg0", targetNamespace = "")
         String arg0);
+
+    /**
+     * 
+     * @return
+     *     returns long
+     */
+    @WebMethod
+    @WebResult(targetNamespace = "")
+    @RequestWrapper(localName = "getCounter", targetNamespace = "http://server.stat.gossip/", className = "gossip.stat.client.soap.GetCounter")
+    @ResponseWrapper(localName = "getCounterResponse", targetNamespace = "http://server.stat.gossip/", className = "gossip.stat.client.soap.GetCounterResponse")
+    public long getCounter();
+
+    /**
+     * 
+     * @return
+     *     returns long
+     */
+    @WebMethod
+    @WebResult(targetNamespace = "")
+    @RequestWrapper(localName = "getSameTimestampCounter", targetNamespace = "http://server.stat.gossip/", className = "gossip.stat.client.soap.GetSameTimestampCounter")
+    @ResponseWrapper(localName = "getSameTimestampCounterResponse", targetNamespace = "http://server.stat.gossip/", className = "gossip.stat.client.soap.GetSameTimestampCounterResponse")
+    public long getSameTimestampCounter();
+
+    /**
+     * 
+     * @return
+     *     returns int
+     */
+    @WebMethod
+    @WebResult(targetNamespace = "")
+    @RequestWrapper(localName = "getLostPackagesCounter", targetNamespace = "http://server.stat.gossip/", className = "gossip.stat.client.soap.GetLostPackagesCounter")
+    @ResponseWrapper(localName = "getLostPackagesCounterResponse", targetNamespace = "http://server.stat.gossip/", className = "gossip.stat.client.soap.GetLostPackagesCounterResponse")
+    public int getLostPackagesCounter();
+
+    /**
+     * 
+     * @return
+     *     returns java.lang.String
+     */
+    @WebMethod
+    @WebResult(targetNamespace = "")
+    @RequestWrapper(localName = "getWaitingMessages", targetNamespace = "http://server.stat.gossip/", className = "gossip.stat.client.soap.GetWaitingMessages")
+    @ResponseWrapper(localName = "getWaitingMessagesResponse", targetNamespace = "http://server.stat.gossip/", className = "gossip.stat.client.soap.GetWaitingMessagesResponse")
+    public String getWaitingMessages();
 
     /**
      * 
@@ -160,28 +221,5 @@ public interface StatServer {
     public void writeResults(
         @WebParam(name = "arg0", targetNamespace = "")
         String arg0);
-
-    /**
-     * 
-     * @param arg3
-     * @param arg2
-     * @param arg1
-     * @param arg0
-     * @return
-     *     returns java.lang.String
-     */
-    @WebMethod
-    @WebResult(targetNamespace = "")
-    @RequestWrapper(localName = "getAnalytics", targetNamespace = "http://server.stat.gossip/", className = "gossip.stat.client.soap.GetAnalytics")
-    @ResponseWrapper(localName = "getAnalyticsResponse", targetNamespace = "http://server.stat.gossip/", className = "gossip.stat.client.soap.GetAnalyticsResponse")
-    public String getAnalytics(
-        @WebParam(name = "arg0", targetNamespace = "")
-        long arg0,
-        @WebParam(name = "arg1", targetNamespace = "")
-        long arg1,
-        @WebParam(name = "arg2", targetNamespace = "")
-        Graph arg2,
-        @WebParam(name = "arg3", targetNamespace = "")
-        Graph arg3);
 
 }

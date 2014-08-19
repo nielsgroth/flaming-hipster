@@ -206,15 +206,15 @@ public class Graph {
     	Graph subGraph = graph.getSubGraph(start, end);
     	Graph subTopology = topology.getSubGraph(start, end);
     	subTopology.caclulateShortestPaths();
-    	Float[] results = new Float[subTopology.longestShortestPath()+1];
-    	for(int i=0;i<results.length;i++) results[i] = 0.0f;
+    	Double[] results = new Double[subTopology.longestShortestPath()+1];
+    	for(int i=0;i<results.length;i++) results[i] = 0.0;
     	for(int i = 0; i < subGraph.getEdges().size(); i++){
     		int hops = subTopology.getPath(subGraph.getEdges().get(i));
-    		if(hops!=40000)
-    		results[hops] += (subGraph.getEdges().get(i).totalTimeExisted()/(intervalEnd-intervalStart));   		
+    		if(hops!=40000 && !subGraph.getEdges().get(i).getSource().equals(subGraph.getEdges().get(i).getTarget()))
+    		results[hops] += (double)(subGraph.getEdges().get(i).totalTimeExisted());   		
     	}
     	for (int i=0;i<results.length;i++){
-    		results[i]=results[i]/subTopology.getNumberOfPaths(i);
+    		results[i]=results[i]/(((double)subTopology.getNumberOfPaths(i))*((double)(intervalEnd-intervalStart)));
     	}
     	String result="";
     	for (int i=0;i<results.length;i++) {

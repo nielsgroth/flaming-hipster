@@ -14,6 +14,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -38,6 +39,10 @@ public class StatServer {
 
     public Map<String, Node> list = new ConcurrentHashMap<String, Node>(1000);
     public Map<String, Node> topology = new ConcurrentHashMap<String, Node>(1000);
+    public long counter =0;
+    private long sameTimestampCounter = 0;
+    private long lastTimestamp = 0;
+    public List<Integer> waitingMessages = new LinkedList<Integer>();
 
     public Node getNode(String key) {
         if (this.list.containsKey(key)) {
@@ -48,6 +53,7 @@ public class StatServer {
             return n;
         }
     }
+    
     public Node getTopoNode(String key) {
     	if (this.topology.containsKey(key)) {
     		return this.topology.get(key);
@@ -55,8 +61,7 @@ public class StatServer {
     		Node n = new Node(key);
     		this.topology.put(key, n);
     		return n;
-    	}
-    	
+    	}   	
     }
 
     /**
@@ -70,6 +75,26 @@ public class StatServer {
     public void sendList(@WebParam(name = "id") String key, @WebParam(name = "edgeList") List<String> edges) {
         System.out.println(key);
         this.getNode(key).updateEdges(edges);
+        if (System.currentTimeMillis()==lastTimestamp)
+        sameTimestampCounter++;
+        lastTimestamp=System.nanoTime();
+        counter++;
+    }
+    @WebMethod
+    public void sendList2(@WebParam(name = "id") String key, @WebParam(name = "edgeList") List<String> edges, @WebParam(name = "lastMessageID") int messageID) {
+    	messageID=Math.abs(messageID);
+    	if (waitingMessages.contains(Integer.valueOf(messageID))){
+    		waitingMessages.remove(Integer.valueOf(messageID));
+    	} else {
+    		waitingMessages.add(Integer.valueOf(messageID));
+    	}
+    	System.out.println(key + "last message ID: " + messageID);
+    	this.getNode(key).updateEdges(edges);
+    	if (System.currentTimeMillis()==lastTimestamp)
+            sameTimestampCounter++;
+            lastTimestamp=System.nanoTime();
+            counter++;
+    	
     }
     @WebMethod
     public void leave(@WebParam(name = "id")String key) {
@@ -125,6 +150,27 @@ public class StatServer {
     		e.printStackTrace();
     	}
        
+    }
+    @WebMethod
+    public long getCounter(){
+    	return counter;
+    }
+    @WebMethod
+    public long getSameTimestampCounter(){
+    	return sameTimestampCounter;
+    }
+    @WebMethod
+    public int getLostPackagesCounter(){
+    	return waitingMessages.size();
+    }
+    @WebMethod
+    public String getWaitingMessages() {
+    	String result = "";
+    	for( Iterator<Integer> it
+    			= waitingMessages.iterator();it.hasNext();){
+    		result += " ; " + it.next();
+    	}
+    	return result;
     }
     @WebMethod
     public String getTopoXML(){

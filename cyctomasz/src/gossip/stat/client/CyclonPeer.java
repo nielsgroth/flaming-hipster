@@ -33,7 +33,7 @@ public class CyclonPeer implements Runnable {
     private BlockingQueue<Boolean> responseReceived= new SynchronousQueue<Boolean>();
     public static final int MTU = 1500;				// Maximum Transmission Unit: maximum size of datagram package
     public final static int c = 10;	 				// cache size
-    public final static int l = 5;					// message size
+    public final static int l = 2;					// message size
     public final static int socketTimeout = 3000; 	// sleep before shuffling again and receiving socket timeout
     public final static int shufflePayloadSize = l * Neighbor.recordBytes + 4;
     public final static int idLength = 4;
@@ -109,10 +109,9 @@ public class CyclonPeer implements Runnable {
     	
     	Thread shuffleThread = new Thread(r);
     	shuffleThread.start();
-    	
+    	int last_mes_id = 0;
         while (!Thread.currentThread().isInterrupted()) {
             //Statistikdaten an Statistik-Server senden
-            s.sendList(neighbors.self.getId(), neighbors.buildStatList());
             List<String> edgeList = new ArrayList<String>();
             IRoutingTable routingTab = new OLSRDRoutingTable();
             InetAddress[] links = routingTab.getAllBootstrapNodes();
@@ -132,6 +131,7 @@ public class CyclonPeer implements Runnable {
                 byte[] inbytes = Arrays.copyOf(p.getData(), p.getLength());
                 List<Neighbor> receivedSubset = NeighborCache.neighborListFromShuffleBytes(inbytes);
                 int id = NeighborCache.shuffleIdFromShuffleBytes(inbytes);
+                last_mes_id = id;
                 printDebug("Shuffle-Packet " + id + " von " + p.getSocketAddress() + " mit den Einträgen "
                         + receivedSubset + " erhalten.");
 
@@ -154,7 +154,7 @@ public class CyclonPeer implements Runnable {
                     sock.send(response);
                     printDebug("... und Antwort abgeschickt!");
                 }
-
+                s.sendList2(neighbors.self.getId(), neighbors.buildStatList(), id);
                 printDebug("Neue Nachbarliste: " + neighbors);
 
 
@@ -172,7 +172,7 @@ public class CyclonPeer implements Runnable {
         //an external interrupt occurred
         printDebug("An external interrupt occured! Interrupting shuffle Thread and leaving network.");
         shuffleThread.interrupt();
-        s.sendList(neighbors.self.getId(), neighbors.buildStatList());
+        s.sendList2(neighbors.self.getId(), neighbors.buildStatList(), last_mes_id);
         s.leave(neighbors.self.getId());
     }
 
@@ -181,6 +181,12 @@ public class CyclonPeer implements Runnable {
     		printDebug("Neighbor cache is empty adding new neighbor from olsrd routing table");
     		IRoutingTable routingTab = new OLSRDRoutingTable();
     		InetAddress bootstrapnode = routingTab.getBootstrapNode();
+    		printDebug("bootstrapnode before subnetmaskchange: " + bootstrapnode.getHostAddress());
+    		printDebug("self IP: " + neighbors.self.getIp().getHostAddress());
+    		//TODO replace subnetmask with self
+    		bootstrapnode = InetAddress.getByName((neighbors.self.getIp().getHostAddress().substring(0, neighbors.self.getIp().getHostAddress().lastIndexOf(".")) + 
+    		bootstrapnode.getHostAddress().substring(bootstrapnode.getHostAddress().lastIndexOf("."))));
+    		printDebug("bootstrapnode after subnetmaskchange: " + bootstrapnode.getHostAddress());
         	addSeedNode(bootstrapnode, neighbors.self.getPort());
         	//addSeedNode(bootstrapnode, neighbors.self.getPort()+1);
         	//addSeedNode(bootstrapnode, neighbors.self.getPort()-1);

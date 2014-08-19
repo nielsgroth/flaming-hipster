@@ -31,10 +31,6 @@ public class CyclonStatic {
                         if (portOffset > 1) {
                             p.addSeedNode(networkInterfaceIP, basePort + r.nextInt(portOffset - 1));
                         }
-                        else {
-                        	IRoutingTable routTab = new OLSRDRoutingTable();
-                        	p.addSeedNode(routTab.getBootstrapNode(), basePort);
-                        }
                         new Thread(p).start();
                         Thread.sleep(r.nextInt(1500));
                     } catch (Exception e) {

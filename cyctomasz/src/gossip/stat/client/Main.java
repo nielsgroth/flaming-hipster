@@ -95,6 +95,11 @@ public class Main {
                 gossip.stat.client.soap.StatServer s = _s.getStatServerPort();   
                 s.writeResults(fileName);
                 System.out.println("XML Output written to " + fileName + ".gexf and physical topology to " + fileName + ".topo.gexf");
+                System.out.println("webservice counter = " + s.getCounter());
+                System.out.println("same timestamp counter = " + s.getSameTimestampCounter());
+                System.out.println("lost messages = " + s.getLostPackagesCounter());
+                System.out.println("lost messages detail = ");
+                System.out.println(s.getWaitingMessages());
                 if (cmd.hasOption("x")) {
                 	s.cleanup();
                 	System.out.println("Server cleaned up for next experiment.");
