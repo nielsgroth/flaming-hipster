@@ -1,10 +1,74 @@
 \chapter{Measurement Methodology and Implementation} 
 \label{chap:methodology}
+This chapter describes the architecture of the experiments and the environment
+in which it is build. It starts with the physical network on which the
+experiments are conducted, the DES-Testbed. The next section is about the Layer
+3 routing algorithm used which is the open link state routing deamon for
+wireless experiments. The implementation of Cyclon is then described and
+explained in the next section and all other environment specifics are given in
+the last section of this chapter.
 
-\section{DES-Testbed} %What is this? How does it work? Why do I use this?
+\section{DES-Testbed}
+%What is this? How does it work? Why do I use this?
+The DES-Testbed is a wireless adhoc mesh network environment developed and
+deployed at Freie Universität Berlin to test network protocols for embedded
+systems under real conditions. It consists of currently 51 mesh routers each
+with 3 wireless network interfaces and 2 ethernet interfaces. The mesh routers
+are placed in mostly seperate rooms at the Institute of Computer Science, the
+Institute of Mathematics and the Intitute of Physics at the Freie Universtät
+Berlin. They are connected through an ethernet network to the main entry point
+which in the experiments described in this thesis is also used as a statistics
+server for gathering experiment related information. Further the wireless mesh
+network is used to introduce network faults like packet loss and a
+dynamic layer 3 routing topology to the experiments. The network is also used
+for experiments in ethernet environment to obtain comparable results without the
+afore mentioned network faults. 
+%
 
 \section{OLSR/B.A.T.M.A.N.} %What? How? Why?
+%what version of olsrd do i use?
+The underlying routing protocol used for the experiments is the OSLR deamon
+\cite{Tonnesen2004}.
+It is the implementation of the optimized link state routing protocol (OLSR) as
+described in \cite{RFC3626}. It creates a decentralized multi-hop routing topology for
+wireless mesh networks. It is used successfully in large metropolitan area mesh
+networks like the Athens Wireless Metropolitan Network or the Berlin based Freifunk.net.
+The basic idea behind it is as follows. To discover its immediate one-hop and
+two hop neighbors, a node sends HELLO-messages paired with one-hop neighbor
+information. It then chooses a set of multipoint relays (MPR) within its one-hop
+neighbors with the best link quality to all of its two-hop neighbors. These are
+used for optimized flooding of control packages. Every node also has an MPR
+selector list which holds information about all nodes that chose that node
+as an MPR. The nodes that are selected as an MPR will now send and forward MPR
+selector lists using TC-messages. The OLSR protocol is proactive, which in this
+case means it changes its routing topology regularly but not immediatly whenever
+a new node appears or an old link to a node is unstable.
+
+\subsection{Txtinfo and Jsoninfo Plugins}
+The OLSR deamon created by \cite{Tonnesen2004} also offers the txtInfo plugin
+\cite{} to access neighbor, topology and other information from a running OLSR
+deamon. It is used by the JsonInfo plugin \cite{} which again creates a Java
+interface for access to that information. This is used to obtain information
+about the physical topology of the network and for bootstrapping purposes as
+described later.
 
 \section{Implementation of Cyclon in Java} %UML-Diagramm
 
+\subsection{The Statistics Server}
+
+The statistics server is used to obtain experiment data and create an outputfile
+in the Gephi file format. It provides a web service to obtain the data from the
+clients and to create an Gephi readable XML file.  Each node sends routing
+topology and the Cyclon neighbor list to the statistics server
+through webmethods called sendTopology and sendList. The information then is
+processed by the statistics server by storing the node along with its neighbor
+information in a node object.  It processes the information by storing the
+sender as a node updating it's neighbors as edges and The server receives update messages from the clients which it then processes and stores in JAVA objects.
+after the experiment is finished it searilializes the stored objects to an XML
+stream and writes it to a file in the gephi dynamic graph format.
+
+
+
 \section{Experiment Environment}
+
+\subsection{Gephi and Gephi File Format}
