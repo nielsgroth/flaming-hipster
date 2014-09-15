@@ -36,7 +36,7 @@
   timestamp = {2014.03.30}
 }
 
-@TECHREPORT{,
+@TECHREPORT{ThomasClausen2004,
   author = {Thomas Clausen, Philippe Jacquet, C. Adjih, A. Laouiti, P. Minet,
 	P. Muhlethaler, A. Qayyum, L. Viennot},
   title = {The Optimised Routing Protocol for Mobile Ad-hoc

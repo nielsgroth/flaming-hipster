@@ -60,12 +60,35 @@ The statistics server is used to obtain experiment data and create an outputfile
 in the Gephi file format. It provides a web service to obtain the data from the
 clients and to create an Gephi readable XML file.  Each node sends routing
 topology and the Cyclon neighbor list to the statistics server
-through webmethods called sendTopology and sendList. The information then is
+through web methods called sendTopology and sendList. The information then is
 processed by the statistics server by storing the node along with its neighbor
 information in a node object.  It processes the information by storing the
 sender as a node updating it's neighbors as edges and The server receives update messages from the clients which it then processes and stores in JAVA objects.
-after the experiment is finished it searilializes the stored objects to an XML
-stream and writes it to a file in the gephi dynamic graph format.
+after the experiment is finished it serializes the stored objects to an XML
+stream and writes it to a file in the gephi file format described below.
+
+The statistics server application stores all relevant information for an
+experiment during its execution. On initialization it creates a collection of
+nodes to store the required information about each node as they are born ,
+change neighbors and eventually die. The server then publishes its web service
+which holds methods to access the server's objects. The main web method is used
+by the nodes to update information whenever their status changes. This might be
+their birth or the change of their neighbor cache. The node object stores the
+information of its first appearance, the last time it got updated and about all
+of its edges and at which times they existed. If the node didn't get updated for
+specific time it is marked as dead. Should the node ever be updated again it is
+reset to alive as if it wasn't dead. All timestamps are stored as nanoseconds in
+relation to an arbitrary point in time. The timestamps are given as the
+statistics server gets the information so that delays on the network could
+distort the results.
+The statistics server is implemented as a JAVA web service providing an
+interface for storing all information concerning the graph topology during an
+experiment. The interface specification is shown below as an UML class diagram
+and the web methods included are described below.
+%UML class diagram of statistics server class
+
+
+
 
 
 

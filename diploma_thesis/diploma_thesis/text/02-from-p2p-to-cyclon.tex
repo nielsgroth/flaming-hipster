@@ -2,11 +2,127 @@
 \label{chap:gossiping}
 
 
-\section{P2P Networks}
-%What are they? How do they work?
+\section{Short Introduction to Peer-to-Peer Networks}
+\subsection{What is Peer-to-Peer?}
+% What is it?
+% What is the basic idea?
+Traditional services in the Internet follow the client-server model where a
+server entity provides a service or resource which then is used by
+possibly multiple client entities. Peer-to-Peer networks use a completely
+different approach. Ideally every participating entity acts as a server and a
+client simultaneously. Every participating entity in such a network is treated
+equally and is sometimes also called Servent, a word created by combining the
+words server and client. A Servent does not only use the service or resource
+the network provides but is also participating in providing it to the other
+Servents. The main prerequisite for such an architecture is that the service or
+resource provided by the network is distributable. Other requirements are
+powerful servents interconnected with a suitable upload and download bandwidth.
+\\% What are typical applications?
+Applications of Peer-to-Peer include very popular ones like file
+sharing, instant messaging or video calls over the Internet. Other applications
+are shared computing, shared workspace environments or information
+dissemination, e.g. software updates.
+\\% What are possible Applications?
+% What are dis-/advantages over the server-client model?
+The Peer-to-Peer design gives several advantages over the client-server model.
+In a pure Peer-to-Peer designed network there is no need for a central entity
+which makes the network independent of a single point of failure which can also
+act as a bottleneck. While in a client-server architecture a growing number of
+participants will exceed the resources provided by a central server, in a
+Peer-to-Peer network the resources grow with the number of participants. The
+lack of a central entity also means that the service can be provided ad-hoc with
+the combined resources that each participant contributes to the network without
+the need of a dedicated server. Another advantage can be the better
+usage of bandwidth. If an information has a single point of entry,
+e.g. a video live stream or a software update and a client-server model is used
+the information has to be sent multiple times over the same links clogging the
+bandwidth with repetitive data. A Peer-to-Peer network could organise this
+multicast communication in a way that avoids unnecessary data transmissions. As
+mentioned before the Peer-to-Peer approach eliminates the single point of
+failure a central server is which results in a more reliable service. More
+specifically an attack or a failure of a central server disables the service
+entirely while a failing servent has minor effects on the whole service.
+\\
+The next subsection will discuss and classify different approaches in Peer-to-Peer
+structures.
+\subsection{Types of Peer-to-Peer Architectures}
+Several applications using the Peer-to-Peer paradigm have been proposed and used
+within the last three decades. While offering a solution for different services
+or resources they also can be classified by the organization of the network
+itself. The main difference in architecture being how they organize the
+resources or services and handle requests and responses. This subsection will
+shortly introduce three main classes of Peer-to-Peer architectures.
+\subsubsection{Unstructured Peer-to-Peer}
+\paragraph{Centralized Peer-to-Peer}
+The first popular Peer-to-Peer based application was Napster. It used a
+central Server for storing the information where to find which file in the
+network. After getting an answer from the central server a servent could then
+directly download the desired file from the origin. This approach can be
+generalized as follows. A central server is used for organisation
+of the service or resource provided by the network. The requestet service or
+resource is then provided directly. This architecture is called a
+Centralized Peer-to-Peer network.
+\\
+The main disadvantage is the central server since it contradicts most of the
+ advantages of the Peer-to-Peer architecture, as it acts as a single point of 
+failure and is the bottleneck of such a network.
+\paragraph{Pure Peer-to-Peer}
+In a pure Peer-to-Peer approach instead of managing the information about the
+networks resources or services centrally, every servent manages its resources
+locally. Request are send over the network using flooding. A Servent sends a
+time limited request to all its known neighbors which repeat this action until
+the servent able to answer the request is found or the request expires. This
+method clearly produces a lot of redundant network traffic which highly depends
+on the topology of the network. A Peer-to-Peer network constructed in such a way
+eliminates the need of a central entity is locally organized but has its
+bottleneck in the bandwidth which would have to grow exponentially with the
+number of participants and requests. The way servents decide which other
+participants to select as neighbors is most crucial to the performance of this
+type of Peer-to-Peer networks. The resulting topology's properties have to
+match the purpose of the network. The main challenge in constructing such a
+network is finding a topology which keeps network traffic at a minimum while not
+loosing the decentralized way of network creation.
+\paragraph{Hybrid Peer-to-Peer}
+There are also applications using a mix of the previously introduced
+Peer-to-Peer architectures. The main reason for this approach is to reduce
+the number of messages while still using an unstructured approach. This is
+achieved through introducing hierarchies into the network. Superpeers or
+ultrapeers are selected dynamically. They are responsible for a number of simple
+servants and connected to other superpeers in an unstructured manner. The complexity of such a network
+is reduced depending on the number of simple servents the superpeers are
+responsible for. There still are no single points of failure although a failure
+of a superpeer has a bigger impact on the network than of a servant in a pure
+Peer-to-Peer network. The superpeers can be selected depending on availability,
+stability, bandwidth or any other aspect serving the purpose of the network.
+\subsubsection{Structured Peer-to-Peer}
+While Cyclon is meant for use in unstructured Peer-to-Peer networks this chapter
+would be incomplete without mentioning another approach to construct such
+networks. Structured Peer-to-Peer networks try to eliminate the cost of
+flooding requests while still organising the service decentrally. While in
+centralized Peer-to-Peer applications the information about the service is
+stored centrally this information is distributed among the servents in the whole
+network. This is achieved by distributed hash tables (DHTs). First for every
+piece of information a hash value is calculated which determines which of the
+servents will be responsible for this information. The servents form a ring
+topology. Every servent has one neighbor that is responsible for all
+information with smaller hash values and the other for all the information with greater hash
+values than hash values of the information the servent is responsible for
+itself. The resulting chain is made to a ring by connecting the servents
+responsible for the maximum and minimum hash values. A request is send to an
+arbitrary servent on the ring and then forwarded to the servent believed to be
+closest to the hash value of the information until the servent with the
+information si found. This approach clearly greatly depends on the function
+calculating the hash values, so that the information is equally distributed
+among the servents. In a network with a high churn rate this approach possibly
+needs to adjust its hash function to eliminate unequal distribution. This may
+produce a lot of overhead compared to unstructured Peer-to-Peer networks.
+
 
 \section{Overlay Topologies}
 %What is this? 
+As discussed above the main challenge in pure Peer-to-Peer networks is finding a
+suitable topology for the purpose of a network. Some of the desired 
+properties are shown in Chapter \ref{chap:properties} 
 
 \section{Gossiping in P2P}
 %What is gossiping in general?  
