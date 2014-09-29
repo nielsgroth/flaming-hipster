@@ -32,8 +32,8 @@ public class CyclonPeer implements Runnable {
     private StatServer s;
     private BlockingQueue<Boolean> responseReceived= new SynchronousQueue<Boolean>();
     public static final int MTU = 1500;				// Maximum Transmission Unit: maximum size of datagram package
-    public final static int c = 10;	 				// cache size
-    public final static int l = 2;					// message size
+    public final static int c = 5;	 				// cache size
+    public final static int l = 5;					// message size
     public final static int socketTimeout = 3000; 	// sleep before shuffling again and receiving socket timeout
     public final static int shufflePayloadSize = l * Neighbor.recordBytes + 4;
     public final static int idLength = 4;

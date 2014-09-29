@@ -104,6 +104,18 @@ public class Edge implements Serializable {
     	}
     	return result;
     }
+    public void normalize(long startingTime) {
+    	Iterator<Spell> spellit = this.spells.iterator();
+    	Deque<Spell> currentSpells = new LinkedList<Spell>();
+    	while(spellit.hasNext()){
+    		Spell currentSpell=spellit.next();
+    		//if (currentSpell.getLeft())
+    			currentSpells.add(new Spell(currentSpell.getJoined()-startingTime, currentSpell.getLeft()-startingTime));
+    		//else
+    		//	currentSpells.add(new Spell(currentSpell.getJoined()-startingTime));
+    	}
+    	this.spells=currentSpells;
+    }
     public void activate(long updatetime) {
         this.spells.add(new Spell(updatetime));
     	//this.joined = System.nanoTime() / 1000;

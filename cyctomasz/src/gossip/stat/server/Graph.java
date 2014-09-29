@@ -109,6 +109,16 @@ public class Graph {
     	}
     	return result;
     }
+    public void normalize() {
+    	long startingTime = this.getStartingTime();
+    	for (int i=0; i<this.nodes.size();i++){
+    		this.nodes.get(i).setJoined(this.nodes.get(i).getJoined()-startingTime);
+    		this.nodes.get(i).setLeft(this.nodes.get(i).getLeft()-startingTime);
+    	}
+    	for (int i=0; i<this.edges.size();i++){
+    		this.edges.get(i).normalize(startingTime);
+    	}
+    }
     public Graph getSubGraph(long start, long end){
     	Graph subGraph= new Graph();
     	for(int i=0;i<this.nodes.size();i++){
@@ -163,12 +173,10 @@ public class Graph {
     				Object currentObject = in.readObject();
     				try{
     					Node currentNode = (Node) currentObject;
-    					if (!currentNode.getName().startsWith("172.16.17.42"));
 		    			this.nodes.add(currentNode);
     				} catch(ClassCastException notaNode){
     					try {
     						Edge currentEdge = (Edge) currentObject;
-    						if (!(currentEdge.getSource().startsWith("172.16.17.42")|| currentEdge.getTarget().startsWith("172.16.17.42")))
     						this.edges.add(currentEdge);
     					} catch(ClassCastException notanEdge){
     							this.nodes.addAll((LinkedList<Node>) currentObject);

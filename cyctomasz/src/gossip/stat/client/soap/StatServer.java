@@ -30,34 +30,6 @@ public interface StatServer {
 
     /**
      * 
-     * @param arg0
-     * @return
-     *     returns gossip.stat.client.soap.Node
-     */
-    @WebMethod
-    @WebResult(targetNamespace = "")
-    @RequestWrapper(localName = "getNode", targetNamespace = "http://server.stat.gossip/", className = "gossip.stat.client.soap.GetNode")
-    @ResponseWrapper(localName = "getNodeResponse", targetNamespace = "http://server.stat.gossip/", className = "gossip.stat.client.soap.GetNodeResponse")
-    public Node getNode(
-        @WebParam(name = "arg0", targetNamespace = "")
-        String arg0);
-
-    /**
-     * 
-     * @param arg0
-     * @return
-     *     returns gossip.stat.client.soap.Node
-     */
-    @WebMethod
-    @WebResult(targetNamespace = "")
-    @RequestWrapper(localName = "getTopoNode", targetNamespace = "http://server.stat.gossip/", className = "gossip.stat.client.soap.GetTopoNode")
-    @ResponseWrapper(localName = "getTopoNodeResponse", targetNamespace = "http://server.stat.gossip/", className = "gossip.stat.client.soap.GetTopoNodeResponse")
-    public Node getTopoNode(
-        @WebParam(name = "arg0", targetNamespace = "")
-        String arg0);
-
-    /**
-     * 
      * @param id
      * @param edgeList
      */
@@ -137,13 +109,13 @@ public interface StatServer {
     /**
      * 
      * @return
-     *     returns long
+     *     returns int
      */
     @WebMethod
     @WebResult(targetNamespace = "")
-    @RequestWrapper(localName = "getCounter", targetNamespace = "http://server.stat.gossip/", className = "gossip.stat.client.soap.GetCounter")
-    @ResponseWrapper(localName = "getCounterResponse", targetNamespace = "http://server.stat.gossip/", className = "gossip.stat.client.soap.GetCounterResponse")
-    public long getCounter();
+    @RequestWrapper(localName = "getNodeNumber", targetNamespace = "http://server.stat.gossip/", className = "gossip.stat.client.soap.GetNodeNumber")
+    @ResponseWrapper(localName = "getNodeNumberResponse", targetNamespace = "http://server.stat.gossip/", className = "gossip.stat.client.soap.GetNodeNumberResponse")
+    public int getNodeNumber();
 
     /**
      * 
@@ -152,9 +124,9 @@ public interface StatServer {
      */
     @WebMethod
     @WebResult(targetNamespace = "")
-    @RequestWrapper(localName = "getSameTimestampCounter", targetNamespace = "http://server.stat.gossip/", className = "gossip.stat.client.soap.GetSameTimestampCounter")
-    @ResponseWrapper(localName = "getSameTimestampCounterResponse", targetNamespace = "http://server.stat.gossip/", className = "gossip.stat.client.soap.GetSameTimestampCounterResponse")
-    public long getSameTimestampCounter();
+    @RequestWrapper(localName = "getCounter", targetNamespace = "http://server.stat.gossip/", className = "gossip.stat.client.soap.GetCounter")
+    @ResponseWrapper(localName = "getCounterResponse", targetNamespace = "http://server.stat.gossip/", className = "gossip.stat.client.soap.GetCounterResponse")
+    public long getCounter();
 
     /**
      * 

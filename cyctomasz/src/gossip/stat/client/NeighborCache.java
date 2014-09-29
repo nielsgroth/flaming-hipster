@@ -97,7 +97,6 @@ public class NeighborCache {
      * Removes the already known peers from parameter in
      * @param in
      */
-    // TODO Überlegungen zum Alter siehe Notes
     private void removeKnownFrom(List<Neighbor> in) {
         /* Löscht die in diesem Cache enthaltenen Duplikate IN DER EINGABE */
         Set<Neighbor.CompareNeighbor> uniqs = new HashSet<Neighbor.CompareNeighbor>();
@@ -182,7 +181,12 @@ public class NeighborCache {
     }
 
     List<Neighbor> processRequestList(List<Neighbor> request) {
+    	// der Request sender steht an erster Stelle
+        Neighbor sender = request.get(0);
+    	// evtl. im Request vorhandenen Verweis auf mich selbst entfernen.
+        request.remove(self);
         //Bereits bekannte Knoten aus dem Request entfernen
+
         removeKnownFrom(request);
         removeDuplicates(request);
 
@@ -194,8 +198,11 @@ public class NeighborCache {
         Collections.shuffle(neighbors);
 
         for (Neighbor n : neighbors) {
+        	// Falls n der request-Sender selbst ist, wird er übersprungen
             if (response.size() < l) {
+            	if (!n.equals(sender)){
                 response.add(n);
+            	}
             } else {
                 break;
             }

@@ -61,6 +61,9 @@ public class Node implements Serializable {
     public long getJoined() {
         return joined;
     }
+    public void setJoined(Long joined){
+    	this.joined=joined;
+    }
 
     public long getLastUpdate() {
         return lastUpdate;
@@ -69,6 +72,9 @@ public class Node implements Serializable {
     public long getLeft() {
     	if (left==null) return Long.MAX_VALUE;
         return left.longValue();
+    }
+    public void setLeft(Long left){
+    	this.left=left;
     }
 
     public String getName() {

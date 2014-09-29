@@ -4,14 +4,12 @@
  */
 package gossip.stat.server;
 
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -22,13 +20,13 @@ import java.util.Set;
 import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
 
-import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.io.xml.DomDriver;
-
 import javax.jws.WebMethod;
 import javax.jws.WebParam;
 import javax.jws.WebService;
 import javax.xml.ws.Endpoint;
+
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.io.xml.DomDriver;
 
 /**
  *
@@ -39,12 +37,10 @@ public class StatServer {
 
     public Map<String, Node> list = new ConcurrentHashMap<String, Node>(1000);
     public Map<String, Node> topology = new ConcurrentHashMap<String, Node>(1000);
-    public long counter =0;
-    private long sameTimestampCounter = 0;
-    private long lastTimestamp = 0;
-    public List<Integer> waitingMessages = new LinkedList<Integer>();
+    private long counter =0;
+    private List<Integer> waitingMessages = Collections.synchronizedList(new LinkedList<Integer>());
 
-    public Node getNode(String key) {
+    private Node getNode(String key) {
         if (this.list.containsKey(key)) {
             return this.list.get(key);
         } else {
@@ -54,7 +50,7 @@ public class StatServer {
         }
     }
     
-    public Node getTopoNode(String key) {
+    private Node getTopoNode(String key) {
     	if (this.topology.containsKey(key)) {
     		return this.topology.get(key);
     	} else{ 
@@ -75,10 +71,7 @@ public class StatServer {
     public void sendList(@WebParam(name = "id") String key, @WebParam(name = "edgeList") List<String> edges) {
         System.out.println(key);
         this.getNode(key).updateEdges(edges);
-        if (System.currentTimeMillis()==lastTimestamp)
-        sameTimestampCounter++;
-        lastTimestamp=System.nanoTime();
-        counter++;
+        updateCounter();
     }
     @WebMethod
     public void sendList2(@WebParam(name = "id") String key, @WebParam(name = "edgeList") List<String> edges, @WebParam(name = "lastMessageID") int messageID) {
@@ -90,10 +83,7 @@ public class StatServer {
     	}
     	System.out.println(key + "last message ID: " + messageID);
     	this.getNode(key).updateEdges(edges);
-    	if (System.currentTimeMillis()==lastTimestamp)
-            sameTimestampCounter++;
-            lastTimestamp=System.nanoTime();
-            counter++;
+        updateCounter();
     	
     }
     @WebMethod
@@ -152,12 +142,12 @@ public class StatServer {
        
     }
     @WebMethod
-    public long getCounter(){
-    	return counter;
+    public int getNodeNumber(){
+    	return list.size();
     }
     @WebMethod
-    public long getSameTimestampCounter(){
-    	return sameTimestampCounter;
+    public long getCounter(){
+    	return counter;
     }
     @WebMethod
     public int getLostPackagesCounter(){
@@ -267,7 +257,9 @@ public class StatServer {
     	//this.writeXML(fileName);
     	this.writeTopoXML(fileName);
     }
-    
+    private synchronized void updateCounter(){
+    	this.counter++;
+    }
     public static void runTest(final StatServer s) {
         final Vector<Vector<String>> nodes = new Vector<Vector<String>>();
         final int max_nodes = 100;

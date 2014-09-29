@@ -1,12 +1,17 @@
 package gossip.stat.analyzer;
 
+import gossip.stat.server.Edge;
 import gossip.stat.server.Graph;
+import gossip.stat.server.Node;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Scanner;
+
+import com.thoughtworks.xstream.XStream;
 
 public class Main2 {
 
@@ -80,9 +85,31 @@ public class Main2 {
 				System.out.println("Finished!");
 				
 				
-			}else {
+			}else if (s.startsWith("pretty")) {
+				System.out.print("Cleansing raw data...");
+				topology.normalize();
+				physicalTopo.normalize();
+				System.out.println("...finished.");
+				System.out.print("Writing changed files to " + outputfile + "clean.gexf and " + outputfile + "clean.topo.gexf...");
+				try {
+			        XStream xs = new XStream();        
+			        xs.processAnnotations(Node.class);
+			        xs.processAnnotations(Edge.class);
+			        xs.processAnnotations(Graph.class);
+			        BufferedWriter topoOut = new BufferedWriter(new FileWriter(outputfile + "clean.gexf"));
+			        topoOut.write(xs.toXML(topology));
+			        topoOut.close();
+			        BufferedWriter physTopoOut = new BufferedWriter(new FileWriter(outputfile + "clean.topo.gexf"));
+			        physTopoOut.write(xs.toXML(topology));
+			        physTopoOut.close();
+			        System.out.println("...finished.");
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}	else {
 				System.out.println("Unkown calculation mode. Known modes are:");
 				System.out.println("probs - calculate probability for a link to exist within a timeframe depending on phisical hops.");
+				System.out.println("pretty - reduces all timestamps by smallest available timestamp to make 0 the starting time of the experiment");
 				System.out.println("exit - exits the program.");
 			}
 		}

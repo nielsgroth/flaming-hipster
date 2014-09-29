@@ -124,11 +124,5 @@
 		</exec>
 	</target>
 	
-	<target name="14runServer" depends="13sendServerJarToDestination">
-		<exec executable="sshpass">
-			<arg
-			    line="-p *H1mm3l. ssh uhu ssh root@t9-213 java -jar /home/tomasz3/testbed/cyclonServer.jar -p 8000 -n eth0"/>
-		</exec>
-	</target>
 
 </project>
