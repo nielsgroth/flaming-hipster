@@ -11,18 +11,17 @@ import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 public class Spell {
     @XStreamAsAttribute
     @XStreamAlias(value="start")
-    private long joined;
+    private Long joined;
     
     @XStreamAsAttribute
     @XStreamAlias(value="end")
     private Long left = null;
     
-    public long getJoined() {
+    public Long getJoined() {
         return joined;
     }
 
-    public long getLeft() {
-    	if(left==null) return Long.MAX_VALUE;
+    public Long getLeft() {
         return left;
     }
     public Spell(long joined) {

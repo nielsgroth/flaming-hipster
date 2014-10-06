@@ -58,7 +58,7 @@ public class Node implements Serializable {
     	}
     	return subEdges;
     }
-    public long getJoined() {
+    public Long getJoined() {
         return joined;
     }
     public void setJoined(Long joined){
@@ -69,9 +69,8 @@ public class Node implements Serializable {
         return lastUpdate;
     }
 
-    public long getLeft() {
-    	if (left==null) return Long.MAX_VALUE;
-        return left.longValue();
+    public Long getLeft() {
+        return left;
     }
     public void setLeft(Long left){
     	this.left=left;

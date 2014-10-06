@@ -165,13 +165,6 @@ public class NeighborCache {
             }
         }
         
-//        Iterator<Integer> iter = l.iterator();
-//        while (iter.hasNext()) {
-//            if (iter.next().intValue() == 5) {
-//                iter.remove();
-//            }
-//        }
-
         //Die restlichen Antworten hinzufügen:
         Iterator<Neighbor> iter = request.iterator();
         while(iter.hasNext()){
@@ -283,5 +276,10 @@ public class NeighborCache {
     }
     synchronized void removeNeighbor(Neighbor removethis) {
     	neighbors.remove(removethis);
+    }
+    public void untagAll() {
+    	for (Neighbor n :neighbors) {
+    		n.untag();
+    	}
     }
 }

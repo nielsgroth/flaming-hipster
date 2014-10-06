@@ -29,7 +29,7 @@ public class CyclonPeer implements Runnable {
     private Random rand;
     private DatagramSocket sock;
     private int pendingShuffleId;
-    private StatServer s;
+    private StatServer statServer;
     private BlockingQueue<Boolean> responseReceived= new SynchronousQueue<Boolean>();
     public static final int MTU = 1500;				// Maximum Transmission Unit: maximum size of datagram package
     public final static int c = 5;	 				// cache size
@@ -58,7 +58,7 @@ public class CyclonPeer implements Runnable {
             } else {
             	_s = new StatServerService();
             }
-            s = _s.getStatServerPort();
+            statServer = _s.getStatServerPort();
         } catch (SocketException e) {
         	e.printStackTrace();
         } 
@@ -85,18 +85,9 @@ public class CyclonPeer implements Runnable {
 							printDebug("Deleting target neighbor from cache.");
 		                	neighbors.removeNeighbor(neighbors.currentTarget); 
 		                	// unreachable neighbor is removed from neighborCache
+		                	// tagged Neighbors are untagged
+		                	neighbors.untagAll();
 						} else Thread.sleep(socketTimeout);
-						
-//						synchronized (responseReceived) {
-//							responseReceived.wait(socketTimeout);
-//							if (!responseReceived) {
-//								printDebug("Deleting target neighbor from cache.");
-//			                	neighbors.removeNeighbor(neighbors.currentTarget); 
-//			                	// unreachable neighbor is removed from neighborCache
-//							} 
-//							responseReceived = false;
-//							Thread.sleep(socketTimeout);
-//						}
 					} catch (IOException e) {
 						e.printStackTrace();
 					} catch (InterruptedException e) { 
@@ -118,7 +109,7 @@ public class CyclonPeer implements Runnable {
             for(int i = 0; i<links.length;i++) {
             	edgeList.add(links[i].getHostAddress());
             }
-            s.sendTopology(neighbors.self.getIp().getHostAddress(), edgeList);
+            statServer.sendTopology(neighbors.self.getIp().getHostAddress(), edgeList);
             //Listen for Cyclon packages
             try {
                 List<Neighbor> responseList;
@@ -154,7 +145,7 @@ public class CyclonPeer implements Runnable {
                     sock.send(response);
                     printDebug("... und Antwort abgeschickt!");
                 }
-                s.sendList2(neighbors.self.getId(), neighbors.buildStatList(), id);
+                statServer.sendList2(neighbors.self.getId(), neighbors.buildStatList(), id);
                 printDebug("Neue Nachbarliste: " + neighbors);
 
 
@@ -172,8 +163,8 @@ public class CyclonPeer implements Runnable {
         //an external interrupt occurred
         printDebug("An external interrupt occured! Interrupting shuffle Thread and leaving network.");
         shuffleThread.interrupt();
-        s.sendList2(neighbors.self.getId(), neighbors.buildStatList(), last_mes_id);
-        s.leave(neighbors.self.getId());
+        statServer.sendList2(neighbors.self.getId(), neighbors.buildStatList(), last_mes_id);
+        statServer.leave(neighbors.self.getId());
     }
 
     public void shuffleInit() throws IOException {
@@ -183,7 +174,7 @@ public class CyclonPeer implements Runnable {
     		InetAddress bootstrapnode = routingTab.getBootstrapNode();
     		printDebug("bootstrapnode before subnetmaskchange: " + bootstrapnode.getHostAddress());
     		printDebug("self IP: " + neighbors.self.getIp().getHostAddress());
-    		//TODO replace subnetmask with self
+    		// replace subnetmask with self
     		bootstrapnode = InetAddress.getByName((neighbors.self.getIp().getHostAddress().substring(0, neighbors.self.getIp().getHostAddress().lastIndexOf(".")) + 
     		bootstrapnode.getHostAddress().substring(bootstrapnode.getHostAddress().lastIndexOf("."))));
     		printDebug("bootstrapnode after subnetmaskchange: " + bootstrapnode.getHostAddress());

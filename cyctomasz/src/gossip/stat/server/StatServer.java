@@ -59,20 +59,26 @@ public class StatServer {
     		return n;
     	}   	
     }
-
-    /**
-     * @param args the command line arguments
+    /*
+     * this method allows the client to send its physical topology information to the StatServer
      */
     @WebMethod
     public void sendTopology(@WebParam(name = "id") String key, @WebParam(name = "edgeList") List<String> edges){
     	this.getTopoNode(key).updateEdges(edges);
     }
+    /*
+     * this method allows the client to send its Cyclon neighbor information to the StatServer
+     */
     @WebMethod
     public void sendList(@WebParam(name = "id") String key, @WebParam(name = "edgeList") List<String> edges) {
         System.out.println(key);
         this.getNode(key).updateEdges(edges);
         updateCounter();
     }
+    /*
+     * this methods allows the client to send its Cyclon neighbor information together with a message ID
+     * the message ID is used to gather information on lost packages
+     */
     @WebMethod
     public void sendList2(@WebParam(name = "id") String key, @WebParam(name = "edgeList") List<String> edges, @WebParam(name = "lastMessageID") int messageID) {
     	messageID=Math.abs(messageID);
@@ -86,19 +92,27 @@ public class StatServer {
         updateCounter();
     	
     }
+    /*
+     * this method allows the client to indicate it is leaving the network
+     */
     @WebMethod
     public void leave(@WebParam(name = "id")String key) {
     	//System.out.println("Node " + key + "has left the building!");
     	this.getNode(key).leave();
     }
-    /**
-     * Delete statistics data from Server to start a new experiment
+    /*
+     * this method deletes statistics data from Server to start a new experiment
      */
     @WebMethod
     public void cleanup(){
     	this.list.clear();
     	this.topology.clear();
+    	this.counter=0;
+    	this.waitingMessages.clear();
     }
+    /*
+     * this method allows extraction of Cyclon topology data to XML in gexf format
+     */
     @WebMethod
     public String getXML() {
         Map<String, Node> currentList = new HashMap<String, Node>(list);
@@ -117,6 +131,9 @@ public class StatServer {
         String xml = xs.toXML(graph);
         return xml;
     }
+    /*
+     * this method writes Cyclon topology data to the specified file
+     */
     @WebMethod
     public void writeXML(File fileName) {
         Map<String, Node> currentList = new HashMap<String, Node>(list);
@@ -141,27 +158,9 @@ public class StatServer {
     	}
        
     }
-    @WebMethod
-    public int getNodeNumber(){
-    	return list.size();
-    }
-    @WebMethod
-    public long getCounter(){
-    	return counter;
-    }
-    @WebMethod
-    public int getLostPackagesCounter(){
-    	return waitingMessages.size();
-    }
-    @WebMethod
-    public String getWaitingMessages() {
-    	String result = "";
-    	for( Iterator<Integer> it
-    			= waitingMessages.iterator();it.hasNext();){
-    		result += " ; " + it.next();
-    	}
-    	return result;
-    }
+    /*
+     * this method allows extraction of OLSR topology data to XML in gexf format
+     */
     @WebMethod
     public String getTopoXML(){
     	Map<String, Node> currentList = new HashMap<String, Node>(topology);
@@ -180,29 +179,20 @@ public class StatServer {
         String xml = xs.toXML(graph);
         return xml;
     }
+    /*
+     * this method writes OLSR topology data to the specified file
+     */
     @WebMethod
     public void writeTopoXML(File fileName){
     	Map<String, Node> currentList = new HashMap<String, Node>(topology);
         Set<String> nodeNames = currentList.keySet();
         
-        XStream xs = new XStream();
-        xs.setMode(XStream.NO_REFERENCES);
-        xs.processAnnotations(Node.class);
-        xs.processAnnotations(Edge.class);
-        xs.processAnnotations(Graph.class);
-                
         Graph graph = new Graph();
         for (String key : nodeNames) {
             Node current = currentList.get(key);
             graph.addNode(current);
-        }               
-        try {
-	        BufferedWriter outTopo = new BufferedWriter(new FileWriter(fileName + ".topo.gexf"));
-	        outTopo.write(xs.toXML(graph));
-	        outTopo.close();
-    	} catch(IOException e) {
-    		e.printStackTrace();
-    	}
+        }
+        graph.toXML(fileName + "topo.gexf");
     }
     /**
      * alternative to writeXML(File fileName) for big result files
@@ -212,44 +202,14 @@ public class StatServer {
     public void writeAlternativeXML(File fileName){
     	Map<String, Node> currentList = new HashMap<String, Node>(list);
         Set<String> nodeNames = currentList.keySet();
-        XStream xs = new XStream();
         
-        
-        xs.setMode(XStream.NO_REFERENCES);
-        xs.processAnnotations(Node.class);
-        xs.processAnnotations(Edge.class);
-        xs.processAnnotations(Graph.class);
         Graph graph = new Graph();
         for (String key : nodeNames) {
             Node current = currentList.get(key);
             graph.addNode(current);
         } 
-        try {
-        	BufferedWriter outXML = new BufferedWriter(new FileWriter(fileName + ".gexf"));
-        	ObjectOutputStream out = xs.createObjectOutputStream(outXML, "graph");
-        	List<Node> nodes = graph.getNodes();
-        	List<Edge> edges = graph.getEdges();
-        	for (int i=0;i<nodes.size();i++) {
-        		out.writeObject(nodes.get(i));
-        	}
-        	for (int i =0;i<edges.size();i++){
-        		out.writeObject(edges.get(i));
-        	}
-        	out.close();
-        	outXML.close();
-        } catch(IOException e) {
-    		e.printStackTrace();
-    	}
-       	
-
+        graph.toXML(fileName + ".gexf");
     }
-
-//    <edge target="172.16.17.2:9010" source="172.16.17.66:9010" id="172.16.17.66:9010_172.16.17.2:9010">
-//    <spells class="linked-list">
-//      <spell start="1403722909" end="1403722961"/>
-//      <spell start="1403722979" end="1403723037"/>
-//    </spells>
-//  </edge>
     
     @WebMethod
     public void writeResults(File fileName) {
@@ -271,9 +231,9 @@ public class StatServer {
             }
             nodes.add(i, edges);
         }
-
+        
         Runnable testUpdater = new Runnable() {
-
+        
             @Override
             public void run() {
                 while (true) {
@@ -291,27 +251,50 @@ public class StatServer {
                 }
             }
         };
-
+        
         new Thread(testUpdater).start();
-
-
+        
+        
     }
-
+    @WebMethod
+    public int getNodeNumber(){
+    	return list.size();
+    }
+    @WebMethod
+    public long getCounter(){
+    	return counter;
+    }
+    @WebMethod
+    public int getLostPackagesCounter(){
+    	return waitingMessages.size();
+    }
+    /*
+     * this method allows to get the number of delivered messages without a corresponding response
+     */
+    @WebMethod
+    public String getWaitingMessages() {
+    	String result = "";
+    	for( Iterator<Integer> it
+    			= waitingMessages.iterator();it.hasNext();){
+    		result += " ; " + it.next();
+    	}
+    	return result;
+    }
     public static void startServer(String endpointUrl) {
         final StatServer s = new StatServer();
         if (endpointUrl==null){
             endpointUrl = "http://87.77.4.63:8000/gossip";
         } 
         Endpoint.publish(endpointUrl, s);
-
+        
 //        runTest(s);
-
+        
         Runnable validator = new Runnable() {
-
+        	
             @Override
             public void run() {
                 while (true) {
-
+                	
                     Set<String> keys = s.list.keySet();
                     for (String key : keys) {
                         s.list.get(key).validate();

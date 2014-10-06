@@ -8,17 +8,21 @@ package gossip.stat.server;
 
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.EOFException;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import com.sun.xml.internal.ws.api.pipe.NextAction;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
@@ -105,18 +109,35 @@ public class Graph {
     public long getEndingTime(){
     	long result=0;
     	for(int i=0; i<this.edges.size();i++) {
+    		if(this.edges.get(i).getLeft()!=null)
     		result = Math.max(result,this.edges.get(i).getLeft());
     	}
     	return result;
     }
     public void normalize() {
     	long startingTime = this.getStartingTime();
+    	// subtracting startingtime (smallest timestamp) from all timestamps
+    	// 1 - nodes
     	for (int i=0; i<this.nodes.size();i++){
     		this.nodes.get(i).setJoined(this.nodes.get(i).getJoined()-startingTime);
-    		this.nodes.get(i).setLeft(this.nodes.get(i).getLeft()-startingTime);
+    		if (this.nodes.get(i).getLeft()!=null)
+    			this.nodes.get(i).setLeft(this.nodes.get(i).getLeft()-startingTime);
     	}
+    	// 2 - edges
     	for (int i=0; i<this.edges.size();i++){
     		this.edges.get(i).normalize(startingTime);
+    	}
+    	// replacing missing timestamps with the experiment starting time and ending time
+    	startingTime = this.getStartingTime();
+    	long endingTime = this.getEndingTime();
+    	// 1 - nodes
+    	for (int i=0; i<this.nodes.size();i++){
+    		if (this.nodes.get(i).getLeft()==null) this.nodes.get(i).setLeft(endingTime);
+    		if (this.nodes.get(i).getJoined()==null) this.nodes.get(i).setJoined(startingTime);
+    	}
+    	//  2 - edges
+    	for (int i=0; i<this.edges.size();i++){
+    		this.edges.get(i).complete(endingTime);
     	}
     }
     public Graph getSubGraph(long start, long end){
@@ -208,9 +229,15 @@ public class Graph {
     		e.printStackTrace();
     	} 
     }
+    public void emptyGraph() {
+    	this.nodes.clear();
+    	this.edges.clear();
+    	this.shortestPaths.clear();
+    }
     public String getAnalytics(long intervalStart, long intervalEnd, Graph graph , Graph topology){
-    	long start = graph.getStartingTime() + intervalStart;
-    	long end = graph.getStartingTime() + intervalEnd;
+    	
+    	long start = graph.getStartingTime() + (intervalStart);
+    	long end = graph.getStartingTime() + (intervalEnd);
     	Graph subGraph = graph.getSubGraph(start, end);
     	Graph subTopology = topology.getSubGraph(start, end);
     	subTopology.caclulateShortestPaths();
@@ -233,5 +260,27 @@ public class Graph {
     		result += results[i] + ";";
     	}
     	return result;
+    }
+    public void toXML(String outputFileName){
+        try {
+	        XStream xs = new XStream();        
+	        xs.processAnnotations(Node.class);
+	        xs.processAnnotations(Edge.class);
+	        xs.processAnnotations(Graph.class);
+        	BufferedWriter outXML = new BufferedWriter(new FileWriter(outputFileName + ".gexf"));
+        	ObjectOutputStream out = xs.createObjectOutputStream(outXML, "graph");
+        	List<Node> nodes = this.getNodes();
+        	List<Edge> edges = this.getEdges();
+        	for (int i=0;i<nodes.size();i++) {
+        		out.writeObject(nodes.get(i));
+        	}
+        	for (int i =0;i<edges.size();i++){
+        		out.writeObject(edges.get(i));
+        	}
+        	out.close();
+        	outXML.close();
+        } catch(IOException e) {
+    		e.printStackTrace();
+    	}
     }
 }

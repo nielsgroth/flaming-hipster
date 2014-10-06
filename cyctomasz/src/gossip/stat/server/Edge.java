@@ -34,11 +34,11 @@ public class Edge implements Serializable {
     private Deque<Spell> spells = new LinkedList<Spell>();
        
 
-    public long getJoined() {
+    public Long getJoined() {
         return this.spells.getLast().getJoined();
     }
 
-    public long getLeft() {
+    public Long getLeft() {
         return this.spells.getLast().getLeft();
     }
     public long getFirstJoined() {
@@ -109,10 +109,28 @@ public class Edge implements Serializable {
     	Deque<Spell> currentSpells = new LinkedList<Spell>();
     	while(spellit.hasNext()){
     		Spell currentSpell=spellit.next();
-    		//if (currentSpell.getLeft())
+    		if (currentSpell==null){
+    		} else
+    		if (currentSpell.getLeft()!=null && currentSpell.getJoined()!=null) {
     			currentSpells.add(new Spell(currentSpell.getJoined()-startingTime, currentSpell.getLeft()-startingTime));
-    		//else
-    		//	currentSpells.add(new Spell(currentSpell.getJoined()-startingTime));
+    		} else if (currentSpell.getJoined()!=null){
+    			currentSpells.add(new Spell(currentSpell.getJoined()-startingTime));
+    		}
+    	}
+    	this.spells=currentSpells;
+    }
+    public void complete(long endingTime) {
+    	Iterator<Spell> spellit = this.spells.iterator();
+    	Deque<Spell> currentSpells = new LinkedList<Spell>();
+    	while(spellit.hasNext()){
+    		Spell currentSpell=spellit.next();
+    		if (currentSpell==null){
+    		} else
+    		if (currentSpell.getLeft()!=null && currentSpell.getJoined()!=null) {
+    			currentSpells.add(new Spell(currentSpell.getJoined(), currentSpell.getLeft()));
+    		} else if (currentSpell.getJoined()!=null){
+    			currentSpells.add(new Spell(currentSpell.getJoined(), endingTime));
+    		}
     	}
     	this.spells=currentSpells;
     }
