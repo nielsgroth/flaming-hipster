@@ -3,21 +3,70 @@
 
 \section{Introduction}
 % What is the problem? Why is it important? 
-Since their introduction in the late 1990's P2P Networks have become an
-important part of th internet. multiple P2P-based applications like file
-sharing, real time audio or video streaming and others make up for an average of
-79\% network traffic and 42\% of connections \cite{John+:InetTraffic}. P2P
-networks have very large numbers of participants with high fluctuations in
-activity. According to \cite{bittorrent} Bittorrent and $\mu$Torrent, the two
-main clients for the Bittorrent file sharing network, had 150 million distinct users in
-December 2011. Due to the big size of P2P networks scalability, low diameter and
-dynamic membership fluctuations are important issues for network management. In
-distributed membership management where there is no central management unit low
-cost changes in membership management is the key issue, because of the fast
-membership changes.
+Since their introduction in the late 1990's peer-to-peer Networks have become an
+important part of the Internet. Multiple peer-to-peer based applications like
+file sharing, real time audio or video streaming and others make up for an average of
+79\% network traffic and 42\% of connections \cite{John+:InetTraffic}.
+Peer-to-Peer networks have very large numbers of participants with high
+fluctuations in activity. According to \cite{bittorrent} Bittorrent and
+$\mu$Torrent, the two main clients for the Bittorrent file sharing network, had
+150 million distinct users in December 2011. Several studies have shown that the network size remains stable,
+but that al lot of peer join and leave the network over time. In fact those
+studies show that within an hour up to 50\% of the network peers have
+changed\cite{stutzbach2006understanding} \cite{falkner2007profiling}. This
+dynamic behaviour of the peers is called churn. There are different types of
+peer-to-peer systems depending on their level of decentralization. In
+unstructured pure peer-to-peer networks it is desired to manage the
+infrastructure decentrally. This means that there needs to be a
+decentral mechanism to manage the network itself and the service provided by
+the network. A crucial part of managing such a network is knowing which peers belong
+to it. This is called membership management. Since the networks are very big the
+membership managing solution has to be scalable. In order to deal with the high
+churn rates present in peer-to-peer networks a solution has to quickly adapt to
+changes in the networks to provide a reliable service. For network performance
+it is also required that peers can reach other peers in a short time despite
+the size of the network. Membership management is mainly the task to keep
+information about all participating peers accessible for all peers. This is
+done by dividing the information so that every peer stores a partial view of
+the network. In membership management this information usually consists out of
+the IP address, port and any other protocol specific metrics. The membership
+management therefore provides a structure which can also be called an overlay
+topology.
+
+Cyclon introduced by \cite{voulgaris2005cyclon} is an inexpensive membership
+management algorithm that provides an overlay topology with similar properties
+to random graphs \cite{Bollobas1985}. It uses gossiping to introduce randomness
+and quick information dissemination. The Cyclon algorithm has so far been only
+tested in a simulated environment.
 
 \section{Objective of the Thesis} 
 %What is the thesis? WHat is my contribution?
-\section{Outline of the Thesis} % alternative title: Thesis Structure
-%How is this thesis structures? Which chapter contains what?
-\section{State of the Art} %alternative title: related work Lpbcast Newscast
+The goal of this thesis is to examine Cyclon's behaviour under realistic
+network conditions, including packet loss, latency and high churn rates. The
+overlay topology provided by Cyclon is analyzed for its functionality,
+reliability and robustness. To achieve this a JAVA implementation of Cyclon
+together with a statistics server for topology information gathering is
+provided. Experiments are conducted in a wireless ad-hoc network and an
+analysis of the results is conducted to examine the impact of packet loss and
+latency on the topology. 
+
+ \section{Outline of the Thesis} % alternative title:
+% Thesis Structure How is this thesis structures? Which chapter contains what?
+This thesis is structured as follows. This chapter \ref{chap:introduction}
+introduces the problem and shows what Cyclon can achieve. There is also a quick
+survey of the state of the art in unstructured Peer-to-Peer membership
+management field. Chapter \ref{chap:gossiping} will describe more deeply where
+in peer-to-peer networks Cyclon can be used, what gossiping is and how Cyclon
+works basically. In Chapter \ref{chap:properties} the requirements for and
+properties of gossiping membership management protocols are listed and
+explained. Chapter \ref{chap:methodology} explains how the JAVA implementation
+is build. It also describes the network on which the experiments are conducted
+and how information about the experiments is gathers by the statistics server.
+The experiments results and analysis are provided in chapters \ref{chap:results}
+and \ref{chap:evaluation}. Chapter \ref{chap:conclusion} concludes this thesis
+and gives and outlook for future development.
+
+\section{State of the Art}
+%alternative title:
+% related work Lpbcast Newscast
+

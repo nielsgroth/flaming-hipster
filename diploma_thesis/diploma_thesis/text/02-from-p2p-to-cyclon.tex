@@ -59,7 +59,7 @@ central Server for storing the information where to find which file in the
 network. After getting an answer from the central server a servent could then
 directly download the desired file from the origin. This approach can be
 generalized as follows. A central server is used for organisation
-of the service or resource provided by the network. The requestet service or
+of the service or resource provided by the network. The requested service or
 resource is then provided directly. This architecture is called a
 Centralized Peer-to-Peer network.
 \\
@@ -120,12 +120,132 @@ produce a lot of overhead compared to unstructured Peer-to-Peer networks.
 
 \section{Overlay Topologies}
 %What is this? 
-As discussed above the main challenge in pure Peer-to-Peer networks is finding a
-suitable topology for the purpose of a network. Some of the desired 
-properties are shown in Chapter \ref{chap:properties} 
+As pure Peer-to-Peer networks are managed decentrally,
+the nodes themselves have to manage membership. To allow for a Peer-to-Peer
+solution to be scalable, it is desired to have each node be responsible for a
+fixed amount of information. This leads to the question how to decide which node
+holds which information. Membership management itself requires the nodes to hold
+information about other nodes, especially which nodes are currently part of the
+network. Since every node knows only a subset of the network, it is crucial to
+that each node selects a set of neighbors locally, so that the network profits
+from it globally. The nodes and their neighbor lists form an overlay topology
+which can but doesn't have to be dependent on properties of the physical or
+the routing topology of the network. The way that nodes are organized in such a
+network is also called overlay topology. There have been different models of
+what an ideal topology would look like and what properties it would have to
+have. This depends on the application of such a network. The properties that are
+studied in this thesis are shown in Chapter \ref{chap:properties}. The next
+section will discuss the random graph model of Erd\H{o}s and R\'{e} which shows
+to have some of the desired properties.
+\subsection{Random Graphs}
+% What are they?
+Random graph models are network models in which some parameters are fixed but
+the networks are random in all other aspects. The Erd\H{o}s-R\'{e}nyi-Model
+defines a random graph as a graph G(n,p), where n is the number of nodes and p
+is the probability that an edge between to nodes exists. For very large networks
+in can be shown that this model is equivalent to the model G(n,m) where n is
+again the number of nodes and m is the number of edges which are placed randomly
+among the nodes. When talking about random graphs and their properties, one does
+not mean single graphs, but sets of graphs and average properties over those
+sets. In fact the properties of random graphs are so fitting for typical
+Peer-to-Peer network applications, that it is desirable for a membership
+management protocol to achieve a random graph like topology.
+% Definition Erdos renyi model
+% properties
+% 
 
-\section{Gossiping in P2P}
+
+%Small World Properties
+
+
+\section{Gossiping}
 %What is gossiping in general?  
+Gossiping in networks is a way of exchanging data in an epidemic way. The basic
+idea can be described through the following office image. Workers in an office
+meet up pairwise in the break room and exchange information. New information or
+gossip is introduced by one worker to another. After the first meeting two of
+the workers possess the new information. At the next meet in the breaking room those
+two people talk to other two people and the information spreads to two more
+workers. Of course if the same people pair up again the information is not
+spread. But if the pairs are randomly chosen the probability of meeting someone
+who already has the new information depends on how far the information has
+spread already. On the other hand a person not knowing the new information yet
+is far more likely to meet someone with the new information the more it spreads.
+This form of information dissemination can also called epidemic. There are
+several advantages to this method of information dissemination. First of all new
+information is spread fast due to the dissemination's epidemic behaviour. 
+
+\subsection{Classification of Gossiping Algorithms}
+Gossiping algorithms can be classified by their information flow. A
+push-gossiping algorithm is one where the initiating communication partner
+sends its information to the other without expecting a response. Algorithms
+where the initiating partner requests an information from another partner are
+called pull-gossiping algorithms. At last algorithms, where the initiating
+communication partner sends information to the other and that one responses with
+its own information, are called push-pull-gossiping algorithms.
+
 
 \section{Cyclon} 
 %How does Cyclon work? Pseudocode of shuffling algorithms
+Cyclon is a gossiping algorithm for membership management in unstructured
+Peer-to-Peer network. It provides an overlay topology for decentralized
+membership management using a push-pull-gossiping approach. Cyclon's goal is to
+create an overlay topology with properties similar to random graphs. Each node
+holds a changing subset of network participants as neighbors. The
+participating nodes periodically exchange neighbor information, making the
+overlay dynamic and proactive.  There are two shuffling algorithms for Cyclon, the basic and the
+enhanced one.
+\subsection{Basic Shuffling}
+Basic version of shuffling algorithm is very simple. Each node holds a small
+neighbor cache with \emph{c} neighbors. Each cache entry consists of another
+peers network address. Every node \emph{P} periodically exchanges its neighbor
+information with another node \emph{Q} by performing the following steps:
+\begin{enumerate}
+\item Select a random subset of \emph{l} $(1 \leq l \leq c)$ neighbors from
+\emph{P}'s own cache, and a random neighbor, \emph{Q}, within this subset where
+\emph{l} is a system parameter called \emph{shuffle length}.
+\item Replace \emph{Q}'s address with \emph{P}'s address.
+\item Send the updates subset to \emph{Q}.
+\item Receive from \emph{Q} a subset of no more than \emph{l} of \emph{Q}'s
+neighbors.
+\item Discard entries pointing to \emph{P}, and entries that are already in
+\emph{P}'s cache.
+\item Update \emph{P}'s cache to include all remaining entries, by
+\emph{firstly} using empty cache slots (if any), and \emph{secondly} replacing
+entries among the ones originally sent to Q.
+\item \end{enumerate}
+The node receiving a shuffle request selects a random subset from its neighbor
+cache of a size t ($t \leq l$) and sends it to the initiating node. It then
+performs step 5 and 6 with the shuffle request received to update its own cache.
+There are two disadvantages to basic shuffling. Since the node chosen to
+exchange information with is chosen randomly, there is no guarantee that a node
+is ever chosen for a shuffle. This also implies that a pointer to a node is
+never verified by actually communicating with it but just passed along. To deal
+with those disadvantages a small change is made to enhance the shuffling.
+ 
+\subsection{Enhanced Shuffling}
+Enhanced shuffling adds a new parameter held in the neighbor cache by each node.
+To ensure that every node gets shuffled with after a sufficient time has passed
+age is added as an parameter to the node pointers. The age is increased every
+time a node initiates an exchange between neighbors. Also instead of choosing
+the neighbor to shuffle with randomly the pointer with the highest age is
+chosen. The resulting shuffle operation takes the following steps:
+
+\begin{enumerate}
+\item Increase by one the age of all neighbors.
+\item Select neighbor Q with the highest age among all neighbors, and l-1 other
+random neighbors.
+\item Replace Q's entry with a new entry of age 0 and with P's address.
+\item Send the updated subset to peer Q.
+\item Receive from Q a subset of no more than i of its own entries.
+\item Discard entries pointing at P and entries already contained in P's
+neighbor cache.
+\item Update P's cache to include all remaining entries,by firstly using emty
+cache slots, and secondly replacing entries among the ones sent to Q.
+\end{enumerate}
+
+This enhancement additionally to solving the problem that a node is never chosen
+as a shuffling partner, it also limits the time a pointer lives. A pointer
+can only seize to exist if it is chosen as a shuffling partner or it is lost
+due to a communication failure. The implementation in this thesis uses the
+enhanced shuffling method especially because of this feature.

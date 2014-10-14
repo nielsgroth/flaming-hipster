@@ -1,12 +1,923 @@
-\chapter{Experimental Observations and Result Analisys} 
+\chapter{Experimental Observations and Result Analysis} 
 \label{chap:results}
 
-\section{Experiment Scenarios}
+This chapter provides and discusses all experiment results. In the first part
+the conducted experiments are introduced and described. In the second part of
+this chapter the resulting overlay topologies are described using several
+metrics already introduced in chapter \ref{chap:properties}. The results are
+interpreted and where necessary the effects are explained and analyzed.
 
-\subsection{Static}
-\subsection{Churn}
-\subsection{Massive Node Failure}
-\subsection{Byzantine Fault Tolerance}
+\section{Experiment Scenarios}
+This section describes the different experiment scenarios conducted during the
+research for this thesis. The specific experiment parameters are shown in table
+\ref{tab:experiments}.
+ \begin{table}
+\begin{tabular} { |p{2cm}|l|p{1.9cm}|p{2cm}|p{2.5cm}|p{1.9cm}|}
+\hline
+Experiment Name & Network Mode & Experiment Scenario & Cache Size (neighbors) &
+Shuffle length (neighbors) & duration (in cycles)\\
+\hline
+\hline
+B00 & wireless/OLSR & static & 20 & 10 & 1200\\
+B01 & wireless/OLSR & static & 20 & 5 & 1200\\
+B02 & wireless/OLSR & static & 20 & 2 & 1200\\
+B03 & wireless/OLSR & static & 10 & 10 & 1200\\
+B04 & wireless/OLSR & static & 10 & 5 & 1200\\
+B05 & wireless/OLSR & static & 10 & 2 & 1200\\
+B06 & wireless/OLSR & static & 5 & 5 & 1200\\
+B07 & wireless/OLSR & static & 5 & 2 & 1200\\
+T00 & wired/Ethernet & static & 20 & 10 & 1100\\
+T01 & wired/Ethernet & static & 20 & 5 & 900\\
+T02 & wired/Ethernet & static & 20 & 2 & 1200\\
+T03 & wired/Ethernet & static & 10 & 10 & 1200\\
+T04 & wired/Ethernet & static & 10 & 5 & 1150\\
+T05 & wired/Ethernet & static & 10 & 2 & 1200\\
+T06 & wired/Ethernet & static & 5 & 5 & 1100\\
+T07 & wired/Ethernet & static & 5 & 2 & 1000\\
+C01 & wireless/OLSR & churn & 20 & 10 & 1200\\
+C04 & wireless/OLSR & churn & 10 & 5 & 1200\\
+C06 & wireless/OLSR & churn & 5 & 2 & 1200\\
+D01 & wired/Ethernet & churn & 20 & 10 & 1200\\
+D04 & wired/Ethernet & churn & 10 & 5 & 1200\\
+D06 & wired/Ethernet & churn & 5 & 2 & 1200\\
+\hline
+\end{tabular}
+\caption{Experiments and parameters conducted within this thesis}
+\label{tab:experiments}
+\end{table}
+\subsection{Cycle}
+All time dependent graphs in this section use a metric called cycle.A cycle
+is defined as the time period during which every node in an experiment has initiated a shuffle request. Since each node initiates a shuffle once for
+every shuffle time period a cycle equals the shuffle period time. In all
+conducted experiments the shuffle time as set to 3000ms
+
+\subsection{Static Scenario}
+In the static scenario the experiments start with 300 nodes that do not die
+until the end of the experiment. During the experiments the nodes exchange
+neighbor information asynchronously at a fixed rate. The experiments were conducted in a wired and
+wireless network to examine Cyclon's behaviour with different package loss
+rates. Three different cache sizes and three different shuffle lengths have been
+used and combined. The static scenario is used to
+study topology properties and convergence behaviour of Cyclon. It
+does not resemble typical usage of a Peer-to-Peer network, where peers join and leave frequently.  
+\subsection{Churn Scenario}
+In real Peer-to-Peer networks clients often join and leave the network
+frequently. The rate in which the network changes due to this peer behaviour is
+called churn rate. The churn scenario experiments are to simulate Cyclon in a
+highly dynamic network. The churn mode much like the static mode starts with 300
+peers, which then calculate a time to live. They behave the same as in the
+static mode until they exceed their time to live value. The peers then stop all
+communication. Each time a peer dies another Cyclon peer is started. This way
+there is always up to 300 peers in the network. The time to live is a random
+number between 100 and 300 of cycles with equal probabilities. Most of the
+experiments run for 1200 cycles so that the minimum number of unique peers
+within an experiment is 1200 and the maximum 3600. The number of simultaneously
+running peers never exceeds 300. This scenario is used to obtain data on how
+Cyclon behaves in a more realistic environment.
+
 
 \section{Experiment Results}
-\section{Analysis and Experimental Observations}
+
+\subsection{Connectivity}
+In all experiments the initial topology after bootstrapping is a network with a
+single weakly connected component. That means that each node is either known by
+or knows about a node in the component. This is to ensure no node starts
+without a connection to the network, since Cyclon does not have merging
+capabilities. In all experiments conducted as described in table
+\ref{tab:experiments} the components are examined after 1200 cycles (example
+see figure \ref{fig:WeaklyCompB04}).\\
+
+\begin{figure}
+	\includegraphics[width=\textwidth,keepaspectratio]{./graphics/analysis/WeaklyComponentB04.pdf}
+	\caption{Overlay Topology after 1200 cycles, experiment B04
+	(static,wireless,cache size 10, shuffle length 5); All nodes are of the same
+	color indicating a single weakly connected component.}
+	\label{fig:WeaklyCompB04}
+\end{figure}
+
+The result in all static experiments is that at the end of the experiment the
+network still consists out of a single weakly connected component. Since Cyclon does not have
+merging capabilities other than the bootstrapping process, this means the
+network does not split up but stays connected throughput the duration of the
+experiment.\\
+In all churn mode experiments the result after 1200 cycles is a little bit
+different. There seem to be more than one weakly connected component. A closer
+examination shows a big component and several components with one or two
+nodes. The nodes within the single node components all revealed to be new nodes
+before bootstrapping process. The nodes in in the two-node-components failed to
+bootstrap to the main component. Instead they bootstrapped to each other
+revealing a weakness in the bootstrapping process, but not in the Cyclon
+protocol itself.\\
+Summarizing the Cyclon shuffling algorithm seems not to divide a network once it
+has been successfully bootstrapped, even under conditions like moderate package
+loss and high churn.
+
+\subsection{Degree Distribution}
+We have now examined the overall connectivity of the network, which is a
+constraint for a membership management overlay topology to work. Although the
+connectivity of the network is crucial, the fact that there is only one
+connected component, does say little about the topology of the network other
+than that it is and stays connected. To examine the topologies weaknesses and
+strengths the next part will show the degree distribution and how it evolves
+during experiments. Since Cyclon produces a directed graph we will seperatly
+examine the out-degree distribution and in-degree distribution.
+\subsubsection{Out-Degree Distribution}
+\label{subsubsec:outDegree}
+Because Cyclon has a fixed cache size and it fills the cache up before deleting
+any pointers from it, the expected out-degree of all nodes is to be the same or
+smaller than the cache size. The out-degree distribution indicates therefore how
+full the networks caches are. Some of the out-degree distribution results are
+shown in figures \ref{fig:outDegreeDistT00}, \ref{fig:outDegreeDistB00}. \\
+
+\begin{figure}
+	\includegraphics[width=\textwidth,keepaspectratio]{./graphics/analysis/outDegreeGraphB00.pdf}
+	\caption{Out-Degree Distribution in wireless Static Mode, cache size=20,
+	shuffle length=10}
+	\label{fig:outDegreeDistB00}
+\end{figure}
+
+\begin{figure}
+	\includegraphics[width=\textwidth,keepaspectratio]{./graphics/analysis/outDegreeGraphT00.pdf}
+	\caption{Out-Degree Distribution in wired Static Mode, cache size=20, shuffle
+	length=10}
+	\label{fig:outDegreeDistT00}
+\end{figure}
+
+Figure \ref{fig:outDegreeDistB00} shows the out-degree distribution in a
+wireless static mode experiment with cache size and shuffle length of size 10
+over time. The first probe is taken after 200 cycles and shows that almost all
+nodes have an out-degree of 20 which was expected. What is not expected is that
+there are some nodes with an out-degree higher than the cache size.\\ 
+After examining the source code of the implementation, the effect can be
+explained as follows. When a peer sends a shuffle request it tags the pointers
+it sent. On reception of a response it first fills out available empty space in
+the cache and then replaces tagged pointers with the new pointers from the
+response. This ensures that a pointer is never lost unless a packet containing
+it gets lost. The problem arises when a peer \emph{A} sends a shuffle request
+to peer \emph{B}, tags the sent pointers in its cache and before receiving a
+response from \emph{B}, receives a request from a different peer \emph{C}. It
+creates a response for \emph{C} possibly containing pointers that are tagged
+and replaces them with pointers from the request of \emph{C}. Up to now the
+cache is within its bounds, but when the shuffle response from peer \emph{B}
+arrives there is not enough tagged pointers fro replacement. Unfortunately this
+effect was discovered too late to be prevented. Since it occurs rather rarely ,
+e.g. up to 3 nodes from 300 in figure \ref{fig:outDegreeDistB00}, it has a
+limited impact on the results.\\
+Resuming the description of figure \ref{fig:outDegreeDistB00}, after 400 cycles
+the out-degree of almost all nodes is between 16 and 20, which shows that some
+peers delete parts of their cache not only to make space for new ones. This is
+due to packet loss. When peer \emph{A} sends a shuffle request and does not
+receive an answer, it deletes the pointer of the current target peer from its
+cache. In static mode the reason for a missing response can only be loss of the
+request or the response.\\
+After 400 cycles the degree distribution does not change fundamentally; in the
+following probes after 600,800,00 and 1200 cycles a tendency towards 19 as the
+out-degree can be observed.\\
+In figure \ref{fig:outDegreeDistT00} the -out-degree distribution of a wired
+static mode experiment is shown for comparison. Throughout the experiment almost
+all the nodes have an out-degree of 20. This shows that with virtually no packet
+loss the peers do not delete pointers from their caches unless they exchange
+them for new ones. There are again some peers which have more pointers than the
+cache size would allow, which again is due to the special effect mentioned
+above.
+
+\begin{figure}
+\begin{subfigure}{.5\textwidth}
+	\includegraphics[width=\textwidth,keepaspectratio]{./graphics/analysis/outDegreeGraphB00.pdf}
+	\caption{cache size=20, shuffle
+	length=10}
+	\label{fig:outDegreeDistB00small}
+\end{subfigure}%
+\begin{subfigure}{.5\textwidth}
+	\includegraphics[width=\textwidth,keepaspectratio]{./graphics/analysis/outDegreeGraphB01.pdf}
+	\caption{cache size=20, shuffle
+	length=5}
+	\label{fig:outDegreeDistB01small}
+\end{subfigure}
+\begin{subfigure}{.5\textwidth}
+	\includegraphics[width=\textwidth,
+	keepaspectratio]{./graphics/analysis/outDegreeGraphB02.pdf} \caption{cache size=20, shuffle length=2}
+	\label{fig:outDegreeDistB02small}
+\end{subfigure}%
+\begin{subfigure}{.5\textwidth}
+	\includegraphics[width=\textwidth,keepaspectratio]{./graphics/analysis/outDegreeGraphB03.pdf}
+	\caption{cache size=10, shuffle
+	length=10}
+	\label{fig:outDegreeDistB03small}
+\end{subfigure}
+\begin{subfigure}{.5\textwidth}
+	\includegraphics[width=\textwidth,keepaspectratio]{./graphics/analysis/outDegreeGraphB04.pdf}
+	\caption{cache size=10, shuffle
+	length=5}
+	\label{fig:outDegreeDistB04small}
+\end{subfigure}%
+\begin{subfigure}{.5\textwidth}
+	\includegraphics[width=\textwidth,keepaspectratio]{./graphics/analysis/outDegreeGraphB05.pdf}
+	\caption{cache size=10, shuffle
+	length=2}
+	\label{fig:outDegreeDistB05small}
+\end{subfigure}
+\begin{subfigure}{.5\textwidth}
+	\includegraphics[width=\textwidth,keepaspectratio]{./graphics/analysis/outDegreeGraphB06.pdf}
+	\caption{cache size=5, shuffle
+	length=5}
+	\label{fig:outDegreeDistB06small}
+\end{subfigure}%
+\begin{subfigure}{.5\textwidth}
+	\includegraphics[width=\textwidth,keepaspectratio]{./graphics/analysis/outDegreeGraphB07.pdf}
+	\caption{cache size=5, shuffle
+	length=2}
+	\label{fig:outDegreeDistB07small}
+\end{subfigure}
+\caption{Out-Degree Distribution in wireless static scenario}
+\end{figure}
+
+\begin{figure}
+\begin{subfigure}{.5\textwidth}
+	\includegraphics[width=\textwidth,keepaspectratio]{./graphics/analysis/outDegreeGraphT00.pdf}
+	\caption{cache size=20, shuffle
+	length=10}
+	\label{fig:outDegreeDistT00small}
+\end{subfigure}%
+\begin{subfigure}{.5\textwidth}
+	\includegraphics[width=\textwidth,keepaspectratio]{./graphics/analysis/outDegreeGraphT01.pdf}
+	\caption{cache size=20, shuffle
+	length=5}
+	\label{fig:outDegreeDistT01small}
+\end{subfigure}
+\begin{subfigure}{.5\textwidth}
+	\includegraphics[width=\textwidth,keepaspectratio]{./graphics/analysis/outDegreeGraphT02.pdf}
+	\caption{cache size=20, shuffle
+	length=2}
+	\label{fig:outDegreeDistT02small}
+\end{subfigure}%
+\begin{subfigure}{.5\textwidth}
+	\includegraphics[width=\textwidth,keepaspectratio]{./graphics/analysis/outDegreeGraphT03.pdf}
+	\caption{cache size=10, shuffle
+	length=10}
+	\label{fig:outDegreeDistT03small}
+\end{subfigure}
+\begin{subfigure}{.5\textwidth}
+	\includegraphics[width=\textwidth,keepaspectratio]{./graphics/analysis/outDegreeGraphT04.pdf}
+	\caption{cache size=10, shuffle
+	length=5}
+	\label{fig:outDegreeDistT04small}
+\end{subfigure}%
+\begin{subfigure}{.5\textwidth}
+	\includegraphics[width=\textwidth,keepaspectratio]{./graphics/analysis/outDegreeGraphT05.pdf}
+	\caption{cache size=10, shuffle
+	length=2}
+	\label{fig:outDegreeDistT05small}
+\end{subfigure}
+\begin{subfigure}{.5\textwidth}
+	\includegraphics[width=\textwidth,keepaspectratio]{./graphics/analysis/outDegreeGraphT06.pdf}
+	\caption{cache size=5, shuffle
+	length=5}
+	\label{fig:outDegreeDistT06small}
+\end{subfigure}%
+\begin{subfigure}{.5\textwidth}
+	\includegraphics[width=\textwidth,keepaspectratio]{./graphics/analysis/outDegreeGraphT07.pdf}
+	\caption{cache size=5, shuffle
+	length=2}
+	\label{fig:outDegreeDistT07small}
+\end{subfigure}
+\caption{Out-Degree Distribution in wired static scenario}
+\end{figure}
+
+\subsubsection{In-Degree Distribution}
+\label{subsubsec:inDegree}
+The in-degree of a node expresses the amount of nodes in the network having a
+pointer on that node in their caches. In other words it shows the popularity of
+a node. The goal of Cyclon is to have an even in-degree distribution, so that
+every node is as good represented in the accumulated network cache as
+possible.\\
+
+\begin{figure}
+	\includegraphics[width=\textwidth,keepaspectratio]{./graphics/analysis/degreeGraphB05.pdf}
+	\caption{In-Degree Distribution in wireless static mode, cache size=10, shuffle
+	length=2}
+	\label{fig:inDegreeDistB05}
+\end{figure}
+
+As an example of how the in-degree distribution changes in time, figure
+\ref{fig:inDegreeDistB05} of the wireless static experiment with cache size 10 and shuffle
+length 2 will be discussed. After 200 cycles most nodes have a small in-degree,
+but there are some with a very high one. Following the time line after 400 and
+600 cycles the number of nodes with a very high in-degree dwindles, while most
+nodes have an in-degree around 10. In comparison the in-degree of figures
+\ref{fig:inDegreeDistB03small} and \ref{fig:inDegreeDistB04small} do not
+distribute so evenly. The difference between these experiments is the shuffle
+length. The same can be observed in wired experiments (see figures
+\ref{fig:inDegreeDistT03small},
+\ref{fig:inDegreeDistT04small}, \ref{fig:inDegreeDistT05small}). It seems that
+there is a connection between the shuffle length and the smoothing in in-degree distribution.\\
+There is two possibilities to change an in-degree through shuffling. The first
+is when a node \emph{A} is chosen by another node \emph{B} as the next shuffle
+target from its neighbor cache. If node \emph{B}'s cache has been full before
+the shuffling, then node \emph{A} will no longer be in the cache of \emph{B}
+after the shuffling. Node \emph{A} will now have a new pointer to node \emph{B}.
+This means that the in-degree of \emph{B} is decremented by one and the
+in-degree of \emph{A} is incremented by one. In this case a higher in-degree leads to a higher probability of being chosen as a shuffle target, which leads to a higher
+probability to have the in-degree decremented. Since a
+low in-degree means that the probability to be chosen as a shuffle target is low, also lowers the
+probability to have the in-degree decremented.The probability $P(X_A)$ for a
+node \emph{X} to be node \emph{A} in this scenario is dependent solely on the
+in-degree $d$ and the cache size $c$ of the nodes in the network. During a cycle
+a node \emph{X} is exactly one time node \emph{B} in this scenario. The
+probability $P(X_B)$ therefore is independent from
+shuffle length and in-degree. \[P(X_A) = \frac{d}{c}\]
+The second way to change the in-degree is when node \emph{A} requests a shuffle
+with node \emph{B} and both have node \emph{C} in their cache. If node \emph{A}
+chooses \emph{C} to include in the shuffle request and node \emph{B} does not
+chose node \emph{C} to put in the response the in-degree of \emph{C} is lowered
+by one. Instead one of the nodes node \emph{B} chose to put in the response to
+node \emph{A}, let it be node \emph{D}, has now an in-degree incremented by one.
+In this scenario a high in-degree of node \emph{C} means there is a high
+probability that two exchanging nodes (\emph{A} and \emph{B}) both have node
+\emph{C} in their cache resulting in a higher probability to have the in-degree
+decrement. But in this scenario a higher in-degree also means a higher chance to
+be node \emph{D} which results in having an even higher in-degree. The chance
+for a node to be node \emph{C} in this scenario is lower then the chance to be
+node \emph{D}. This can be shown by a simple formula. Let there be a set $N$ of
+$n$ nodes of which $d\leq n$ nodes have a pointer on node \emph{X}. Let $X_C$ be
+the event that Node \emph{X} is of the same type as node \emph{C} in the
+scenario above and $X_D$ the event that \emph{X} is of the same type as
+\emph{D}.
+Let $l$ be the shuffle length and $c$ the cache size.
+The probabilities for each $X_1$ and $X_2$ are:
+\[p(X_C) =
+\overbrace{\frac{d^2}{n(n-1)}}^{\text{prob. of node A and B having a pointer on
+X}} \cdot\underbrace{\frac{l}{c}(1-\frac{l}{c})}_{\text{prob. of X 
+being chosen for sending by only one of the nodes}} \]
+\[p(X_D) =
+\overbrace{\frac{d(n-d)}{n(n-1)}}^{\text{prob. of only one node having
+pointer on X}}
+\cdot\underbrace{\frac{l}{c}}_{\text{prob. of X being chosen for sending}}\]
+
+With the above the following equation can be given for the probable change of
+the in-degree of a node during one cycle. This assumes that there is no packet
+loss or latency in the network and that all caches are full.
+\begin{align*}
+	d_{new} &= p(X_B) - p(X_A) - p(X_C) + p(X_D) \\
+	&= 1 - \frac{d}{c} - \frac{l\cdot d^2}{c\cdot n(n-1)}(1-\frac{l}{c}) 
++ \frac{l\cdot d(n-d)}{c\cdot n(n-1)} \\
+	&= 1 - \frac{d}{c} - \frac{dl}{cn(n-1)}\left(\frac{dl}{c}+ n \right)
+\end{align*}
+For small n this means that the second scenario has an impact on how the
+in-degree changes during a cycle. This shows why the shuffle length to cache
+size ratio has such a big impact on network development in small networks. When
+on the other hand the network gets bigger and $l,c,d$ are constant, then it is easy
+to see that the impact of the shuffle to cache size ratio dwindles with growing
+number of nodes:
+
+\begin{align*}
+\lim_{n \to \infty} d_{new} = 1 - \frac{d}{c}
+\end{align*}
+
+The first scenario smooths the in-degrees of all nodes and the second
+scenario does the opposite. This proves that the strange behaviour of the
+in-degree distribution is showing in the experiment due to the small number of
+total nodes. In a bigger network the number of nodes $n$ makes the
+probabilities $P(X_C)$ and $P(X_D)$ very small while the probabilities $P(X_A)$
+and $P(X_B)$ remain constant.
+
+\begin{figure}
+\begin{subfigure}{.5\textwidth}
+	\includegraphics[width=\textwidth,keepaspectratio]{./graphics/analysis/degreeGraphB00.pdf}
+	\caption{cache size=20, shuffle
+	length=10}
+	\label{fig:inDegreeDistB00small}
+\end{subfigure}%
+\begin{subfigure}{.5\textwidth}
+	\includegraphics[width=\textwidth,keepaspectratio]{./graphics/analysis/degreeGraphB01.pdf}
+	\caption{cache size=20, shuffle
+	length=5}
+	\label{fig:inDegreeDistB01small}
+\end{subfigure}
+\begin{subfigure}{.5\textwidth}
+	\includegraphics[width=\textwidth,keepaspectratio]{./graphics/analysis/degreeGraphB02.pdf}
+	\caption{cache size=20, shuffle
+	length=2}
+	\label{fig:inDegreeDistB02small}
+\end{subfigure}%
+\begin{subfigure}{.5\textwidth}
+	\includegraphics[width=\textwidth,keepaspectratio]{./graphics/analysis/degreeGraphB03.pdf}
+	\caption{cache size=10, shuffle
+	length=10}
+	\label{fig:inDegreeDistB03small}
+\end{subfigure}
+\begin{subfigure}{.5\textwidth}
+	\includegraphics[width=\textwidth,keepaspectratio]{./graphics/analysis/degreeGraphB04.pdf}
+	\caption{cache size=10, shuffle
+	length=5}
+	\label{fig:inDegreeDistB04small}
+\end{subfigure}%
+\begin{subfigure}{.5\textwidth}
+	\includegraphics[width=\textwidth,keepaspectratio]{./graphics/analysis/degreeGraphB05.pdf}
+	\caption{cache size=10, shuffle
+	length=2}
+	\label{fig:inDegreeDistB05small}
+\end{subfigure}
+\begin{subfigure}{.5\textwidth}
+	\includegraphics[width=\textwidth,keepaspectratio]{./graphics/analysis/degreeGraphB06.pdf}
+	\caption{cache size=5, shuffle
+	length=5}
+	\label{fig:inDegreeDistB06small}
+\end{subfigure}%
+\begin{subfigure}{.5\textwidth}
+	\includegraphics[width=\textwidth,keepaspectratio]{./graphics/analysis/degreeGraphB07.pdf}
+	\caption{cache size=5, shuffle
+	length=2}
+	\label{fig:inDegreeDistB07small}
+\end{subfigure}
+\caption{In-Degree Distribution in wireless static scenario}
+\end{figure}
+
+\begin{figure}
+\begin{subfigure}{.5\textwidth}
+	\includegraphics[width=\textwidth,keepaspectratio]{./graphics/analysis/degreeGraphT00.pdf}
+	\caption{cache size=20, shuffle
+	length=10}
+	\label{fig:inDegreeDistT00small}
+\end{subfigure}%
+\begin{subfigure}{.5\textwidth}
+	\includegraphics[width=\textwidth,keepaspectratio]{./graphics/analysis/degreeGraphT01.pdf}
+	\caption{cache size=20, shuffle
+	length=5}
+	\label{fig:inDegreeDistT01small}
+\end{subfigure}
+\begin{subfigure}{.5\textwidth}
+	\includegraphics[width=\textwidth,keepaspectratio]{./graphics/analysis/degreeGraphT02.pdf}
+	\caption{cache size=20, shuffle
+	length=2}
+	\label{fig:inDegreeDistT02small}
+\end{subfigure}%
+\begin{subfigure}{.5\textwidth}
+	\includegraphics[width=\textwidth,keepaspectratio]{./graphics/analysis/degreeGraphT03.pdf}
+	\caption{cache size=10, shuffle
+	length=10}
+	\label{fig:inDegreeDistT03small}
+\end{subfigure}
+\begin{subfigure}{.5\textwidth}
+	\includegraphics[width=\textwidth,keepaspectratio]{./graphics/analysis/degreeGraphT04.pdf}
+	\caption{cache size=10, shuffle
+	length=5}
+	\label{fig:inDegreeDistT04small}
+\end{subfigure}%
+\begin{subfigure}{.5\textwidth}
+	\includegraphics[width=\textwidth,keepaspectratio]{./graphics/analysis/degreeGraphT05.pdf}
+	\caption{cache size=10, shuffle
+	length=2}
+	\label{fig:inDegreeDistT05small}
+\end{subfigure}
+\begin{subfigure}{.5\textwidth}
+	\includegraphics[width=\textwidth,keepaspectratio]{./graphics/analysis/degreeGraphT06.pdf}
+	\caption{cache size=5, shuffle
+	length=5}
+	\label{fig:inDegreeDistT06small}
+\end{subfigure}%
+\begin{subfigure}{.5\textwidth}
+	\includegraphics[width=\textwidth,keepaspectratio]{./graphics/analysis/degreeGraphT07.pdf}
+	\caption{cache size=5, shuffle
+	length=2}
+	\label{fig:inDegreeDistT07small}
+\end{subfigure}
+\caption{In-Degree Distribution in wired static scenario}
+\end{figure}
+
+\FloatBarrier
+\subsection{Cluster Coefficient}
+The clustering coefficient is another indicator for complex graphs. It
+calculates how many neighbors of each node are neighbors themselves. In other
+words the higher the cluster coefficient of a node is, the more complete the
+cluster around that node. The average cluster coefficient in a network is the
+mean value of the local cluster coefficient of all networks. A high cluster
+coefficient indicates a network with strong cluster building. If there is a
+limited amount of edges, as is in Cyclon a high cluster coefficient also means
+that the clusters are weakly connected outside of a cluster. This can be
+explained as follows. A node has a fixed number of edges. If most of those edges
+go into its own cluster then there is not many edges left to go outside of the
+cluster. Same applies to all other nodes in the cluster. Weakly connected
+clusters also mean that the links between those clusters are the weak points of
+the whole network. Therefore for Cyclon it is desirable to have a low
+average cluster coefficient. 
+In figure \ref{fig:ClusterCoef10small} the average
+cluster coefficients for wireless static experiments with cache size 10 are
+shown. As a reference the average cluster coefficient of a random graph ensemble
+with the same amount of nodes and edges is also projected into the figure. The
+values after 400 cycles show to be stable. In this sample the the value of the
+experiment with shuffle length 2 is about twice the reference value of the
+random graph. The difference to the ideal can not be explained completely with
+packet loss. Figure \ref{fig:ClusterCoefNWI} shows a comparison between
+wired and wireless experiments. Wired experiments are virtually lossless but still are
+far away from being close to the ideal reference line. The abrupt end of some of
+the graphs in \ref{fig:ClusterCoefNWI} is resulting from a premature end of
+the experiment due to technical reasons. It does not hinder from seeing that the
+average cluster coefficients of the lossless experiments are generally lower
+than the others. An exception might be the runs with cache size 20, and indeed,
+as we can see in figure \ref{fig:ClusterCoef20small}, the cluster coefficient is
+generally closer to the ideal for graphs with cache size 20.
+
+\begin{figure}
+	\centering
+	\includegraphics[width=0.6501\textwidth,keepaspectratio]{./graphics/analysis/clusterGraphNWI.pdf}
+	\caption{Cluster Coefficient in wireless and wired static mode}
+	\label{fig:ClusterCoefNWI}
+\end{figure}
+
+\begin{figure}
+\centering
+\begin{subfigure}{\textwidth}
+	\centering
+	\includegraphics[height=.34\textheight,keepaspectratio]{./graphics/analysis/clusterGraph5.pdf}
+	\caption{ cache size=5}
+	\label{fig:ClusterCoef5small}
+\end{subfigure}
+\begin{subfigure}{\textwidth}
+	\centering
+	\includegraphics[height=.34\textheight,keepaspectratio]{./graphics/analysis/clusterGraph10.pdf}
+	\caption{ cache size=10}
+	\label{fig:ClusterCoef10small}
+\end{subfigure}
+\begin{subfigure}{\textwidth}
+	\centering
+	\includegraphics[height=.34\textheight,keepaspectratio]{./graphics/analysis/clusterGraph20.pdf}
+	\caption{cache size=20}
+	\label{fig:ClusterCoef20small}
+\end{subfigure}
+\caption{Cluster coefficient in wireless static mode by cache size}
+\end{figure}
+
+\begin{figure}
+\begin{subfigure}{\textwidth}
+	\centering
+	\includegraphics[height=.34\textheight,keepaspectratio]{./graphics/analysis/clusterGraphSL2.pdf}
+	\caption{shuffle length=2}
+	\label{fig:ClusterCoefSL2small}
+\end{subfigure}
+\begin{subfigure}{\textwidth}
+	\centering
+	\includegraphics[height=.34\textheight,keepaspectratio]{./graphics/analysis/clusterGraphSL5.pdf}
+	\caption{shuffle length=5}
+	\label{fig:ClusterCoefSL5small}
+\end{subfigure}
+\begin{subfigure}{\textwidth}
+	\centering
+	\includegraphics[height=.34\textheight,keepaspectratio]{./graphics/analysis/clusterGraphSL10.pdf}
+	\caption{shuffle length=10}
+	\label{fig:ClusterCoefSL10small}
+\end{subfigure}
+\caption{Cluster Coefficient in wireless static scenario by shuffle length}
+\end{figure}
+
+\begin{figure}
+\begin{subfigure}{\textwidth}
+	\centering
+	\includegraphics[height=.34\textheight,keepaspectratio]{./graphics/analysis/clusterGraphChurn5.pdf}
+	\caption{cache size 5}
+	\label{fig:ClusterCoefChurn5small}
+\end{subfigure}
+\begin{subfigure}{\textwidth}
+	\centering
+	\includegraphics[height=.34\textheight,keepaspectratio]{./graphics/analysis/clusterGraphChurn10.pdf}
+	\caption{cache size 10}
+	\label{fig:ClusterCoefChurn5small}
+\end{subfigure}
+\begin{subfigure}{\textwidth}
+	\centering
+	\includegraphics[height=.34\textheight,keepaspectratio]{./graphics/analysis/clusterGraphChurn20.pdf}
+	\caption{cache size 20}
+	\label{fig:ClusterCoefChurn5small}
+\end{subfigure}
+\caption{Cluster Coefficient in wireless static scenario by shuffle length}
+\end{figure}
+
+
+\begin{figure}
+\begin{subfigure}{.5\textwidth}
+
+\end{subfigure}
+\end{figure}
+\FloatBarrier
+\subsection{Path lengths}
+\subsubsection{Diameter}
+\label{subsubsec:diameter}
+The diameter of a graph is the longest of all shortest paths within the network.
+In other words it shows the maximum number of hops a broadcast message must be
+send over to make sure it reaches every node. This is a important metric for
+search and find operations on the network. The results of all experiments in
+static mode are shown in table \ref{tab:diameter}. The results is the
+diameter of the network topology after 1200 cycles if not indicated
+differently.\\
+The diameter for almost all static experiments is between 6-7. Exceptions are
+the experiments where cache size is 5 and shuffle length is 2. This effect
+is due to a combination of the overall smaller in-degree in experiments with
+shuffle length 2 discussed in section \ref{subsubsec:inDegree} and the small
+cache size. In networks containing nodes with a high in-degree those nodes take
+the role of shortcuts as opposed to networks without such nodes. In combination
+with the small cache size of 5 which restricts the number of overall edges in
+the network, this leads to a high diameter.  
+
+
+\begin{table}
+\begin{tabular} { |p{1.9cm}|l|p{1.9cm}|p{2cm}|p{2.4cm}|p{1.9cm}|}
+\hline
+Experiment Name & Network Mode & Experiment Scenario & Cache Size (neighbors) &
+Shuffle length (neighbors) & Diameter 1200 cycles \\
+\hline \hline
+B00 & wireless/OLSR & static & 20 & 10 & 6\\
+B01 & wireless/OLSR & static & 20 & 5 & 7\\
+B02 & wireless/OLSR & static & 20 & 2 & 6\\
+B03 & wireless/OLSR & static & 10 & 10 & 7\\
+B04 & wireless/OLSR & static & 10 & 5 & 6\\
+B05 & wireless/OLSR & static & 10 & 2 & 7\\
+B06 & wireless/OLSR & static & 5 & 5 & 7\\
+B07 & wireless/OLSR & static & 5 & 2 & 10\\
+T00 & wired/Ethernet & static & 20 & 10 & 6 (1100)\\
+T01 & wired/Ethernet & static & 20 & 5 & 6 (900)\\
+T02 & wired/Ethernet & static & 20 & 2 & 5\\
+T03 & wired/Ethernet & static & 10 & 10 & 5\\
+T04 & wired/Ethernet & static & 10 & 5 & 7 (1150)\\
+T05 & wired/Ethernet & static & 10 & 2 & 7\\
+T06 & wired/Ethernet & static & 5 & 5 & 6 (1100)\\
+T07 & wired/Ethernet & static & 5 & 2 & 10 (1000)\\
+\hline
+\end{tabular}
+\caption{Diameter after 1200 cycles if not specified differently}
+\label{tab:diameter}
+\end{table}
+
+\subsubsection{Betweenness Centrality}
+Betweenness centrality is a network metric to indicate how central a node is
+based on the shortest paths running through it. For this the shortest paths of
+all pairs of nodes are calculated. For each node the number of all occurrences
+within the shortest paths is summed up. The resulting number shows how many
+shortest paths of the network use this node. In this thesis the results are
+additionally normalized, so that 0 means none of the shortest paths use this
+node and 1 means all of the shortest paths use this node. In Peer-to-Peer
+networks nodes with a high betweenness centrality will probably face more
+traffic since they are on the shortest paths of more node pairs. This means that
+the lower and more similar the betweenness centrality of all nodes in a network
+is, the better the load balancing in the network will probably be. For sake of
+comparison the ideal load balancing would be if every node had the same load to
+bear.This will be used as a reference value, although this does not mean that
+there is such a topology. It should also be stated that the absolute total
+traffic in a network calculated like this, also depends on the actual length of
+the shortest paths. This is to say that the betweenness centrality can only
+indicate the load balancing and not the efficiency of the network. \[\frac{100\%
+\text{ traffic}}{300 \text{ nodes}} \approx 0.33\% \text{ traffic per node}\]\\
+
+\begin{figure}
+	\includegraphics[width=\textwidth,keepaspectratio]{./graphics/analysis/BetweennessCentralityB06.pdf}
+	\caption{Betweenness Centrality, wireless static mode, cache size 5, shuffle
+	length 5}
+	\label{fig:betweennessB06}
+\end{figure}
+
+As an example in figure \ref{fig:betweennessB06} the betweenness centrality of a
+wireless static experiment with cache size and shuffle length 5 is shown. The
+columns accumulate the number of nodes of which the betweenness centrality is
+between the left and the right boundary of the column. In this figure it is
+shown that the betweenness centrality of the nodes varies between 0 or close to
+0 and 0.035. This means that if the assumed traffic caused by every node is the
+same, some nodes have to bear up to 3.5\% of the network traffic. This value is
+about 10 times higher as the ideal. At the same time more than two thirds of
+the nodes have an betweenness centrality of 0 or close to it. In the assumed
+traffic scenario this would mean no or very low traffic load. After examining
+the specific nodes with a high betweenness centrality in this experiment, the
+nodes turn out to be nodes that have also a high in-degree.
+This explains the phenomenon, as those nodes act as a sort of shortcut in the
+network an are therefore more probable to be on shortest paths between nodes.
+This can again be explained by the small size of the network in combination with
+the shuffle length.\\
+
+\begin{figure}
+	\includegraphics[width=\textwidth,keepaspectratio]{./graphics/analysis/BetweennessCentralityB07.pdf}
+	\caption{Betweenness Centrality, wireless static mode, cache size 5, shuffle
+	length 2}
+	\label{fig:betweennessB07}
+\end{figure}
+
+
+For a betweenness centrality distribution of an experiment without
+very high in-degree nodes, figure \ref{fig:betweennessB07} will be discussed
+next. The experiment parameters are given with a shuffle length of 2 a cahce
+size of 5 and the mode is wireless and static. As depicted the betweenness
+centrality varies between 0 and about 0.045 which in the assumed traffic
+scenario means that there are nodes bearing up to 4.5\% of network traffic. On
+the other hand the number of nodes with a betweenness centrality of 0 or close
+to 0 is less then half of the network size. Again in the assumed traffic load
+scenario this would mean less than half of the nodes would have none or near to
+none traffic load. \\
+
+\begin{figure}
+	\includegraphics[width=\textwidth,keepaspectratio]{./graphics/analysis/BetweennessCentralityB00.pdf}
+	\caption{Betweenness Centrality, wireless static mode, cache size 20, shuffle
+	length 10}
+	\label{fig:betweennessB00}
+\end{figure}
+
+\begin{figure}
+	\includegraphics[width=\textwidth,keepaspectratio]{./graphics/analysis/BetweennessCentralityB02.pdf}
+	\caption{Betweenness Centrality, wireless static mode, cache size 20, shuffle
+	length 2}
+	\label{fig:betweennessB02}
+\end{figure}
+
+In figures \ref{fig:betweennessB00} and \ref{fig:betweennessB02} the difference
+is even clearer. In figure \ref{fig:betweennessB00} the the range of betweenness
+centrality goes from 0 to about 0.025, while almost two thirds of the nodes
+have a value of 0 and close to 0. In figure \ref{fig:betweennessB02} the range
+of betweenness centrality goes from 0 to about 0.02, while the number of nodes
+with a value 0 or very close to 0 is only at one tenth of the network. Although
+there are still nodes with a relatively high betweenness centrality the there
+are a lot more nodes closer to the assumed ideal value of 0.003
+
+\begin{figure}
+\begin{subfigure}{.5\textwidth}
+	\includegraphics[width=\textwidth,keepaspectratio]{./graphics/analysis/BetweennessCentralityB00.pdf}
+	\caption{cache size=20, shuffle
+	length=10}
+	\label{fig:betweennessCentralityB00small}
+\end{subfigure}%
+\begin{subfigure}{.5\textwidth}
+	\includegraphics[width=\textwidth,keepaspectratio]{./graphics/analysis/BetweennessCentralityB01.pdf}
+	\caption{cache size=20, shuffle
+	length=5}
+	\label{fig:betweennessCentralityB01small}
+\end{subfigure}
+\begin{subfigure}{.5\textwidth}
+	\includegraphics[width=\textwidth,keepaspectratio]{./graphics/analysis/BetweennessCentralityB02.pdf}
+	\caption{cache size=20, shuffle
+	length=2}
+	\label{fig:betweennessCentralityB02small}
+\end{subfigure}%
+\begin{subfigure}{.5\textwidth}
+	\includegraphics[width=\textwidth,keepaspectratio]{./graphics/analysis/BetweennessCentralityB03.pdf}
+	\caption{cache size=10, shuffle
+	length=10}
+	\label{fig:betweennessCentralityB03small}
+\end{subfigure}
+\begin{subfigure}{.5\textwidth}
+	\includegraphics[width=\textwidth,keepaspectratio]{./graphics/analysis/BetweennessCentralityB04.pdf}
+	\caption{cache size=10, shuffle
+	length=5}
+	\label{fig:betweennessCentralityB04small}
+\end{subfigure}%
+\begin{subfigure}{.5\textwidth}
+	\includegraphics[width=\textwidth,keepaspectratio]{./graphics/analysis/BetweennessCentralityB05.pdf}
+	\caption{cache size=10, shuffle
+	length=2}
+	\label{fig:betweennessCentralityB05small}
+\end{subfigure}
+\begin{subfigure}{.5\textwidth}
+	\includegraphics[width=\textwidth,keepaspectratio]{./graphics/analysis/BetweennessCentralityB06.pdf}
+	\caption{cache size=5, shuffle
+	length=5}
+	\label{fig:betweennessCentralityB06small}
+\end{subfigure}%
+\begin{subfigure}{.5\textwidth}
+	\includegraphics[width=\textwidth,keepaspectratio]{./graphics/analysis/BetweennessCentralityB07.pdf}
+	\caption{cache size=5, shuffle
+	length=2}
+	\label{fig:betweennessCentralityB07small}
+\end{subfigure}
+\caption{Betweenness Centrality in wireless static mode}
+\end{figure}
+
+
+
+\begin{figure}
+\begin{subfigure}{.5\textwidth}
+	\includegraphics[width=\textwidth,keepaspectratio]{./graphics/analysis/BetweennessCentralityT00.pdf}
+	\caption{cache size=20, shuffle
+	length=10}
+	\label{fig:betweennessCentralityT00small}
+\end{subfigure}%
+\begin{subfigure}{.5\textwidth}
+	\includegraphics[width=\textwidth,keepaspectratio]{./graphics/analysis/BetweennessCentralityT01.pdf}
+	\caption{cache size=20, shuffle
+	length=5}
+	\label{fig:betweennessCentralityT01small}
+\end{subfigure}
+\begin{subfigure}{.5\textwidth}
+	\includegraphics[width=\textwidth,keepaspectratio]{./graphics/analysis/BetweennessCentralityT02.pdf}
+	\caption{cache size=20, shuffle
+	length=2}
+	\label{fig:betweennessCentralityT02small}
+\end{subfigure}%
+\begin{subfigure}{.5\textwidth}
+	\includegraphics[width=\textwidth,keepaspectratio]{./graphics/analysis/BetweennessCentralityT03.pdf}
+	\caption{cache size=10, shuffle
+	length=10}
+	\label{fig:betweennessCentralityT03small}
+\end{subfigure}
+\begin{subfigure}{.5\textwidth}
+	\includegraphics[width=\textwidth,keepaspectratio]{./graphics/analysis/BetweennessCentralityT04.pdf}
+	\caption{cache size=10, shuffle
+	length=5}
+	\label{fig:betweennessCentralityT04small}
+\end{subfigure}%
+\begin{subfigure}{.5\textwidth}
+	\includegraphics[width=\textwidth,keepaspectratio]{./graphics/analysis/BetweennessCentralityT05.pdf}
+	\caption{cache size=10, shuffle length=2}
+	\label{fig:betweennessCentralityT05small}
+\end{subfigure}
+\begin{subfigure}{.5\textwidth}
+	\includegraphics[width=\textwidth,keepaspectratio]{./graphics/analysis/BetweennessCentralityT06.pdf}
+	\caption{cache size=5, shuffle
+	length=5}
+	\label{fig:betweennessCentralityT06small}
+\end{subfigure}%
+\begin{subfigure}{.5\textwidth}
+	\includegraphics[width=\textwidth,keepaspectratio]{./graphics/analysis/BetweennessCentralityT07.pdf}
+	\caption{cache size=5, shuffle
+	length=2}
+	\label{fig:betweennessCentralityT07small}
+\end{subfigure}
+\caption{Betweenness Centrality in wired static mode}
+\end{figure}
+
+\FloatBarrier
+\section{Summary}
+	This section contains a summary of the results discussed above.
+	The experiments have shown that Cyclon provides an overlay topology that does
+	not loose connectivity once established even with moderate package loss and a
+	high churn of clients. They have also shown that the topology metrics converge
+	to certain values. The typical out-degree in an overlay topology created by
+	Cyclon has shown to be close to the cache size. Although with moderate package
+	loss the mean out-degree is smaller than without, it is a small difference.
+	Most in-degrees in a topology have shown to be close to the cache size if the
+	shuffle length was small enough. The experiments node count has shown to be to
+	small to show the same for bigger shuffle lengths. The average cluster
+	coefficients of all experiments have not been bigger than twice the average
+	cluster coefficients of comparable random graphs. Packet loss seems to also
+	have a small negative impact on cluster coefficients. The diameter of the
+	network is similar to those of small world networks. The betweenness
+	centrality for a sufficiently small shuffle length shows that Cyclon does not
+	create super nodes, that would be weak points in topology structure. \\
+	
+	The number of nodes in the experiment has shown to be too small for most of the
+	experiment parameters. Especially the shuffle length to cache size ratio has
+	proven to have a big effect on in-degree distribution in disfavor of the
+	networks symmetry. The networks latency also has shown to have an impact on
+	this implementation, in the way that in rare cases the cache size is above its
+	initial boundary. Nodes with high in-degree are especially prone to this
+	behaviour. The effects of network behaviour will be described in the next
+	subsection
+	
+	
+\subsection{Impacts of Package Loss on Topology Development}
+	The goal of the experiments was to find what impact package loss has on the
+	topology. This is why a wireless network using UDP packets was chosen. The
+	shuffle response packet and the shuffle request packet both can get lost. If
+	the latter gets lost this means that in this cycle the node does not make
+	a shuffle exchange and that the target node has one less response to send.
+	For the whole network this means that there is one less shuffle in the
+	network. This slows network development, which has an impact on how fast the
+	network converges and repairs itself after big failures.
+	If the shuffle response gets lost the impact is larger. The target node has
+	exchanged its nodes with the nodes from the shuffle request, but the request
+	node cannot. This leads to a change in in-degree distribution in favor of the
+	nodes from the shuffle request packet. In extreme cases where nodes are only
+	known by one other node and are the only connection to a different part of
+	the network , this could lead to a network partitioning. In the experiments
+	conducted for this thesis the statistics server counted up to 10\% lost
+	response packages. As stated in the diameter section \ref{subsubsec:diameter}
+	of this chapter, no partitionings have been observed.\\
+	Lost response packets also change the cluster coefficient of the responding
+	node. This is because after the node exchanges their neighbors to the ones from
+	the request packet, it has more neighbors in common with the requesting node,
+	which is now also its neighbor. The negative impact on network metric values of
+	this scenario also is dependent on the shuffle length to cache size ratio. The
+	higher the ratio the more negative the impact. When the shuffle length is the
+	same as the cache size and the caches are full in both nodes and a response
+	package gets lost the nodes have almost identical caches. Summerizing a
+	moderate paket loss has negative impact on the networks balance but in the
+	experiments did not produce a fatal error.
+\subsection{Impacts of Latency on Topology Development}
+	Network latencies on the DES-Testbed are very small compared to the socket
+	timeout set in this implementation of Cyclon, but still have an impact on the
+	networks behaviour. As described in the section above and the section
+	\ref{subsubsec:outDegree} the latency produces an error in cache size
+	management. The problem arisis when a node sends a shuffling request and before
+	receiving a response gets another shuffle request. There are several
+	possibilities to change Cyclons behaviour in that case. One would be to simply drop
+	the package. This leads directly to a higher request package loss ratio.
+	Another possibility is to wait for the response before processing the new
+	request. While this works fine for the first node it could possibly let the
+	timeout of the second requesting node to run out before receiving its response. This
+	solution could lead to a higher response package loss. Another option would be
+	for the first node to pick only pointers from the untagged portion of its cache
+	to send in the response packet. Depending on the shuffle length to cache size
+	ratio this could mean an only partially filled or even empty response packet.
+	On receiving an only partially filled package the second requesting node would
+	have to know which nodes it can replace otherwise pointers could get lost.
+	
+	
+	
+	
+	
+	
+	
+	

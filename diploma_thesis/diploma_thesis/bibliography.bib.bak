@@ -1,6 +1,37 @@
 % This file was created with JabRef 2.7b.
 % Encoding: UTF8
 
+@ARTICLE{bakhshi2007formal,
+  author = {Bakhshi, Rena and Bonnet, Francois and Fokkink, Wan and Haverkort,
+	Boudewijn},
+  title = {Formal analysis techniques for gossiping protocols},
+  journal = {ACM SIGOPS Operating Systems Review},
+  year = {2007},
+  volume = {41},
+  pages = {28--36},
+  number = {5},
+  publisher = {ACM}
+}
+
+@BOOK{Bollobas1985,
+  title = {Random Graphs},
+  publisher = {Academic Press, London},
+  year = {1985},
+  author = {Béla Bollobás},
+  owner = {tomasz},
+  timestamp = {2014.09.07}
+}
+
+@MASTERSTHESIS{Bonnet2006,
+  author = {Francois Bonnet},
+  title = {Performance Analysis of CYCLON, an Inexpensive Membership Management
+	for Unstructured P2P Overlays},
+  school = {ENS Cachan Bretagne, University of Rennes, IRISA},
+  year = {2006},
+  owner = {tomasz},
+  timestamp = {2014.09.07}
+}
+
 @TECHREPORT{RFC3626,
   author = {Thomas Clausen and Philippe Jacquet},
   title = {Optimized Link State Routing Protocol (OLSR)},
@@ -12,6 +43,24 @@
   owner = {tomasz},
   timestamp = {2014.08.03},
   url = {http://www.rfc-editor.org/rfc/rfc3626.txt}
+}
+
+@BOOK{dorogovtsev2010lectures,
+  title = {Lectures on complex networks},
+  publisher = {Oxford University Press Oxford},
+  year = {2010},
+  author = {Dorogovtsev, Sergei N},
+  volume = {24}
+}
+
+@INPROCEEDINGS{falkner2007profiling,
+  author = {Falkner, Jarret and Piatek, Michael and John, John P and Krishnamurthy,
+	Arvind and Anderson, Thomas},
+  title = {Profiling a million user DHT},
+  booktitle = {Proceedings of the 7th ACM SIGCOMM conference on Internet measurement},
+  year = {2007},
+  pages = {129--134},
+  organization = {ACM}
 }
 
 @TECHREPORT{Guenes+:2008TR,
@@ -34,6 +83,53 @@
   year = {2008},
   owner = {tomasz},
   timestamp = {2014.03.30}
+}
+
+@TECHREPORT{Montresor2009,
+  author = {Alberto Montresor and Mark Jelasity},
+  title = {PeerSim: A scalable P2P simulator},
+  institution = {P2P'09: Proceedings of the 9th International Conference on Peer-to-Peer,
+	pages 99–100, Seattle, WA},
+  year = {2009},
+  owner = {tomasz},
+  timestamp = {2014.09.07}
+}
+
+@BOOK{newman2010networks,
+  title = {Networks: an introduction},
+  publisher = {Oxford University Press},
+  year = {2010},
+  author = {Newman, Mark}
+}
+
+@ARTICLE{bittorrent,
+  author = {BitTorrent Press Release},
+  title = {BitTorrent and $\mu$Torrent Software Surpass 150 Million User Milestone},
+  year = {2012},
+  month = {January},
+  owner = {tomasz},
+  timestamp = {2014.03.30},
+  url = {http://www.bittorrent.com/intl/es/company/ybout/ces_2012_150m_users}
+}
+
+@ARTICLE{sabidussi1966centrality,
+  author = {Sabidussi, Gert},
+  title = {The centrality index of a graph},
+  journal = {Psychometrika},
+  year = {1966},
+  volume = {31},
+  pages = {581--603},
+  number = {4},
+  publisher = {Springer}
+}
+
+@INPROCEEDINGS{stutzbach2006understanding,
+  author = {Stutzbach, Daniel and Rejaie, Reza},
+  title = {Understanding churn in peer-to-peer networks},
+  booktitle = {Proceedings of the 6th ACM SIGCOMM conference on Internet measurement},
+  year = {2006},
+  pages = {189--202},
+  organization = {ACM}
 }
 
 @TECHREPORT{ThomasClausen2004,
@@ -61,9 +157,34 @@
   url = {http://www.olsr.org/docs/report.pdf}
 }
 
-@OTHER{bittorrent,
+@ARTICLE{voulgaris2005cyclon,
+  author = {Voulgaris, Spyros and Gavidia, Daniela and Van Steen, Maarten},
+  title = {Cyclon: Inexpensive membership management for unstructured p2p overlays},
+  journal = {Journal of Network and Systems Management},
+  year = {2005},
+  volume = {13},
+  pages = {197--217},
+  number = {2},
+  publisher = {Springer}
+}
+
+@ARTICLE{watts1998collective,
+  author = {Watts, Duncan J and Strogatz, Steven H},
+  title = {Collective dynamics of ‘small-world’networks},
+  journal = {nature},
+  year = {1998},
+  volume = {393},
+  pages = {440--442},
+  number = {6684},
+  publisher = {Nature Publishing Group}
+}
+
+@BOOK{Wehrle2005,
+  title = {Peer-to-Peer Systems and Applications},
+  publisher = {Springer},
+  year = {2005},
+  author = {Klaus Wehrle and Ralf Steinmetz},
   owner = {tomasz},
-  timestamp = {2014.03.30},
-  url = {http://www.bittorrent.com/intl/de/company/ybout/ces_2012_150m_users}
+  timestamp = {2014.09.07}
 }
 

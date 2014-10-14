@@ -1,4 +1,4 @@
-\chapter{Properties of Gossip-Based Overlay Topologies} 
+\chapter{Properties and Requirements of Gossip-Based Overlay Topologies} 
 \label{chap:properties}
 
 \section{General Requirements}
@@ -44,10 +44,10 @@ impossible to examine arbitrarily behaving networks.
 
 \subsubsection{Diameter}
 The diameter of a network graph is the longest shortest path between any two
-nodes within the network. The higher the number is the longer or costlier
-communication between those two nodes is. Another quality indicator could be the
-average or median of all shortest paths within the network. All those
-measurements will be taken to elaborate further on that matter.
+nodes within the network. The higher the number is, the longer or costlier
+communication between those two nodes is. This number is especially important if
+the network uses flooding since it determines the number of hops such a flooding
+message has to take to reach all nodes in the network. 
 
 \subsubsection{Average Clustering Coefficient}
 The average clustering coefficient is, as the name indicates,  the average of
@@ -83,7 +83,17 @@ are neighbours themselves. It  The local cluster coefficient $C_i$ of the node
 $i$ is defined as follows:
 \[C_i = \frac{2n}{k_i(k_i-1)}\]
 where $k_i$ is the of number of neighbours of $i$ and $n$ is the number of edges
-between the neihgbours of $i$.
+between the neighbors of $i$.
+\subsubsection{Betweenness Centrality}
+In order to describe how central a node is in a network one can use several
+centrality metrics. The betweenness centrality of a node is calculated by
+counting the number of shortest paths that run through that node. The higher the
+number the more shortest paths rely on the connections of that node. This metric
+can indicate the relative traffic load of a node. Assume that every node sends
+the same amount of data over the network and that data takes the shortest
+possible paths in the network. Since a node with a higher betweenness
+centrality, is also part of more shortest paths, it will have to handle more
+traffic than a node with a lower betweenness centrality. 
 
 \subsubsection{Shortest Path Length}
 The shortest path is the lowest number of hops between two different nodes
