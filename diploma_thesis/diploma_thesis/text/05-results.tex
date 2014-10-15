@@ -46,35 +46,34 @@ D06 & wired/Ethernet & churn & 5 & 2 & 1200\\
 \label{tab:experiments}
 \end{table}
 \subsection{Cycle}
-All time dependent graphs in this section use a metric called cycle.A cycle
-is defined as the time period during which every node in an experiment has initiated a shuffle request. Since each node initiates a shuffle once for
-every shuffle time period a cycle equals the shuffle period time. In all
-conducted experiments the shuffle time as set to 3000ms
+All time dependent graphs in this section use a metric called cycle. A cycle
+is defined as the time period, during which every node in an experiment has
+initiated a shuffle request. Since each node initiates a shuffle once for every shuffle time period a cycle equals the shuffle period time.
 
 \subsection{Static Scenario}
 In the static scenario the experiments start with 300 nodes that do not die
 until the end of the experiment. During the experiments the nodes exchange
-neighbor information asynchronously at a fixed rate. The experiments were conducted in a wired and
-wireless network to examine Cyclon's behaviour with different package loss
-rates. Three different cache sizes and three different shuffle lengths have been
-used and combined. The static scenario is used to
-study topology properties and convergence behaviour of Cyclon. It
-does not resemble typical usage of a Peer-to-Peer network, where peers join and leave frequently.  
+neighbor information asynchronously at a fixed rate. The experiments were
+conducted in a wired and wireless network to examine Cyclon's behaviour with
+different package loss rates. Three different cache sizes and three different
+shuffle lengths have been used and combined. The static scenario is used to
+study topology properties and convergence behaviour of Cyclon. It does not
+resemble typical usage of a peer-to-peer network, where peers join and leave
+frequently.
 \subsection{Churn Scenario}
-In real Peer-to-Peer networks clients often join and leave the network
+In real peer-to-peer networks clients often join and leave the network
 frequently. The rate in which the network changes due to this peer behaviour is
 called churn rate. The churn scenario experiments are to simulate Cyclon in a
-highly dynamic network. The churn mode much like the static mode starts with 300
-peers, which then calculate a time to live. They behave the same as in the
-static mode until they exceed their time to live value. The peers then stop all
-communication. Each time a peer dies another Cyclon peer is started. This way
-there is always up to 300 peers in the network. The time to live is a random
+highly dynamic network. The churn mode, much like the static mode, starts with
+300 peers, which then all calculate a time to live. They behave the same as in
+the static mode until they exceed their time-to-live value. The peers then stop
+all communication. Each time a peer dies, another Cyclon peer is started. This
+way there is always up to 300 peers in the network. The time-to-live is a random
 number between 100 and 300 of cycles with equal probabilities. Most of the
 experiments run for 1200 cycles so that the minimum number of unique peers
 within an experiment is 1200 and the maximum 3600. The number of simultaneously
 running peers never exceeds 300. This scenario is used to obtain data on how
 Cyclon behaves in a more realistic environment.
-
 
 \section{Experiment Results}
 
@@ -85,29 +84,31 @@ or knows about a node in the component. This is to ensure no node starts
 without a connection to the network, since Cyclon does not have merging
 capabilities. In all experiments conducted as described in table
 \ref{tab:experiments} the components are examined after 1200 cycles (example
-see figure \ref{fig:WeaklyCompB04}).\\
+see figure \ref{fig:WeaklyCompB04}).
 
 \begin{figure}
 	\includegraphics[width=\textwidth,keepaspectratio]{./graphics/analysis/WeaklyComponentB04.pdf}
 	\caption{Overlay Topology after 1200 cycles, experiment B04
-	(static,wireless,cache size 10, shuffle length 5); All nodes are of the same
+	(static, wireless, cache size 10, shuffle length 5); All nodes are of the same
 	color indicating a single weakly connected component.}
 	\label{fig:WeaklyCompB04}
 \end{figure}
 
-The result in all static experiments is that at the end of the experiment the
+The result in all static experiments is, that at the end of the experiment the
 network still consists out of a single weakly connected component. Since Cyclon does not have
 merging capabilities other than the bootstrapping process, this means the
 network does not split up but stays connected throughput the duration of the
-experiment.\\
+experiment.
+
 In all churn mode experiments the result after 1200 cycles is a little bit
 different. There seem to be more than one weakly connected component. A closer
 examination shows a big component and several components with one or two
 nodes. The nodes within the single node components all revealed to be new nodes
-before bootstrapping process. The nodes in in the two-node-components failed to
+before bootstrapping process. The nodes in the two-node-components failed to
 bootstrap to the main component. Instead they bootstrapped to each other
 revealing a weakness in the bootstrapping process, but not in the Cyclon
-protocol itself.\\
+protocol itself.
+
 Summarizing the Cyclon shuffling algorithm seems not to divide a network once it
 has been successfully bootstrapped, even under conditions like moderate package
 loss and high churn.
@@ -149,33 +150,36 @@ over time. The first probe is taken after 200 cycles and shows that almost all
 nodes have an out-degree of 20 which was expected. What is not expected is that
 there are some nodes with an out-degree higher than the cache size.\\ 
 After examining the source code of the implementation, the effect can be
-explained as follows. When a peer sends a shuffle request it tags the pointers
-it sent. On reception of a response it first fills out available empty space in
-the cache and then replaces tagged pointers with the new pointers from the
-response. This ensures that a pointer is never lost unless a packet containing
+explained as follows. When a peer sends a shuffle request, it tags the pointers
+it has sent. On reception of a response it first fills out available empty space
+in the cache and then replaces tagged pointers with the new pointers from the
+response. This ensures that a pointer is never lost, unless a packet containing
 it gets lost. The problem arises when a peer \emph{A} sends a shuffle request
 to peer \emph{B}, tags the sent pointers in its cache and before receiving a
 response from \emph{B}, receives a request from a different peer \emph{C}. It
-creates a response for \emph{C} possibly containing pointers that are tagged
+creates a response for \emph{C}, possibly containing pointers that are tagged,
 and replaces them with pointers from the request of \emph{C}. Up to now the
 cache is within its bounds, but when the shuffle response from peer \emph{B}
-arrives there is not enough tagged pointers fro replacement. Unfortunately this
-effect was discovered too late to be prevented. Since it occurs rather rarely ,
+arrives, there is not enough tagged pointers fro replacement. Unfortunately this
+effect was discovered too late to be prevented. Since it occurs rather rarely,
 e.g. up to 3 nodes from 300 in figure \ref{fig:outDegreeDistB00}, it has a
-limited impact on the results.\\
+limited impact on the results.
+
 Resuming the description of figure \ref{fig:outDegreeDistB00}, after 400 cycles
 the out-degree of almost all nodes is between 16 and 20, which shows that some
 peers delete parts of their cache not only to make space for new ones. This is
 due to packet loss. When peer \emph{A} sends a shuffle request and does not
 receive an answer, it deletes the pointer of the current target peer from its
 cache. In static mode the reason for a missing response can only be loss of the
-request or the response.\\
+request or the response.
+
 After 400 cycles the degree distribution does not change fundamentally; in the
-following probes after 600,800,00 and 1200 cycles a tendency towards 19 as the
-out-degree can be observed.\\
-In figure \ref{fig:outDegreeDistT00} the -out-degree distribution of a wired
-static mode experiment is shown for comparison. Throughout the experiment almost
-all the nodes have an out-degree of 20. This shows that with virtually no packet
+following probes after 600, 800, 1000 and 1200 cycles a tendency towards 19 as
+the out-degree can be observed.
+
+In figure \ref{fig:outDegreeDistT00} the out-degree distribution of a wired
+static mode experiment is shown for comparison. Throughout the experiment,
+almost all the nodes have an out-degree of 20. This shows that without packet
 loss the peers do not delete pointers from their caches unless they exchange
 them for new ones. There are again some peers which have more pointers than the
 cache size would allow, which again is due to the special effect mentioned
@@ -286,11 +290,11 @@ above.
 
 \subsubsection{In-Degree Distribution}
 \label{subsubsec:inDegree}
-The in-degree of a node expresses the amount of nodes in the network having a
-pointer on that node in their caches. In other words it shows the popularity of
-a node. The goal of Cyclon is to have an even in-degree distribution, so that
+The in-degree of a node expresses the amount of nodes in the network, that
+have a pointer on that node in their caches. In other words, it shows the
+popularity of a node. The goal of Cyclon is to have an even in-degree distribution, so that
 every node is as good represented in the accumulated network cache as
-possible.\\
+possible.
 
 \begin{figure}
 	\includegraphics[width=\textwidth,keepaspectratio]{./graphics/analysis/degreeGraphB05.pdf}
@@ -301,7 +305,7 @@ possible.\\
 
 As an example of how the in-degree distribution changes in time, figure
 \ref{fig:inDegreeDistB05} of the wireless static experiment with cache size 10 and shuffle
-length 2 will be discussed. After 200 cycles most nodes have a small in-degree,
+length 2 will be discussed. After 200 cycles, most nodes have a small in-degree,
 but there are some with a very high one. Following the time line after 400 and
 600 cycles the number of nodes with a very high in-degree dwindles, while most
 nodes have an in-degree around 10. In comparison the in-degree of figures
@@ -320,16 +324,16 @@ This means that the in-degree of \emph{B} is decremented by one and the
 in-degree of \emph{A} is incremented by one. In this case a higher in-degree leads to a higher probability of being chosen as a shuffle target, which leads to a higher
 probability to have the in-degree decremented. Since a
 low in-degree means that the probability to be chosen as a shuffle target is low, also lowers the
-probability to have the in-degree decremented.The probability $P(X_A)$ for a
+probability to have the in-degree decremented. The probability $P(X_A)$ for a
 node \emph{X} to be node \emph{A} in this scenario is dependent solely on the
 in-degree $d$ and the cache size $c$ of the nodes in the network. During a cycle
 a node \emph{X} is exactly one time node \emph{B} in this scenario. The
 probability $P(X_B)$ therefore is independent from
 shuffle length and in-degree. \[P(X_A) = \frac{d}{c}\]
-The second way to change the in-degree is when node \emph{A} requests a shuffle
+The second way to change the in-degree, is when node \emph{A} requests a shuffle
 with node \emph{B} and both have node \emph{C} in their cache. If node \emph{A}
-chooses \emph{C} to include in the shuffle request and node \emph{B} does not
-chose node \emph{C} to put in the response the in-degree of \emph{C} is lowered
+chooses to include node \emph{C} in the shuffle request and node \emph{B} does
+not chose to put node \emph{C} in the response, the in-degree of \emph{C} is lowered
 by one. Instead one of the nodes node \emph{B} chose to put in the response to
 node \emph{A}, let it be node \emph{D}, has now an in-degree incremented by one.
 In this scenario a high in-degree of node \emph{C} means there is a high
@@ -354,16 +358,16 @@ being chosen for sending by only one of the nodes}} \]
 pointer on X}}
 \cdot\underbrace{\frac{l}{c}}_{\text{prob. of X being chosen for sending}}\]
 
-With the above the following equation can be given for the probable change of
-the in-degree of a node during one cycle. This assumes that there is no packet
-loss or latency in the network and that all caches are full.
+With the above probabilities, the following equation can be given for the
+probable change of the in-degree of a node during one cycle. This assumes that
+there is no packet loss or latency in the network and that all caches are full.
 \begin{align*}
 	d_{new} &= p(X_B) - p(X_A) - p(X_C) + p(X_D) \\
 	&= 1 - \frac{d}{c} - \frac{l\cdot d^2}{c\cdot n(n-1)}(1-\frac{l}{c}) 
 + \frac{l\cdot d(n-d)}{c\cdot n(n-1)} \\
 	&= 1 - \frac{d}{c} - \frac{dl}{cn(n-1)}\left(\frac{dl}{c}+ n \right)
 \end{align*}
-For small n this means that the second scenario has an impact on how the
+For small $n$ this means that the second scenario has an impact on how the
 in-degree changes during a cycle. This shows why the shuffle length to cache
 size ratio has such a big impact on network development in small networks. When
 on the other hand the network gets bigger and $l,c,d$ are constant, then it is easy
@@ -487,20 +491,21 @@ and $P(X_B)$ remain constant.
 
 \FloatBarrier
 \subsection{Cluster Coefficient}
-The clustering coefficient is another indicator for complex graphs. It
+The cluster coefficient is another indicator for complex graphs. It
 calculates how many neighbors of each node are neighbors themselves. In other
-words the higher the cluster coefficient of a node is, the more complete the
+words, the higher the cluster coefficient of a node is, the more complete the
 cluster around that node. The average cluster coefficient in a network is the
 mean value of the local cluster coefficient of all networks. A high cluster
 coefficient indicates a network with strong cluster building. If there is a
-limited amount of edges, as is in Cyclon a high cluster coefficient also means
-that the clusters are weakly connected outside of a cluster. This can be
+limited amount of edges, as it is in Cyclon, a high cluster coefficient also
+means that the clusters are weakly connected outside of a cluster. This can be
 explained as follows. A node has a fixed number of edges. If most of those edges
-go into its own cluster then there is not many edges left to go outside of the
+go into its own cluster, then there is not many edges left to go outside of the
 cluster. Same applies to all other nodes in the cluster. Weakly connected
 clusters also mean that the links between those clusters are the weak points of
 the whole network. Therefore for Cyclon it is desirable to have a low
-average cluster coefficient. 
+average cluster coefficient.
+
 In figure \ref{fig:ClusterCoef10small} the average
 cluster coefficients for wireless static experiments with cache size 10 are
 shown. As a reference the average cluster coefficient of a random graph ensemble
@@ -509,14 +514,14 @@ values after 400 cycles show to be stable. In this sample the the value of the
 experiment with shuffle length 2 is about twice the reference value of the
 random graph. The difference to the ideal can not be explained completely with
 packet loss. Figure \ref{fig:ClusterCoefNWI} shows a comparison between
-wired and wireless experiments. Wired experiments are virtually lossless but still are
-far away from being close to the ideal reference line. The abrupt end of some of
-the graphs in \ref{fig:ClusterCoefNWI} is resulting from a premature end of
-the experiment due to technical reasons. It does not hinder from seeing that the
-average cluster coefficients of the lossless experiments are generally lower
-than the others. An exception might be the runs with cache size 20, and indeed,
-as we can see in figure \ref{fig:ClusterCoef20small}, the cluster coefficient is
-generally closer to the ideal for graphs with cache size 20.
+wired and wireless experiments. Wired experiments are virtually lossless, but
+still far away from being close to the ideal reference line. The abrupt end
+of some of the graphs in \ref{fig:ClusterCoefNWI} is resulting from a premature
+end of the experiment due to technical reasons. It does not hinder from seeing
+that the average cluster coefficients of the lossless experiments are generally
+lower than the others. An exception might be the runs with cache size 20, and
+indeed, as we can see in figure \ref{fig:ClusterCoef20small}, the cluster
+coefficient is generally closer to the ideal for graphs with cache size 20.
 
 \begin{figure}
 	\centering
@@ -603,7 +608,7 @@ generally closer to the ideal for graphs with cache size 20.
 \subsubsection{Diameter}
 \label{subsubsec:diameter}
 The diameter of a graph is the longest of all shortest paths within the network.
-In other words it shows the maximum number of hops a broadcast message must be
+In other words, it shows the maximum number of hops a broadcast message must be
 send over to make sure it reaches every node. This is a important metric for
 search and find operations on the network. The results of all experiments in
 static mode are shown in table \ref{tab:diameter}. The results is the
@@ -612,10 +617,10 @@ differently.\\
 The diameter for almost all static experiments is between 6-7. Exceptions are
 the experiments where cache size is 5 and shuffle length is 2. This effect
 is due to a combination of the overall smaller in-degree in experiments with
-shuffle length 2 discussed in section \ref{subsubsec:inDegree} and the small
-cache size. In networks containing nodes with a high in-degree those nodes take
+shuffle length 2, discussed in section \ref{subsubsec:inDegree}, and the small
+cache size. In networks containing nodes with a high in-degree, those nodes take
 the role of shortcuts as opposed to networks without such nodes. In combination
-with the small cache size of 5 which restricts the number of overall edges in
+with the small cache size of 5, which restricts the number of overall edges in
 the network, this leads to a high diameter.  
 
 
@@ -651,17 +656,17 @@ T07 & wired/Ethernet & static & 5 & 2 & 10 (1000)\\
 Betweenness centrality is a network metric to indicate how central a node is
 based on the shortest paths running through it. For this the shortest paths of
 all pairs of nodes are calculated. For each node the number of all occurrences
-within the shortest paths is summed up. The resulting number shows how many
+within the shortest paths is summed up. The resulting number shows, how many
 shortest paths of the network use this node. In this thesis the results are
 additionally normalized, so that 0 means none of the shortest paths use this
-node and 1 means all of the shortest paths use this node. In Peer-to-Peer
+node and 1 means all of the shortest paths use this node. In peer-to-peer
 networks nodes with a high betweenness centrality will probably face more
-traffic since they are on the shortest paths of more node pairs. This means that
-the lower and more similar the betweenness centrality of all nodes in a network
+traffic, since they are on the shortest paths of more node pairs. This means
+that the lower and more similar the betweenness centrality of all nodes in a network
 is, the better the load balancing in the network will probably be. For sake of
-comparison the ideal load balancing would be if every node had the same load to
-bear.This will be used as a reference value, although this does not mean that
-there is such a topology. It should also be stated that the absolute total
+comparison, the ideal load balancing would be, if every node had the same load
+to bear. This will be used as a reference value, although this does not mean
+that there is such a topology. It should also be stated that the absolute total
 traffic in a network calculated like this, also depends on the actual length of
 the shortest paths. This is to say that the betweenness centrality can only
 indicate the load balancing and not the efficiency of the network. \[\frac{100\%
@@ -678,18 +683,18 @@ As an example in figure \ref{fig:betweennessB06} the betweenness centrality of a
 wireless static experiment with cache size and shuffle length 5 is shown. The
 columns accumulate the number of nodes of which the betweenness centrality is
 between the left and the right boundary of the column. In this figure it is
-shown that the betweenness centrality of the nodes varies between 0 or close to
+shown, that the betweenness centrality of the nodes varies between 0 or close to
 0 and 0.035. This means that if the assumed traffic caused by every node is the
 same, some nodes have to bear up to 3.5\% of the network traffic. This value is
 about 10 times higher as the ideal. At the same time more than two thirds of
 the nodes have an betweenness centrality of 0 or close to it. In the assumed
-traffic scenario this would mean no or very low traffic load. After examining
+traffic scenario, this would mean no or very low traffic load. After examining
 the specific nodes with a high betweenness centrality in this experiment, the
 nodes turn out to be nodes that have also a high in-degree.
 This explains the phenomenon, as those nodes act as a sort of shortcut in the
-network an are therefore more probable to be on shortest paths between nodes.
+network and are therefore more probable to be on shortest paths between nodes.
 This can again be explained by the small size of the network in combination with
-the shuffle length.\\
+the shuffle length.
 
 \begin{figure}
 	\includegraphics[width=\textwidth,keepaspectratio]{./graphics/analysis/BetweennessCentralityB07.pdf}
@@ -725,12 +730,12 @@ none traffic load. \\
 \end{figure}
 
 In figures \ref{fig:betweennessB00} and \ref{fig:betweennessB02} the difference
-is even clearer. In figure \ref{fig:betweennessB00} the the range of betweenness
+is even clearer. In figure \ref{fig:betweennessB00} the range of betweenness
 centrality goes from 0 to about 0.025, while almost two thirds of the nodes
-have a value of 0 and close to 0. In figure \ref{fig:betweennessB02} the range
+have a value of 0 or close to 0. In figure \ref{fig:betweennessB02} the range
 of betweenness centrality goes from 0 to about 0.02, while the number of nodes
 with a value 0 or very close to 0 is only at one tenth of the network. Although
-there are still nodes with a relatively high betweenness centrality the there
+there are still nodes with a relatively high betweenness centrality, there
 are a lot more nodes closer to the assumed ideal value of 0.003
 
 \begin{figure}
@@ -838,81 +843,7 @@ are a lot more nodes closer to the assumed ideal value of 0.003
 \caption{Betweenness Centrality in wired static mode}
 \end{figure}
 
-\FloatBarrier
-\section{Summary}
-	This section contains a summary of the results discussed above.
-	The experiments have shown that Cyclon provides an overlay topology that does
-	not loose connectivity once established even with moderate package loss and a
-	high churn of clients. They have also shown that the topology metrics converge
-	to certain values. The typical out-degree in an overlay topology created by
-	Cyclon has shown to be close to the cache size. Although with moderate package
-	loss the mean out-degree is smaller than without, it is a small difference.
-	Most in-degrees in a topology have shown to be close to the cache size if the
-	shuffle length was small enough. The experiments node count has shown to be to
-	small to show the same for bigger shuffle lengths. The average cluster
-	coefficients of all experiments have not been bigger than twice the average
-	cluster coefficients of comparable random graphs. Packet loss seems to also
-	have a small negative impact on cluster coefficients. The diameter of the
-	network is similar to those of small world networks. The betweenness
-	centrality for a sufficiently small shuffle length shows that Cyclon does not
-	create super nodes, that would be weak points in topology structure. \\
-	
-	The number of nodes in the experiment has shown to be too small for most of the
-	experiment parameters. Especially the shuffle length to cache size ratio has
-	proven to have a big effect on in-degree distribution in disfavor of the
-	networks symmetry. The networks latency also has shown to have an impact on
-	this implementation, in the way that in rare cases the cache size is above its
-	initial boundary. Nodes with high in-degree are especially prone to this
-	behaviour. The effects of network behaviour will be described in the next
-	subsection
-	
-	
-\subsection{Impacts of Package Loss on Topology Development}
-	The goal of the experiments was to find what impact package loss has on the
-	topology. This is why a wireless network using UDP packets was chosen. The
-	shuffle response packet and the shuffle request packet both can get lost. If
-	the latter gets lost this means that in this cycle the node does not make
-	a shuffle exchange and that the target node has one less response to send.
-	For the whole network this means that there is one less shuffle in the
-	network. This slows network development, which has an impact on how fast the
-	network converges and repairs itself after big failures.
-	If the shuffle response gets lost the impact is larger. The target node has
-	exchanged its nodes with the nodes from the shuffle request, but the request
-	node cannot. This leads to a change in in-degree distribution in favor of the
-	nodes from the shuffle request packet. In extreme cases where nodes are only
-	known by one other node and are the only connection to a different part of
-	the network , this could lead to a network partitioning. In the experiments
-	conducted for this thesis the statistics server counted up to 10\% lost
-	response packages. As stated in the diameter section \ref{subsubsec:diameter}
-	of this chapter, no partitionings have been observed.\\
-	Lost response packets also change the cluster coefficient of the responding
-	node. This is because after the node exchanges their neighbors to the ones from
-	the request packet, it has more neighbors in common with the requesting node,
-	which is now also its neighbor. The negative impact on network metric values of
-	this scenario also is dependent on the shuffle length to cache size ratio. The
-	higher the ratio the more negative the impact. When the shuffle length is the
-	same as the cache size and the caches are full in both nodes and a response
-	package gets lost the nodes have almost identical caches. Summerizing a
-	moderate paket loss has negative impact on the networks balance but in the
-	experiments did not produce a fatal error.
-\subsection{Impacts of Latency on Topology Development}
-	Network latencies on the DES-Testbed are very small compared to the socket
-	timeout set in this implementation of Cyclon, but still have an impact on the
-	networks behaviour. As described in the section above and the section
-	\ref{subsubsec:outDegree} the latency produces an error in cache size
-	management. The problem arisis when a node sends a shuffling request and before
-	receiving a response gets another shuffle request. There are several
-	possibilities to change Cyclons behaviour in that case. One would be to simply drop
-	the package. This leads directly to a higher request package loss ratio.
-	Another possibility is to wait for the response before processing the new
-	request. While this works fine for the first node it could possibly let the
-	timeout of the second requesting node to run out before receiving its response. This
-	solution could lead to a higher response package loss. Another option would be
-	for the first node to pick only pointers from the untagged portion of its cache
-	to send in the response packet. Depending on the shuffle length to cache size
-	ratio this could mean an only partially filled or even empty response packet.
-	On receiving an only partially filled package the second requesting node would
-	have to know which nodes it can replace otherwise pointers could get lost.
+
 	
 	
 	

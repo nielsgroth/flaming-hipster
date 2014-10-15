@@ -1,6 +1,8 @@
 \chapter{Properties and Requirements of Gossip-Based Overlay Topologies} 
 \label{chap:properties}
-
+This chapter provides the basic requirements a gossip-based overlay topology
+needs to implement and introduces a collection of properties and metrics by
+which a topology can be evaluated. \cite{bakhshi2007formal}
 \section{General Requirements}
 There are a few general requirements a distributed overlay topology building
 solution should embrace. They are presented in the following section.
@@ -9,8 +11,8 @@ A solution for a distributed overlay topology building should be simple in its
 deployment and lightweight in its operation. 
 \subsubsection{Scalability}
 Due to the large numbers of possible participants the solution should be
-designed to work with any number of nodes. This means mainly that the solution
-is constrained by the finite resources of a single node while the size of the
+designed to work with any number of nodes. This means mainly, that the solution
+is constrained by the finite resources of a single node, while the size of the
 network varies and is virtually infinite.
 
 \subsubsection{Symmetry}
@@ -19,8 +21,8 @@ the same way. This reduces the risk for single point failures and contributes to
 the simplicity of the solution.
 
 \section{Functional Requirements}
-While the general requirements consider design qualities of the Protocol,
-functional requirements concern the resulting network topology and it's
+While the general requirements consider design qualities of the protocol,
+functional requirements concern the resulting network topology and its
 properties. They describe the resulting network and it’s usefulness with global
 properties, and local node specific properties.
 
@@ -36,8 +38,8 @@ indicator. In this thesis the connectivity will be measured as a binary
 property, saying if the nodes are completely connected or not in different
 scenarios.
 \subsubsection{Convergence}
-Convergence is a time dependent property which indicates if a network converges
-or not. It is the answer to the question if the networks other properties
+Convergence is a time dependent property, which indicates if a network converges
+or not. It is the answer to the question, if the networks other properties
 converge to a certain value or if they jump arbitrarily through the scale.
 In this thesis it is well desired for a network to converge, for it is close to
 impossible to examine arbitrarily behaving networks.
@@ -45,19 +47,20 @@ impossible to examine arbitrarily behaving networks.
 \subsubsection{Diameter}
 The diameter of a network graph is the longest shortest path between any two
 nodes within the network. The higher the number is, the longer or costlier
-communication between those two nodes is. This number is especially important if
-the network uses flooding since it determines the number of hops such a flooding
-message has to take to reach all nodes in the network. 
+communication between those two nodes is. This number is especially important,
+if the network uses flooding since it determines the number of hops such a
+flooding message has to take to reach all nodes in the network. 
 
 \subsubsection{Average Clustering Coefficient}
-The average clustering coefficient is, as the name indicates,  the average of
-all local clustering coefficients in a network. It describes the overall
-clustering in a network and a high value indicates a network topology which has
-a good interconnection within neighbourhoods while having few links between them.
-A low value on the other hand indicates a highly distributed interconnection
-between all nodes and a low number of highly interconnected neighbourhoods. A low
-value is preferred for global information dissemination and shows better self
-healing capabilities after major node failures.
+The average clustering coefficient \cite{watts1998collective} is, as the name
+indicates,  the average of all local clustering coefficients in a network. It
+describes the overall clustering in a network and a high value indicates a
+network topology, which has a good interconnection within neighborhoods, while
+having only a few links between them. A low value on the other hand indicates an
+even distribution of links between all nodes and a low number of highly
+interconnected neighbourhoods. A low value is preferred for global information
+dissemination and shows better self healing capabilities after major node
+failures.
 \subsection{Local Properties}
 When considering properties of single nodes within the observed network, one
 speaks of local properties. They are specific to a single node and can be
@@ -65,45 +68,50 @@ accumulated with various methods. The most common would be as described above
 the average, median, maximum or minimum calculation. 
 \subsubsection{Degree Distribution}
 The degree distribution is another way to describe the quality of
-interconnection within a network graph. It counts the ingoing and outgoing edges
+interconnection within a network graph. It counts the ingoing or outgoing edges
 of a node in a graph. While Cyclon's functionality limits the number of outgoing
-edges to a finite maximum it does not so with the ingoing ones. The number of
-ingoing edges can indicate the work load a node has to process. It is clear that
-a node which has significantly more ingoing edges than another will be more
-probably messaged to then the other. This would lead to a higher work load and
-is not compatible to the general symmetry requirement. The goal should then be
-to reach an even indegree distribution over all the nodes in the network to
-distribute the work load as equal as possible. The outdegree will also be
-considered although it seems clear that the algorithm of Cyclon tries to fill
+edges to a finite maximum, it does not do so with the ingoing ones. The number
+of ingoing edges can indicate the work load a node has to process. It is clear that
+a node which has significantly more ingoing edges than another, will more
+probably be sent a message then the other. This would lead to a higher work
+load and is not compatible to the general symmetry requirement. The goal should then be
+to reach an even in-degree distribution over all the nodes in the network to
+distribute the work load as equal as possible. The out-degree will also be
+considered, although it seems clear that the algorithm of Cyclon tries to fill
 all of its cache with distinct neighbours and will reach its defined maximum
 soon after initialisation.
 \subsubsection{Clustering Coefficient}
-The local clustering coefficient of a node describes how many of its neighbours
-are neighbours themselves. It  The local cluster coefficient $C_i$ of the node
+The local clustering coefficient \cite{watts1998collective} of a node describes
+how many of its neighbors are neighbours themselves. It helps describing how
+close to a full meshed cluster a neighborhood is. A value of 1 means a fully
+meshed cluster, while a value of zero means that all the neighors of this node
+are strangers to one another. The local cluster coefficient $C_i$ of the node
 $i$ is defined as follows:
 \[C_i = \frac{2n}{k_i(k_i-1)}\]
 where $k_i$ is the of number of neighbours of $i$ and $n$ is the number of edges
 between the neighbors of $i$.
 \subsubsection{Betweenness Centrality}
-In order to describe how central a node is in a network one can use several
-centrality metrics. The betweenness centrality of a node is calculated by
-counting the number of shortest paths that run through that node. The higher the
-number the more shortest paths rely on the connections of that node. This metric
-can indicate the relative traffic load of a node. Assume that every node sends
-the same amount of data over the network and that data takes the shortest
-possible paths in the network. Since a node with a higher betweenness
+In order to describe how central a node is in a network, one can use several
+centrality metrics. The betweenness centrality \cite{freeman1977set} of a node
+is calculated by counting the number of shortest paths that run through that
+node. The higher the number, the more shortest paths rely on the connections of
+that node. This metric can indicate the relative traffic load of a node. Assume
+that every node sends the same amount of data over the network and that data
+takes the shortest possible paths in the network. Since a node with a higher betweenness
 centrality, is also part of more shortest paths, it will have to handle more
-traffic than a node with a lower betweenness centrality. 
+traffic than a node with a lower betweenness centrality. In a scenario where the
+nodes use hop-limited flooding for information propagation, a node with a high
+betweenness centrality is also probable to receive more messages than any other.
 
 \subsubsection{Shortest Path Length}
 The shortest path is the lowest number of hops between two different nodes
 within a network. It indicates the time and cost of communication between those
-two nodes. In a directed graph like the one Cyclon generates the shortest path
-from one node to another is does not have to be the same as the shortest path in
+two nodes. In a directed graph, like the one that Cyclon generates, the shortest
+path from one node to another does not have to be the same as the shortest path in
 the opposite direction. One way to accumulate the shortest path is to calculate
-pick the maximum of all shortest paths from the local node. This number
-indicates the number of hops needed to send a broadcast message to all
-participants of the network. This could be again averaged or the median could be
-picked over all nodes in the network to obtain a quality indicator of the whole
-network. While the maximum of all shortest paths within the network is the
-diameter of the network.
+the maximum of all shortest paths from the local node. This number indicates
+the number of hops needed to send a broadcast message to all participants of
+the network. This could be again averaged or the median could be picked over
+all nodes in the network to obtain a quality indicator of the whole network.
+While the maximum of all shortest paths within the network is the diameter of
+the network.

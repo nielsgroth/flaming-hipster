@@ -3,8 +3,8 @@
 This chapter describes the architecture of the experiments and the environment
 in which it is build. It starts with the physical network on which the
 experiments are conducted, the DES-Testbed. The next section is about the Layer
-3 routing algorithm used which is the open link state routing deamon for
-wireless experiments. The implementation of Cyclon is then described and
+3 routing algorithm used for wireless experiments, which is the open link state
+routing deamon. The implementation of Cyclon is then described and
 explained in the next section and all other environment specifics are given in
 the last section of this chapter.
 
@@ -16,7 +16,7 @@ systems under real conditions. It consists of currently 51 mesh routers each
 with 3 wireless network interfaces and 2 ethernet interfaces. The mesh routers
 are placed in mostly seperate rooms at the Institute of Computer Science, the
 Institute of Mathematics and the Intitute of Physics at the Freie Universtät
-Berlin. They are connected through an ethernet network to the main entry point
+Berlin. They are connected through an ethernet network to the main entry point,
 which in the experiments described in this thesis is also used as a statistics
 server for gathering experiment related information. Further the wireless mesh
 network is used to introduce network faults like packet loss and a
@@ -33,66 +33,67 @@ It is the implementation of the optimized link state routing protocol (OLSR) as
 described in \cite{RFC3626}. It creates a decentralized multi-hop routing topology for
 wireless mesh networks. It is used successfully in large metropolitan area mesh
 networks like the Athens Wireless Metropolitan Network or the Berlin based Freifunk.net.
-The basic idea behind it is as follows. To discover its immediate one-hop and
+The basic idea behind it, is as follows. To discover its immediate one-hop and
 two hop neighbors, a node sends HELLO-messages paired with one-hop neighbor
 information. It then chooses a set of multipoint relays (MPR) within its one-hop
 neighbors with the best link quality to all of its two-hop neighbors. These are
 used for optimized flooding of control packages. Every node also has an MPR
-selector list which holds information about all nodes that chose that node
+selector list, which holds information about all nodes that chose that node
 as an MPR. The nodes that are selected as an MPR will now send and forward MPR
 selector lists using TC-messages. The OLSR protocol is proactive, which in this
-case means it changes its routing topology regularly but not immediately whenever
-a new node appears or an old link to a node is unstable.
+case means, it changes its routing topology regularly, but not immediately
+whenever a new node appears or an old link to a node is unstable.
 
 \subsection{Txtinfo and Jsoninfo Plugins}
 The OLSR daemon created by \cite{Tonnesen2004} also offers the txtInfo plugin
-\cite{} to access neighbor, topology and other information from a running OLSR
-daemon. It is used by the JsonInfo plugin \cite{} which again creates a Java
+to access neighbor, topology and other information from a running OLSR
+daemon. It is used by the JsonInfo plugin, which again creates a Java
 interface for access to that information. This is used to obtain information
 about the physical topology of the network and for bootstrapping purposes as
 described later.
 
-\section{Implementation of Cyclon in Java} %UML-Diagramm
-For the purpose of this thesis Cyclon has been implemented in Java to perform
+\section{Implementation of Cyclon in JAVA} %UML-Diagramm
+For the purpose of this thesis, Cyclon has been implemented in JAVA to perform
 experiments on the DES-Testbed. The program consists of the statistics server
 used to collect all experiment data and the Cyclon client itself. The later
 program simulates a given number of Cyclon clients using different ports on one
 network interface. It can communicate with Cyclon clients on other testbed
 nodes as well as with clients running on the same node. Each client has its own
 neighbor cache and creates a thread that initiates shuffle periodically. To
-simultaneously receive shuffle request and responses every clients also has a
-thread dealing with listening to its assigned port and dealing with incoming
-requests or responses. The neighbor cache of each Cyclon client can hold a
+simultaneously receive shuffle requests and responses, every clients also has a
+thread dealing with listening to its assigned port and processing incoming
+requests and responses. The neighbor cache of each Cyclon client can hold a
 limited amount of neighbor pointers, each consisting of IP address, port and
 age. Every time a client receives a shuffle request or an answer, it sends its
 updated neighbor cache to the statistics server by invoking a web method.
 \subsection{The Bootstraping Process}
-Bootstrapping considers the way a new client joins a network the first time. The
-Cyclon client has to have at least one client to start exchanging neighbor
+Bootstrapping considers the way a new client joins a network for the first time.
+The Cyclon client has to have at least one client to start exchanging neighbor
 information and get connected to the network. There are several ways to get the
 first node to communicate with. One can use a previously known network
-participant from an old cache, try to contact randomly generated addresses until
-a node responds or use a well known bootstrap server. Bootstrapping is
+participant from an old cache, try to contact randomly generated addresses,
+until a node responds or use a well known bootstrap server. Bootstrapping is
 completely independent of the shuffling protocol and poses the same problem to
-all other Peer-to-Peer networks.\\
-In this thesis the bootstrapping is done in a
-way that works only in this specific environment. Whenever the neighbor cache of
-a client is empty, which mainly occurs in new clients, the client uses the
-jsoninfo plugin to obtain a random physical neighbor over the wifi network
-device. It then requests the last known active port of this node from the
-statistics server to complete the neighbor information. The age is set as new and the client can
-start shuffling with the obtained node. Experiments that run on the
-Ethernet network of the DES-Testbed rather than on the Wifi network managed
-by the OLSR daemon also use OLSR for bootstrapping. This is done so that
-the starting conditions for both modes are similar for sake of comparison. In
-order to do this the wifi IP address delivered by the bootstrapping process is
-altered to address the same physical node through its Ethernet interface. As
-there is no guarantee that this bootstrapping process creates a connected
-starting topology, only experiments where this is the case are considered. In
-addition multiple clients on the same physical node are interconnected at
-start up. The resulting starting topology is a random graph with a fixed number
-of nodes, edges and the premise that the graph is composed of a single weakly
-connected component. 
+all other peer-to-peer networks.
+
+In this thesis the bootstrapping is done in a way, that works only in this
+specific environment. Whenever the neighbor cache of a client is empty, which
+mainly occurs in new clients, the client uses the jsoninfo plugin to obtain a
+random physical neighbor over the wireless network device. It then requests the
+last known active port of this node from the statistics server, to complete the
+neighbor information. The age is set as new and the client can start shuffling
+with the obtained node. Experiments that run on the Ethernet network of the
+DES-Testbed rather than on the Wifi network managed by the OLSR daemon also use
+OLSR for bootstrapping. This is done so that the starting conditions for both
+experiment modes are similar for sake of comparison. In order to do this, the
+IP address of the wireless network interface delivered by the bootstrapping
+process is altered to address the same physical node through its Ethernet
+interface. As there is no guarantee that this bootstrapping process creates a
+connected starting topology, only experiments where this is the case are
+considered. In addition multiple clients on the same physical node are
+interconnected at start up. The resulting starting topology is a random graph
+with a fixed number of nodes, edges and the premise that the graph is composed
+of a single weakly connected component.
 
 \subsection{The Cyclon Client}
 The Cyclon peer implementation (see figure \ref{fig:CyclonPeerUML}) consists
@@ -117,30 +118,26 @@ the bootstrapping process to obtain at least one valid neighbor. Each peer then
 waits for a random time within 3000 milliseconds, so that the peers shuffle
 asynchronously from the start. This is done to ensure that the statistics
 server has an even load balance, since it is the bottleneck of the experiment
-set-up. This closes the initialisation phase.\\
-The peer then starts
-a thread for periodically sending shuffle requests and a thread to listen to any incoming
-messages. The shuffle process starts with incrementing the age of all neighbors
-in the neighbor cache. It then chooses the neighbor with the highest age as the
-current target. The peer picks and tags a random subset of the neighbors in its
-neighbor cache. It generates a random shuffle ID and creates a Cyclon shuffle request
-packet. The packet, as depicted on figure \ref{fig:CyclonPacket}, includes the
-generated shuffle id and a number of neighbors limited by the shuffle length.
+set-up. This closes the initialisation phase.
+
+The peer then starts a thread for periodically sending shuffle requests and a
+thread to listen to any incoming messages. The shuffle process starts with
+incrementing the age of all neighbors in the neighbor cache. It then chooses
+the neighbor with the highest age as the current target. The peer picks and
+tags a random subset of the neighbors in its neighbor cache. It generates a
+random shuffle ID and creates a Cyclon shuffle request packet. The packet, as
+depicted on figure \ref{fig:CyclonPacket}, includes the generated shuffle id
+and a number of neighbors limited by the shuffle length.
 The first neighbor entry in a shuffle request package is always the shuffle
 request sender. A neighbor entry consists of the IP address, the port and the
 age of the pointer. The peer sends the packet to the current target node and
-waits for a response. If the listening thread receives a response it notify the
-shuffle thread which then waits for the shuffle period before restarting the
-shuffle process. If after the socket timeout has passed and there is still no
-response that means that either the request or the response packet got lost or
-exceedingly delayed. The peer deletes the current target from its neighbor cache
-and restarts the shuffling process.\\
-\begin{figure}
-	\centering
-	\includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{./graphics/CyclonClientUML.pdf}
-	\caption{Simplified UML-Class Diagram for the Cyclon Peer}
-	\label{fig:CyclonPeerUML}
-\end{figure} 
+waits for a response. If the listening thread receives a response it notifies
+the shuffle thread, which then waits for the shuffle period before restarting
+the shuffle process. If, after the socket timeout has ran out, there is still
+no response, that means that either the request or the response packet got lost
+or exceedingly delayed. The peer deletes the current target from its neighbor cache
+and restarts the shuffling process.
+
 The listening thread waits for incoming messages using the shuffle ID to tell
 between requests and responses. If a response is received the shuffle thread is
 notified and the response is processed as follows. First any already known
@@ -148,14 +145,13 @@ peers are deleted from the response. Then any empty slots in the neighbor cache
 are filled with the new neighbors. If there are still neighbors left in the
 response, neighbors that are tagged, are replaced with those from the response.
 Remaining tagged nodes are then untagged. The updated neighbor list is then send
-to the statistics server.\\
-A request is processed as follows.
-First a response is generated by picking and tagging a random subset of
-neighbors from the neighbor cache. Those neighbors are send back with a shuffle response packet,
-containing the shuffle ID from the request and the randomly picked neighbors
-along with their age information. Then the request is processed in the same way
-a response is treated. \\
+to the statistics server.
 
+A request is processed as follows. First a response is generated by picking and
+tagging a random subset of neighbors from the neighbor cache. Those neighbors
+are send back with a shuffle response packet, containing the shuffle ID from
+the request and the randomly picked neighbors along with their age information.
+Then the request is processed in the same way a response is treated. 
 %DES TESTBED nodes as bottleneck
 \begin{figure}[ht]
 	\centering
@@ -178,27 +174,36 @@ a response is treated. \\
 	\label{fig:CyclonPacket}
 \end{figure}
 
-In all experiments the shuffling is done asynchronous but at a fixed rate, which
-is magnitudes bigger than the common latencies of the underlying network. This prevents Cyclon packets to
-be received out of order and other unwanted effects. The rate is set to
-3000 milliseconds for all experiments and experiments run for at least 60 min
-allowing each node to initiate a shuffling algorithm for 1200 times. The rate in which
-the network evolves is also carefully picked, to ensure that the statistics server can handle incoming information.
-
+\begin{figure}
+	\centering
+	\includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{./graphics/CyclonClientUML.pdf}
+	\caption{Simplified UML-Class Diagram for the Cyclon Peer}
+	\label{fig:CyclonPeerUML}
+\end{figure} 
+In all experiments the shuffling is done asynchronous, but at a fixed rate,
+which is magnitudes bigger than the common latencies of the underlying network.
+This prevents Cyclon packets to be received out of order and other unwanted
+effects. The rate is set to 3000 milliseconds for all experiments and
+experiments run for at least 60 min allowing each node to initiate a shuffling
+algorithm for 1200 times. The rate in which the network evolves is also
+carefully picked, to ensure that the statistics server can handle incoming
+information.
+\FloatBarrier
 \subsubsection{The simulation modes}
 The Cyclon client can be run in two experiment modes. The static mode starts a
 given number of peers, assigns the same IP address and a different port to each
 and lets them run until the program is terminated. The churn mode starts a
-given number of container threads which each starts one Cyclon peer giving them
+given number of container threads, which each starts one Cyclon peer giving them
 a unique port. The container threads calculate a random lifetime for each peer
-and kill them after their lifetime has depleted. After that they repeat starting
-new peers until the program is terminated or the given port threshold is
-exceeded.
+and kill them after their lifetime has depleted. After that, they repeat
+starting new peers until the program is terminated or the given port threshold
+is exceeded.
 \subsubsection{The output mode}
 The output mode is used to obtain data surveyed by the statistics server, it
-invokes the output web method of the server and writes the results into a gephi
+invokes the output web method of the server and writes the results into a Gephi
 file.  
 %Cyclon packet diagram 
+
 \subsection{The Statistics Server}
 
 The statistics server is used to obtain experiment data and create an outputfile
@@ -207,25 +212,24 @@ clients and to create an Gephi readable XML file.  Each node sends routing
 topology and the Cyclon neighbor list to the statistics server
 through web methods called sendTopology and sendList. The information then is
 processed by the statistics server by storing the node along with its neighbor
-information in a node object.  It processes the information by storing the
-sender as a node updating it's neighbors as edges and the server receives
-update messages from the clients, which it then processes and stores in JAVA
-objects. After the experiment is finished the server serializes the stored
-objects to an XML stream and writes it to a file in the gephi file format described below.
+information in a node object. It processes the information by storing the
+sender as a node updating its neighbors as edges After the experiment is
+finished the server serializes the stored objects to an XML stream and writes
+it to a file in the Gephi file format described below.
 
 The statistics server application stores all relevant information for an
 experiment during its execution. On initialization it creates a collection of
-nodes to store the required information about each node as they are born ,
-change neighbors and eventually die. The server then publishes its web service
+nodes to store the required information about each node as they are born,
+change neighbors and eventually die. The server then publishes its web service,
 which holds methods to access the server's objects. The main web method is used
 by the nodes to update information whenever their status changes. This might be
 their birth or the change of their neighbor cache. The node object stores the
 information of its first appearance, the last time it got updated and about all
 of its edges and at which times they existed. If the node didn't get updated for
-specific time it is marked as dead. Should the node ever be updated again it is
+a specific time it is marked as dead. Should the node ever be updated again it is
 reset to alive as if it wasn't dead. All timestamps are stored as nanoseconds in
 relation to an arbitrary point in time. The timestamps are given as the
-statistics server gets the information so that delays on the network could
+statistics server gets the information, so that delays on the network could
 distort the results.
 The statistics server is implemented as a JAVA web service providing an
 interface for storing all information concerning the graph topology during an
@@ -235,11 +239,37 @@ useful in experiments where a Cyclon client starts with an empty neighbor
 cache, obtains an IP address from the underlying routing protocol, but does not
 know which port to use. The interface specification is shown below
 as an UML class diagram and the web methods included are described below.
+The way the statistics server is implemented allows to reuse it for information
+gathering in other experiments. 
 %UML class diagram of statistics server class
 
 \section{Experiment Evaluation Environment}
 
-\subsection{Gephi and Gephi File Format}
+\subsection{Gephi and GEXF File Format}
 To calculate most of the topology parameters, the network analyzing tool Gephi
-is used. The tool provides a graphical interface to visualize and analyze Graohs
-given in the gexf-format. 
+is used. The tool provides a graphical interface to visualize and analyze Graphs
+given in the gexf-format. The GEXF File Format is a simple XML-style file
+format. An example is given in the listing \ref{lst:gephiFormat}\\
+
+\begin{lstlisting}[caption=Example of a graph in GEXF file
+format,label=lst:gephiFormat, language=XML] 
+<?xml version="1.0" encoding="UTF-8"?>
+<gexf xmlns="http://www.gexf.net/1.2draft" version="1.2">
+    <meta lastmodifieddate="2009-03-20">
+        <creator>Gexf.net</creator>
+        <description>A hello world! file</description>
+    </meta>
+    <graph mode="static" defaultedgetype="directed">
+        <nodes>
+            <node id="0" label="Hello" start="0" end="300"/>
+            <node id="1" label="Word" start="0" end="300"/>
+        </nodes>
+        <edges>
+            <edge id="0" source="0" target="1">
+            	<spell start="0" end="120"\>
+            	<spell start="200" end="250"\>
+            <\edge>
+        </edges>
+    </graph>
+</gexf>
+\end{lstlisting}

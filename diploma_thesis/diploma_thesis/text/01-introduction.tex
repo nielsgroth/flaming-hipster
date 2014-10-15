@@ -66,7 +66,33 @@ The experiments results and analysis are provided in chapters \ref{chap:results}
 and \ref{chap:evaluation}. Chapter \ref{chap:conclusion} concludes this thesis
 and gives and outlook for future development.
 
-\section{State of the Art}
+\section{Related Work}
 %alternative title:
 % related work Lpbcast Newscast
+This section describes the state of the art in membership and gossiping
+protocols.The service that is provided by gossiping peer sampling services is
+described in \cite{jelasity2004peer}. A performance analysis of Cyclon can be
+foun in \cite{Bonnet2006}. Other protocols using gossiping for membership
+management are HyParView \cite{leitao2007hyparview} and Scamp \cite{ganesh2001scamp} which use a reactive strategy rather than a proactive
+one. This means that the peers do not adjust the topology until there is a
+change in the peer set. In \cite{maniymaran2007build} it is shown that when
+creating an unstructured overlay the randomness can be used to create a
+parallel structured overlay, so that either one can be used depending on the
+application. In \cite{khelghatdoust2014gossip} a gossiping protocol is
+introduced which is designed for use in restricted networks. The problem that
+it tries to solve is, that in some networks a peer might not be able to reach
+every other peer. Tis can be due to Network Address Translation Gateways,
+firewalls or is also the case in wireless environments. All these are
+conditions that restricts the randomness of gossiping protocols. In this
+approach the peers do not only store pointers to other peers but also the
+routing information. The same problem is approached with WPSS
+\cite{roverso2013through}. It also states that traditional gossiping protocols
+like Cyclon have high costs in connection establishment, since the links are
+changed frequently. The authors of \cite{jesi2007identifying} describe a peer sampling service
+addition that secures the service against malicious nodes executing ``hub
+attacks``. These are attacks where nodes try to interfere in the network by
+trying to concentrate links to themselves or other known malicius nodes,
+creating hubs. These hubs then can do all kind of destruction up to network
+partitioning. In \cite{matoslaystream} Cyclon is used in the gossiping protocol
+stack for live video streaming.
 

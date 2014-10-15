@@ -53,6 +53,16 @@
   volume = {24}
 }
 
+@ARTICLE{erd6s1960evolution,
+  author = {Erd6s, Paul and R{\'e}nyi, A},
+  title = {On the evolution of random graphs},
+  journal = {Publ. Math. Inst. Hungar. Acad. Sci},
+  year = {1960},
+  volume = {5},
+  pages = {17--61},
+  publisher = {Citeseer}
+}
+
 @INPROCEEDINGS{falkner2007profiling,
   author = {Falkner, Jarret and Piatek, Michael and John, John P and Krishnamurthy,
 	Arvind and Anderson, Thomas},
@@ -61,6 +71,15 @@
   year = {2007},
   pages = {129--134},
   organization = {ACM}
+}
+
+@ARTICLE{freeman1977set,
+  author = {Freeman, Linton C},
+  title = {A set of measures of centrality based on betweenness},
+  journal = {Sociometry},
+  year = {1977},
+  pages = {35--41},
+  publisher = {JSTOR}
 }
 
 @TECHREPORT{Guenes+:2008TR,
@@ -74,6 +93,39 @@
   timestamp = {2008.07.16}
 }
 
+@INCOLLECTION{ganesh2001scamp,
+  author = {Ganesh, Ayalvadi J and Kermarrec, Anne-Marie and Massouli{\'e}, Laurent},
+  title = {SCAMP: Peer-to-peer lightweight membership service for large-scale
+	group communication},
+  booktitle = {Networked Group Communication},
+  publisher = {Springer},
+  year = {2001},
+  pages = {44--55}
+}
+
+@INPROCEEDINGS{jelasity2004peer,
+  author = {Jelasity, M{\'a}rk and Guerraoui, Rachid and Kermarrec, Anne-Marie
+	and Van Steen, Maarten},
+  title = {The peer sampling service: Experimental evaluation of unstructured
+	gossip-based implementations},
+  booktitle = {Proceedings of the 5th ACM/IFIP/USENIX international conference on
+	Middleware},
+  year = {2004},
+  pages = {79--98},
+  organization = {Springer-Verlag New York, Inc.}
+}
+
+@INPROCEEDINGS{jesi2007identifying,
+  author = {Jesi, Gian Paolo and Hales, David and Van Steen, Maarten},
+  title = {Identifying malicious peers before it's too late: a decentralized
+	secure peer sampling service},
+  booktitle = {Self-Adaptive and Self-Organizing Systems, 2007. SASO'07. First International
+	Conference on},
+  year = {2007},
+  pages = {237--246},
+  organization = {IEEE}
+}
+
 @TECHREPORT{John+:InetTraffic,
   author = {Wolfgang John and Sven Trafvelin},
   title = {Heuristics to Classify Internet Backbone Traffic based on Connection
@@ -83,6 +135,43 @@
   year = {2008},
   owner = {tomasz},
   timestamp = {2014.03.30}
+}
+
+@PHDTHESIS{khelghatdoust2014gossip,
+  author = {Khelghatdoust, MANSOUR},
+  title = {Gossip based peer sampling in social overlays},
+  school = {Master’s thesis, The Royal Institute of Technology (KTH), Stockholm,
+	Sweden},
+  year = {2014}
+}
+
+@INPROCEEDINGS{leitao2007hyparview,
+  author = {Leitao, Joao and Pereira, Jose and Rodrigues, Luis},
+  title = {HyParView: A membership protocol for reliable gossip-based broadcast},
+  booktitle = {Dependable Systems and Networks, 2007. DSN'07. 37th Annual IEEE/IFIP
+	International Conference on},
+  year = {2007},
+  pages = {419--429},
+  organization = {IEEE}
+}
+
+@INPROCEEDINGS{maniymaran2007build,
+  author = {Maniymaran, Balasubramaneyam and Bertier, Marin and Kermarrec, A-M},
+  title = {Build one, get one free: Leveraging the coexistence of multiple p2p
+	overlay networks},
+  booktitle = {Distributed Computing Systems, 2007. ICDCS'07. 27th International
+	Conference on},
+  year = {2007},
+  pages = {33--33},
+  organization = {IEEE}
+}
+
+@ARTICLE{matoslaystream,
+  author = {Matos, Miguel and Schiavoni, Valerio and Riviere, Etienne and Felber,
+	Pascal and Oliveira, Rui},
+  title = {LAYSTREAM: composing standard gossip protocols for live video streaming},
+  year = {2014},
+  institution = {P2P'14: Proceedings of the 14th International Conference on Peer-to-Peer}
 }
 
 @TECHREPORT{Montresor2009,
@@ -104,12 +193,22 @@
 
 @ARTICLE{bittorrent,
   author = {BitTorrent Press Release},
-  title = {BitTorrent and $\mu$Torrent Software Surpass 150 Million User Milestone},
+  title = {BitTorrent and Torrent Software Surpass 150 Million User Milestone},
   year = {2012},
   month = {January},
   owner = {tomasz},
   timestamp = {2014.03.30},
   url = {http://www.bittorrent.com/intl/es/company/ybout/ces_2012_150m_users}
+}
+
+@INPROCEEDINGS{roverso2013through,
+  author = {Roverso, Roberto and Dowling, Jim and Jelasity, Mark},
+  title = {Through the wormhole: Low cost, fresh peer sampling for the Internet},
+  booktitle = {Peer-to-Peer Computing (P2P), 2013 IEEE Thirteenth International
+	Conference on},
+  year = {2013},
+  pages = {1--10},
+  organization = {IEEE}
 }
 
 @ARTICLE{sabidussi1966centrality,

@@ -9,22 +9,22 @@
 Traditional services in the Internet follow the client-server model where a
 server entity provides a service or resource which then is used by
 possibly multiple client entities. Peer-to-Peer networks use a completely
-different approach. Ideally every participating entity acts as a server and a
-client simultaneously. Every participating entity in such a network is treated
-equally and is sometimes also called Servent, a word created by combining the
-words server and client. A Servent does not only use the service or resource
+different approach \cite{Wehrle2005}. Ideally every participating entity acts as
+a server and a client simultaneously. Every participating entity in such a network is treated
+equally and is sometimes also called servent, a word created by combining the
+words server and client. A servent does not only use the service or resource
 the network provides but is also participating in providing it to the other
-Servents. The main prerequisite for such an architecture is that the service or
+servents. The main prerequisite for such an architecture is that the service or
 resource provided by the network is distributable. Other requirements are
 powerful servents interconnected with a suitable upload and download bandwidth.
 \\% What are typical applications?
-Applications of Peer-to-Peer include very popular ones like file
+Applications of peer-to-peer include very popular ones like file
 sharing, instant messaging or video calls over the Internet. Other applications
 are shared computing, shared workspace environments or information
 dissemination, e.g. software updates.
 \\% What are possible Applications?
 % What are dis-/advantages over the server-client model?
-The Peer-to-Peer design gives several advantages over the client-server model.
+The peer-to-peer design gives several advantages over the client-server model.
 In a pure Peer-to-Peer designed network there is no need for a central entity
 which makes the network independent of a single point of failure which can also
 act as a bottleneck. While in a client-server architecture a growing number of
@@ -34,57 +34,57 @@ lack of a central entity also means that the service can be provided ad-hoc with
 the combined resources that each participant contributes to the network without
 the need of a dedicated server. Another advantage can be the better
 usage of bandwidth. If an information has a single point of entry,
-e.g. a video live stream or a software update and a client-server model is used
-the information has to be sent multiple times over the same links clogging the
-bandwidth with repetitive data. A Peer-to-Peer network could organise this
+e.g. a video live stream or a software update and a client-server model is used,
+the information has to be sent multiple times over the same links, clogging the
+bandwidth with repetitive data. A peer-to-peer network could organise this
 multicast communication in a way that avoids unnecessary data transmissions. As
-mentioned before the Peer-to-Peer approach eliminates the single point of
-failure a central server is which results in a more reliable service. More
+mentioned before the peer-to-peer approach eliminates the single point of
+failure a central server is, which results in a more reliable service. More
 specifically an attack or a failure of a central server disables the service
 entirely while a failing servent has minor effects on the whole service.
 \\
 The next subsection will discuss and classify different approaches in Peer-to-Peer
 structures.
 \subsection{Types of Peer-to-Peer Architectures}
-Several applications using the Peer-to-Peer paradigm have been proposed and used
+Several applications using the peer-to-peer paradigm have been proposed and used
 within the last three decades. While offering a solution for different services
 or resources they also can be classified by the organization of the network
 itself. The main difference in architecture being how they organize the
 resources or services and handle requests and responses. This subsection will
-shortly introduce three main classes of Peer-to-Peer architectures.
+shortly introduce three main classes of peer-to-peer architectures.
 \subsubsection{Unstructured Peer-to-Peer}
 \paragraph{Centralized Peer-to-Peer}
-The first popular Peer-to-Peer based application was Napster. It used a
+The first popular peer-to-peer based application was Napster. It used a
 central Server for storing the information where to find which file in the
-network. After getting an answer from the central server a servent could then
+network. After getting an answer from the central server, a servent could then
 directly download the desired file from the origin. This approach can be
 generalized as follows. A central server is used for organisation
 of the service or resource provided by the network. The requested service or
 resource is then provided directly. This architecture is called a
-Centralized Peer-to-Peer network.
+centralized peer-to-peer network.
 \\
 The main disadvantage is the central server since it contradicts most of the
- advantages of the Peer-to-Peer architecture, as it acts as a single point of 
+ advantages of the peer-to-peer architecture, as it acts as a single point of 
 failure and is the bottleneck of such a network.
 \paragraph{Pure Peer-to-Peer}
-In a pure Peer-to-Peer approach instead of managing the information about the
+In a pure peer-to-peer approach instead of managing the information about the
 networks resources or services centrally, every servent manages its resources
-locally. Request are send over the network using flooding. A Servent sends a
+locally. Request are send over the network using flooding. A servent sends a
 time limited request to all its known neighbors which repeat this action until
 the servent able to answer the request is found or the request expires. This
 method clearly produces a lot of redundant network traffic which highly depends
-on the topology of the network. A Peer-to-Peer network constructed in such a way
+on the topology of the network. A peer-to-peer network constructed in such a way
 eliminates the need of a central entity is locally organized but has its
 bottleneck in the bandwidth which would have to grow exponentially with the
 number of participants and requests. The way servents decide which other
 participants to select as neighbors is most crucial to the performance of this
-type of Peer-to-Peer networks. The resulting topology's properties have to
+type of peer-to-peer networks. The resulting topology's properties have to
 match the purpose of the network. The main challenge in constructing such a
 network is finding a topology which keeps network traffic at a minimum while not
 loosing the decentralized way of network creation.
 \paragraph{Hybrid Peer-to-Peer}
 There are also applications using a mix of the previously introduced
-Peer-to-Peer architectures. The main reason for this approach is to reduce
+peer-to-peer architectures. The main reason for this approach is to reduce
 the number of messages while still using an unstructured approach. This is
 achieved through introducing hierarchies into the network. Superpeers or
 ultrapeers are selected dynamically. They are responsible for a number of simple
@@ -92,7 +92,7 @@ servants and connected to other superpeers in an unstructured manner. The comple
 is reduced depending on the number of simple servents the superpeers are
 responsible for. There still are no single points of failure although a failure
 of a superpeer has a bigger impact on the network than of a servant in a pure
-Peer-to-Peer network. The superpeers can be selected depending on availability,
+peer-to-peer network. The superpeers can be selected depending on availability,
 stability, bandwidth or any other aspect serving the purpose of the network.
 \subsubsection{Structured Peer-to-Peer}
 While Cyclon is meant for use in unstructured Peer-to-Peer networks this chapter
@@ -106,67 +106,64 @@ piece of information a hash value is calculated which determines which of the
 servents will be responsible for this information. The servents form a ring
 topology. Every servent has one neighbor that is responsible for all
 information with smaller hash values and the other for all the information with greater hash
-values than hash values of the information the servent is responsible for
+values, than hash values of the information the servent is responsible for
 itself. The resulting chain is made to a ring by connecting the servents
 responsible for the maximum and minimum hash values. A request is send to an
 arbitrary servent on the ring and then forwarded to the servent believed to be
 closest to the hash value of the information until the servent with the
-information si found. This approach clearly greatly depends on the function
-calculating the hash values, so that the information is equally distributed
+information is found. It is clear that this approach greatly depends on the
+function calculating the hash values, so that the information is equally distributed
 among the servents. In a network with a high churn rate this approach possibly
 needs to adjust its hash function to eliminate unequal distribution. This may
-produce a lot of overhead compared to unstructured Peer-to-Peer networks.
+produce a lot of overhead compared to unstructured peer-to-peer networks.
 
 
 \section{Overlay Topologies}
 %What is this? 
-As pure Peer-to-Peer networks are managed decentrally,
-the nodes themselves have to manage membership. To allow for a Peer-to-Peer
+As pure peer-to-peer networks are managed decentrally,
+the nodes themselves have to manage membership. To allow for a peer-to-peer
 solution to be scalable, it is desired to have each node be responsible for a
 fixed amount of information. This leads to the question how to decide which node
-holds which information. Membership management itself requires the nodes to hold
-information about other nodes, especially which nodes are currently part of the
+holds which information. Membership management itself requires the nodes to
+hold information about other nodes, especially which nodes are currently part of the
 network. Since every node knows only a subset of the network, it is crucial to
 that each node selects a set of neighbors locally, so that the network profits
 from it globally. The nodes and their neighbor lists form an overlay topology
-which can but doesn't have to be dependent on properties of the physical or
+which can, but doesn't have to be dependent on properties of the physical or
 the routing topology of the network. The way that nodes are organized in such a
 network is also called overlay topology. There have been different models of
 what an ideal topology would look like and what properties it would have to
 have. This depends on the application of such a network. The properties that are
 studied in this thesis are shown in Chapter \ref{chap:properties}. The next
-section will discuss the random graph model of Erd\H{o}s and R\'{e} which shows
-to have some of the desired properties.
+section will discuss the random graph model of Erd\H{o}s and R\'{e}nyi, which
+shows to have some of the desired properties.
 \subsection{Random Graphs}
 % What are they?
 Random graph models are network models in which some parameters are fixed but
-the networks are random in all other aspects. The Erd\H{o}s-R\'{e}nyi-Model
-defines a random graph as a graph G(n,p), where n is the number of nodes and p
-is the probability that an edge between to nodes exists. For very large networks
-in can be shown that this model is equivalent to the model G(n,m) where n is
-again the number of nodes and m is the number of edges which are placed randomly
-among the nodes. When talking about random graphs and their properties, one does
-not mean single graphs, but sets of graphs and average properties over those
-sets. In fact the properties of random graphs are so fitting for typical
-Peer-to-Peer network applications, that it is desirable for a membership
-management protocol to achieve a random graph like topology.
+the networks are random in all other aspects \cite{Bollobas1985}. The
+Erd\H{o}s-R\'{e}nyi-Model \cite{erd6s1960evolution} defines a random graph as a
+graph G(n,p), where n is the number of nodes and p is the probability that an
+edge between to nodes exists. For very large networks in can be shown, that this
+model is equivalent to the model G(n,m) where n is again the number of nodes
+and m is the number of edges which are placed randomly among the nodes. When
+talking about random graphs and their properties, one does not mean single
+graphs, but sets of graphs and average properties over those sets. In fact the
+properties of random graphs are so fitting for typical peer-to-peer network
+applications, that it is desirable for a membership management protocol to
+achieve a random graph like topology.
 % Definition Erdos renyi model
 % properties
 % 
-
-
-%Small World Properties
-
 
 \section{Gossiping}
 %What is gossiping in general?  
 Gossiping in networks is a way of exchanging data in an epidemic way. The basic
 idea can be described through the following office image. Workers in an office
 meet up pairwise in the break room and exchange information. New information or
-gossip is introduced by one worker to another. After the first meeting two of
-the workers possess the new information. At the next meet in the breaking room those
-two people talk to other two people and the information spreads to two more
-workers. Of course if the same people pair up again the information is not
+gossip is introduced by one worker to another. After the first meeting, two of
+the workers possess the new information. At the next meeting in the breaking
+room, those two persons talk to other two persons and the information spreads to
+two more workers. Of course if the same people pair up again the information is not
 spread. But if the pairs are randomly chosen the probability of meeting someone
 who already has the new information depends on how far the information has
 spread already. On the other hand a person not knowing the new information yet
@@ -177,7 +174,7 @@ information is spread fast due to the dissemination's epidemic behaviour.
 
 \subsection{Classification of Gossiping Algorithms}
 Gossiping algorithms can be classified by their information flow. A
-push-gossiping algorithm is one where the initiating communication partner
+push-gossiping algorithm is one, where the initiating communication partner
 sends its information to the other without expecting a response. Algorithms
 where the initiating partner requests an information from another partner are
 called pull-gossiping algorithms. At last algorithms, where the initiating
@@ -187,9 +184,9 @@ its own information, are called push-pull-gossiping algorithms.
 
 \section{Cyclon} 
 %How does Cyclon work? Pseudocode of shuffling algorithms
-Cyclon is a gossiping algorithm for membership management in unstructured
-Peer-to-Peer network. It provides an overlay topology for decentralized
-membership management using a push-pull-gossiping approach. Cyclon's goal is to
+Cyclon \cite{voulgaris2005cyclon} is a gossiping algorithm for membership
+management in unstructured peer-to-peer network. It provides an overlay topology
+for decentralized membership management using a push-pull-gossiping approach. Cyclon's goal is to
 create an overlay topology with properties similar to random graphs. Each node
 holds a changing subset of network participants as neighbors. The
 participating nodes periodically exchange neighbor information, making the
@@ -213,14 +210,14 @@ neighbors.
 \item Update \emph{P}'s cache to include all remaining entries, by
 \emph{firstly} using empty cache slots (if any), and \emph{secondly} replacing
 entries among the ones originally sent to Q.
-\item \end{enumerate}
+\end{enumerate}
 The node receiving a shuffle request selects a random subset from its neighbor
 cache of a size t ($t \leq l$) and sends it to the initiating node. It then
 performs step 5 and 6 with the shuffle request received to update its own cache.
-There are two disadvantages to basic shuffling. Since the node chosen to
-exchange information with is chosen randomly, there is no guarantee that a node
-is ever chosen for a shuffle. This also implies that a pointer to a node is
-never verified by actually communicating with it but just passed along. To deal
+There are two disadvantages to basic shuffling. Since choosing of the node
+to exchange information with is done randomly, there is no guarantee that a
+specific node is ever chosen for a shuffle. This also implies that a pointer to
+a node is never verified by actually communicating with it but just passed along. To deal
 with those disadvantages a small change is made to enhance the shuffling.
  
 \subsection{Enhanced Shuffling}
@@ -228,8 +225,8 @@ Enhanced shuffling adds a new parameter held in the neighbor cache by each node.
 To ensure that every node gets shuffled with after a sufficient time has passed
 age is added as an parameter to the node pointers. The age is increased every
 time a node initiates an exchange between neighbors. Also instead of choosing
-the neighbor to shuffle with randomly the pointer with the highest age is
-chosen. The resulting shuffle operation takes the following steps:
+the neighbor as the shuffle target randomly, the pointer with the highest
+age is chosen. The resulting shuffle operation takes the following steps:
 
 \begin{enumerate}
 \item Increase by one the age of all neighbors.
@@ -244,8 +241,9 @@ neighbor cache.
 cache slots, and secondly replacing entries among the ones sent to Q.
 \end{enumerate}
 
-This enhancement additionally to solving the problem that a node is never chosen
-as a shuffling partner, it also limits the time a pointer lives. A pointer
-can only seize to exist if it is chosen as a shuffling partner or it is lost
-due to a communication failure. The implementation in this thesis uses the
-enhanced shuffling method especially because of this feature.
+This enhancement, additionally to solving the problem that a node is never
+chosen as a shuffling partner, also limits the time a pointer lives. A pointer
+can only seize to exist, if it is chosen as a shuffle target, is exchanged
+between to nodes that both know it or when it is lost due to a communication
+failure. The implementation in this thesis uses the enhanced shuffling method
+especially because of this feature.
