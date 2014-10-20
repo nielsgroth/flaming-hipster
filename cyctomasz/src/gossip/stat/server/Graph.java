@@ -22,7 +22,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import com.sun.xml.internal.ws.api.pipe.NextAction;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
@@ -108,9 +107,9 @@ public class Graph {
      */
     public long getEndingTime(){
     	long result=0;
-    	for(int i=0; i<this.edges.size();i++) {
-    		if(this.edges.get(i).getLeft()!=null)
-    		result = Math.max(result,this.edges.get(i).getLeft());
+    	for(Edge currentEdge : this.edges) {
+    		if(currentEdge.getLeft()!=null)
+    		result = Math.max(result,currentEdge.getLeft());
     	}
     	return result;
     }
@@ -124,8 +123,8 @@ public class Graph {
     			this.nodes.get(i).setLeft(this.nodes.get(i).getLeft()-startingTime);
     	}
     	// 2 - edges
-    	for (int i=0; i<this.edges.size();i++){
-    		this.edges.get(i).normalize(startingTime);
+    	for (Edge currentEdge : this.edges){
+    		currentEdge.normalize(startingTime);
     	}
     	// replacing missing timestamps with the experiment starting time and ending time
     	startingTime = this.getStartingTime();
@@ -136,8 +135,8 @@ public class Graph {
     		if (this.nodes.get(i).getJoined()==null) this.nodes.get(i).setJoined(startingTime);
     	}
     	//  2 - edges
-    	for (int i=0; i<this.edges.size();i++){
-    		this.edges.get(i).complete(endingTime);
+    	for (Edge currentEdge : this.edges){
+    		currentEdge.complete(endingTime);
     	}
     }
     public Graph getSubGraph(long start, long end){
@@ -274,8 +273,8 @@ public class Graph {
         	for (int i=0;i<nodes.size();i++) {
         		out.writeObject(nodes.get(i));
         	}
-        	for (int i =0;i<edges.size();i++){
-        		out.writeObject(edges.get(i));
+        	for (Edge currentEdge : this.edges){
+        		out.writeObject(currentEdge);
         	}
         	out.close();
         	outXML.close();

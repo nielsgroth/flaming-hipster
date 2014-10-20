@@ -32,8 +32,8 @@ public class CyclonPeer implements Runnable {
     private StatServer statServer;
     private BlockingQueue<Boolean> responseReceived= new SynchronousQueue<Boolean>();
     public static final int MTU = 1500;				// Maximum Transmission Unit: maximum size of datagram package
-    public final static int c = 5;	 				// cache size
-    public final static int l = 5;					// message size
+    public final static int c = 10;	 				// cache size
+    public final static int l = 2;					// message size
     public final static int socketTimeout = 3000; 	// sleep before shuffling again and receiving socket timeout
     public final static int shufflePayloadSize = l * Neighbor.recordBytes + 4;
     public final static int idLength = 4;
@@ -95,7 +95,7 @@ public class CyclonPeer implements Runnable {
 						System.out.println(Thread.currentThread().getName() + " : got interrupted!");
 					}
 				}
-			} 		
+			}
     	};
     	
     	Thread shuffleThread = new Thread(r);
@@ -170,18 +170,26 @@ public class CyclonPeer implements Runnable {
     public void shuffleInit() throws IOException {
     	if (neighbors.isEmpty()) {
     		printDebug("Neighbor cache is empty adding new neighbor from olsrd routing table");
-    		IRoutingTable routingTab = new OLSRDRoutingTable();
-    		InetAddress bootstrapnode = routingTab.getBootstrapNode();
-    		printDebug("bootstrapnode before subnetmaskchange: " + bootstrapnode.getHostAddress());
-    		printDebug("self IP: " + neighbors.self.getIp().getHostAddress());
-    		// replace subnetmask with self
-    		bootstrapnode = InetAddress.getByName((neighbors.self.getIp().getHostAddress().substring(0, neighbors.self.getIp().getHostAddress().lastIndexOf(".")) + 
-    		bootstrapnode.getHostAddress().substring(bootstrapnode.getHostAddress().lastIndexOf("."))));
-    		printDebug("bootstrapnode after subnetmaskchange: " + bootstrapnode.getHostAddress());
-        	addSeedNode(bootstrapnode, neighbors.self.getPort());
-        	//addSeedNode(bootstrapnode, neighbors.self.getPort()+1);
-        	//addSeedNode(bootstrapnode, neighbors.self.getPort()-1);
-        	//TODO vielleicht bei CyclonChurn benötigt
+    		Integer bootstrapPort = null;
+    		InetAddress bootstrapnode = null;
+    		while(bootstrapPort==null) {
+    			IRoutingTable routingTab = new OLSRDRoutingTable();
+        		bootstrapnode = routingTab.getBootstrapNode();
+        		printDebug("bootstrapnode before subnetmaskchange: " + bootstrapnode.getHostAddress());
+        		printDebug("self IP: " + neighbors.self.getIp().getHostAddress());
+        		/*
+        		 *  replace subnetmask with own
+        		 *  needed when Cyclon does not run on top of OLSR
+        		 *  bootstrapping is performed by picking a random olsr neighbor and first found active Port
+        		 */
+        		bootstrapnode = InetAddress.getByName((neighbors.self.getIp().getHostAddress().substring(0, neighbors.self.getIp().getHostAddress().lastIndexOf(".")) + 
+        		bootstrapnode.getHostAddress().substring(bootstrapnode.getHostAddress().lastIndexOf("."))));
+        		printDebug("bootstrapnode after subnetmaskchange: " + bootstrapnode.getHostAddress());
+        		//get active Port
+        		bootstrapPort = statServer.getBootstrapPort(bootstrapnode.getHostAddress());
+    		}
+    		
+        	addSeedNode(bootstrapnode, bootstrapPort);
     	}
         pendingShuffleId = rand.nextInt();
         if (pendingShuffleId == 0) {

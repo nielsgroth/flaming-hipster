@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class CyclonChurn {
 
@@ -26,6 +28,7 @@ public class CyclonChurn {
         	
             private AtomicInteger portOffset = new AtomicInteger();
             private AtomicInteger currentlyRunning = new AtomicInteger();
+            Lock lock = new ReentrantLock();
             
             @Override
             public void run() {
@@ -36,27 +39,34 @@ public class CyclonChurn {
         				public void run() {
         					System.out.println("Starting thread " + Thread.currentThread().getName() );
         					 while(basePort + portOffset.get() < (20000)) {
-        						 System.out.println("<<<<<<<<<<<<<<<<<<<<<<<" + Thread.currentThread().getName() + ": Starting new node with Port " + (basePort + portOffset.get()) + ">>>>>>>>>>>>>>>>>>>>>>>>>");
+        						 
+        						 
         						 try {
-		                            Random ontime = new Random();
-		                            // sleep for random time for asynchronous start
-		                            Thread.sleep(ontime.nextInt(3000));
-		                            CyclonPeer p = new CyclonPeer(networkInterfaceIP, basePort + (portOffset.incrementAndGet()), statServerAddress, statServerPort);
-		                            if (portOffset.get() > 1) {
-		                                p.addSeedNode(networkInterfaceIP, basePort + portOffset.get() -1);
-		                            }
-		                            else if (!isSeed) {
-		                            	p.addSeedNode(seedIP, basePort);
-		                            }
-		                            Thread peerThread = new Thread(p);
-		                            peerThread.start();
-		                            
-		                            currentlyRunning.incrementAndGet();
-		                            int sleep = (300-ontime.nextInt(150))*1000;
-		                            System.out.println("sleep for: " + sleep);
-		                            Thread.sleep(sleep);
-		                            peerThread.interrupt();
-		                            currentlyRunning.decrementAndGet();                            
+        							 	
+    		                         	Random ontime = new Random();
+    		                         	// sleep for random time for asynchronous start
+    		                            Thread.sleep(ontime.nextInt(3000));
+    		                            lock.lock();
+    		                            System.out.println("<<<<<<<<<<<<<<<<<<<<<<<" + Thread.currentThread().getName() + ": Starting new node with Port " + (basePort + portOffset.get()) + ">>>>>>>>>>>>>>>>>>>>>>>>>");
+    		                            CyclonPeer p = new CyclonPeer(networkInterfaceIP, basePort + (portOffset.incrementAndGet()), statServerAddress, statServerPort);
+    		                            if (portOffset.get() > 1) {
+    		                                p.addSeedNode(networkInterfaceIP, basePort + portOffset.get() -1);
+    		                            }
+    		                            else if (!isSeed) {
+    		                            	p.addSeedNode(seedIP, basePort);
+    		                            }
+    		                            Thread peerThread = new Thread(p);
+    		                            peerThread.start();
+    		                            
+    		                            currentlyRunning.incrementAndGet();
+    		                            //calculating client lifetime between about 100 and 300 cycles
+    		                            int lifetime = (300-ontime.nextInt(200))*3000;
+    		                            System.out.println("sleep for: " + lifetime);
+    		                            lock.unlock();
+    		                            Thread.sleep(lifetime);
+    		                            // kill client
+    		                            peerThread.interrupt();
+    		                            currentlyRunning.decrementAndGet(); 
 		                        }catch (InterruptedException ie) {
 		                        	interrupt();
 		                        	ie.printStackTrace();

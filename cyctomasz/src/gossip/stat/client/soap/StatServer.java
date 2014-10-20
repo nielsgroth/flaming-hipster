@@ -30,6 +30,20 @@ public interface StatServer {
 
     /**
      * 
+     * @param arg0
+     * @return
+     *     returns java.lang.Integer
+     */
+    @WebMethod
+    @WebResult(targetNamespace = "")
+    @RequestWrapper(localName = "getBootstrapPort", targetNamespace = "http://server.stat.gossip/", className = "gossip.stat.client.soap.GetBootstrapPort")
+    @ResponseWrapper(localName = "getBootstrapPortResponse", targetNamespace = "http://server.stat.gossip/", className = "gossip.stat.client.soap.GetBootstrapPortResponse")
+    public Integer getBootstrapPort(
+        @WebParam(name = "arg0", targetNamespace = "")
+        String arg0);
+
+    /**
+     * 
      * @param id
      * @param edgeList
      */
@@ -109,50 +123,6 @@ public interface StatServer {
     /**
      * 
      * @return
-     *     returns int
-     */
-    @WebMethod
-    @WebResult(targetNamespace = "")
-    @RequestWrapper(localName = "getNodeNumber", targetNamespace = "http://server.stat.gossip/", className = "gossip.stat.client.soap.GetNodeNumber")
-    @ResponseWrapper(localName = "getNodeNumberResponse", targetNamespace = "http://server.stat.gossip/", className = "gossip.stat.client.soap.GetNodeNumberResponse")
-    public int getNodeNumber();
-
-    /**
-     * 
-     * @return
-     *     returns long
-     */
-    @WebMethod
-    @WebResult(targetNamespace = "")
-    @RequestWrapper(localName = "getCounter", targetNamespace = "http://server.stat.gossip/", className = "gossip.stat.client.soap.GetCounter")
-    @ResponseWrapper(localName = "getCounterResponse", targetNamespace = "http://server.stat.gossip/", className = "gossip.stat.client.soap.GetCounterResponse")
-    public long getCounter();
-
-    /**
-     * 
-     * @return
-     *     returns int
-     */
-    @WebMethod
-    @WebResult(targetNamespace = "")
-    @RequestWrapper(localName = "getLostPackagesCounter", targetNamespace = "http://server.stat.gossip/", className = "gossip.stat.client.soap.GetLostPackagesCounter")
-    @ResponseWrapper(localName = "getLostPackagesCounterResponse", targetNamespace = "http://server.stat.gossip/", className = "gossip.stat.client.soap.GetLostPackagesCounterResponse")
-    public int getLostPackagesCounter();
-
-    /**
-     * 
-     * @return
-     *     returns java.lang.String
-     */
-    @WebMethod
-    @WebResult(targetNamespace = "")
-    @RequestWrapper(localName = "getWaitingMessages", targetNamespace = "http://server.stat.gossip/", className = "gossip.stat.client.soap.GetWaitingMessages")
-    @ResponseWrapper(localName = "getWaitingMessagesResponse", targetNamespace = "http://server.stat.gossip/", className = "gossip.stat.client.soap.GetWaitingMessagesResponse")
-    public String getWaitingMessages();
-
-    /**
-     * 
-     * @return
      *     returns java.lang.String
      */
     @WebMethod
@@ -193,5 +163,49 @@ public interface StatServer {
     public void writeResults(
         @WebParam(name = "arg0", targetNamespace = "")
         String arg0);
+
+    /**
+     * 
+     * @return
+     *     returns int
+     */
+    @WebMethod
+    @WebResult(targetNamespace = "")
+    @RequestWrapper(localName = "getNodeNumber", targetNamespace = "http://server.stat.gossip/", className = "gossip.stat.client.soap.GetNodeNumber")
+    @ResponseWrapper(localName = "getNodeNumberResponse", targetNamespace = "http://server.stat.gossip/", className = "gossip.stat.client.soap.GetNodeNumberResponse")
+    public int getNodeNumber();
+
+    /**
+     * 
+     * @return
+     *     returns long
+     */
+    @WebMethod
+    @WebResult(targetNamespace = "")
+    @RequestWrapper(localName = "getCounter", targetNamespace = "http://server.stat.gossip/", className = "gossip.stat.client.soap.GetCounter")
+    @ResponseWrapper(localName = "getCounterResponse", targetNamespace = "http://server.stat.gossip/", className = "gossip.stat.client.soap.GetCounterResponse")
+    public long getCounter();
+
+    /**
+     * 
+     * @return
+     *     returns int
+     */
+    @WebMethod
+    @WebResult(targetNamespace = "")
+    @RequestWrapper(localName = "getLostPackagesCounter", targetNamespace = "http://server.stat.gossip/", className = "gossip.stat.client.soap.GetLostPackagesCounter")
+    @ResponseWrapper(localName = "getLostPackagesCounterResponse", targetNamespace = "http://server.stat.gossip/", className = "gossip.stat.client.soap.GetLostPackagesCounterResponse")
+    public int getLostPackagesCounter();
+
+    /**
+     * 
+     * @return
+     *     returns java.lang.String
+     */
+    @WebMethod
+    @WebResult(targetNamespace = "")
+    @RequestWrapper(localName = "getWaitingMessages", targetNamespace = "http://server.stat.gossip/", className = "gossip.stat.client.soap.GetWaitingMessages")
+    @ResponseWrapper(localName = "getWaitingMessagesResponse", targetNamespace = "http://server.stat.gossip/", className = "gossip.stat.client.soap.GetWaitingMessagesResponse")
+    public String getWaitingMessages();
 
 }

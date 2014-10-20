@@ -28,14 +28,15 @@ public class ObjectFactory {
     private final static QName _WriteResults_QNAME = new QName("http://server.stat.gossip/", "writeResults");
     private final static QName _GetNodeNumber_QNAME = new QName("http://server.stat.gossip/", "getNodeNumber");
     private final static QName _Leave_QNAME = new QName("http://server.stat.gossip/", "leave");
+    private final static QName _GetBootstrapPort_QNAME = new QName("http://server.stat.gossip/", "getBootstrapPort");
     private final static QName _CleanupResponse_QNAME = new QName("http://server.stat.gossip/", "cleanupResponse");
     private final static QName _GetCounter_QNAME = new QName("http://server.stat.gossip/", "getCounter");
     private final static QName _Cleanup_QNAME = new QName("http://server.stat.gossip/", "cleanup");
     private final static QName _SendListResponse_QNAME = new QName("http://server.stat.gossip/", "sendListResponse");
     private final static QName _GetCounterResponse_QNAME = new QName("http://server.stat.gossip/", "getCounterResponse");
     private final static QName _WriteTopoXML_QNAME = new QName("http://server.stat.gossip/", "writeTopoXML");
-    private final static QName _WriteAlternativeXML_QNAME = new QName("http://server.stat.gossip/", "writeAlternativeXML");
     private final static QName _GetTopoXMLResponse_QNAME = new QName("http://server.stat.gossip/", "getTopoXMLResponse");
+    private final static QName _WriteAlternativeXML_QNAME = new QName("http://server.stat.gossip/", "writeAlternativeXML");
     private final static QName _GetNodeNumberResponse_QNAME = new QName("http://server.stat.gossip/", "getNodeNumberResponse");
     private final static QName _GetWaitingMessagesResponse_QNAME = new QName("http://server.stat.gossip/", "getWaitingMessagesResponse");
     private final static QName _WriteResultsResponse_QNAME = new QName("http://server.stat.gossip/", "writeResultsResponse");
@@ -47,6 +48,7 @@ public class ObjectFactory {
     private final static QName _SendList_QNAME = new QName("http://server.stat.gossip/", "sendList");
     private final static QName _GetWaitingMessages_QNAME = new QName("http://server.stat.gossip/", "getWaitingMessages");
     private final static QName _SendList2_QNAME = new QName("http://server.stat.gossip/", "sendList2");
+    private final static QName _GetBootstrapPortResponse_QNAME = new QName("http://server.stat.gossip/", "getBootstrapPortResponse");
     private final static QName _WriteTopoXMLResponse_QNAME = new QName("http://server.stat.gossip/", "writeTopoXMLResponse");
     private final static QName _WriteXMLResponse_QNAME = new QName("http://server.stat.gossip/", "writeXMLResponse");
     private final static QName _SendTopologyResponse_QNAME = new QName("http://server.stat.gossip/", "sendTopologyResponse");
@@ -95,19 +97,19 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link GetTopoXMLResponse }
-     * 
-     */
-    public GetTopoXMLResponse createGetTopoXMLResponse() {
-        return new GetTopoXMLResponse();
-    }
-
-    /**
      * Create an instance of {@link WriteAlternativeXML }
      * 
      */
     public WriteAlternativeXML createWriteAlternativeXML() {
         return new WriteAlternativeXML();
+    }
+
+    /**
+     * Create an instance of {@link GetTopoXMLResponse }
+     * 
+     */
+    public GetTopoXMLResponse createGetTopoXMLResponse() {
+        return new GetTopoXMLResponse();
     }
 
     /**
@@ -148,6 +150,14 @@ public class ObjectFactory {
      */
     public GetNodeNumber createGetNodeNumber() {
         return new GetNodeNumber();
+    }
+
+    /**
+     * Create an instance of {@link GetBootstrapPort }
+     * 
+     */
+    public GetBootstrapPort createGetBootstrapPort() {
+        return new GetBootstrapPort();
     }
 
     /**
@@ -295,6 +305,14 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link GetBootstrapPortResponse }
+     * 
+     */
+    public GetBootstrapPortResponse createGetBootstrapPortResponse() {
+        return new GetBootstrapPortResponse();
+    }
+
+    /**
      * Create an instance of {@link SendList2 }
      * 
      */
@@ -336,6 +354,15 @@ public class ObjectFactory {
     @XmlElementDecl(namespace = "http://server.stat.gossip/", name = "leave")
     public JAXBElement<Leave> createLeave(Leave value) {
         return new JAXBElement<Leave>(_Leave_QNAME, Leave.class, null, value);
+    }
+
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link GetBootstrapPort }{@code >}}
+     * 
+     */
+    @XmlElementDecl(namespace = "http://server.stat.gossip/", name = "getBootstrapPort")
+    public JAXBElement<GetBootstrapPort> createGetBootstrapPort(GetBootstrapPort value) {
+        return new JAXBElement<GetBootstrapPort>(_GetBootstrapPort_QNAME, GetBootstrapPort.class, null, value);
     }
 
     /**
@@ -393,21 +420,21 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link JAXBElement }{@code <}{@link WriteAlternativeXML }{@code >}}
-     * 
-     */
-    @XmlElementDecl(namespace = "http://server.stat.gossip/", name = "writeAlternativeXML")
-    public JAXBElement<WriteAlternativeXML> createWriteAlternativeXML(WriteAlternativeXML value) {
-        return new JAXBElement<WriteAlternativeXML>(_WriteAlternativeXML_QNAME, WriteAlternativeXML.class, null, value);
-    }
-
-    /**
      * Create an instance of {@link JAXBElement }{@code <}{@link GetTopoXMLResponse }{@code >}}
      * 
      */
     @XmlElementDecl(namespace = "http://server.stat.gossip/", name = "getTopoXMLResponse")
     public JAXBElement<GetTopoXMLResponse> createGetTopoXMLResponse(GetTopoXMLResponse value) {
         return new JAXBElement<GetTopoXMLResponse>(_GetTopoXMLResponse_QNAME, GetTopoXMLResponse.class, null, value);
+    }
+
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link WriteAlternativeXML }{@code >}}
+     * 
+     */
+    @XmlElementDecl(namespace = "http://server.stat.gossip/", name = "writeAlternativeXML")
+    public JAXBElement<WriteAlternativeXML> createWriteAlternativeXML(WriteAlternativeXML value) {
+        return new JAXBElement<WriteAlternativeXML>(_WriteAlternativeXML_QNAME, WriteAlternativeXML.class, null, value);
     }
 
     /**
@@ -507,6 +534,15 @@ public class ObjectFactory {
     @XmlElementDecl(namespace = "http://server.stat.gossip/", name = "sendList2")
     public JAXBElement<SendList2> createSendList2(SendList2 value) {
         return new JAXBElement<SendList2>(_SendList2_QNAME, SendList2 .class, null, value);
+    }
+
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link GetBootstrapPortResponse }{@code >}}
+     * 
+     */
+    @XmlElementDecl(namespace = "http://server.stat.gossip/", name = "getBootstrapPortResponse")
+    public JAXBElement<GetBootstrapPortResponse> createGetBootstrapPortResponse(GetBootstrapPortResponse value) {
+        return new JAXBElement<GetBootstrapPortResponse>(_GetBootstrapPortResponse_QNAME, GetBootstrapPortResponse.class, null, value);
     }
 
     /**

@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.net.InetAddress;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -58,6 +59,22 @@ public class StatServer {
     		this.topology.put(key, n);
     		return n;
     	}   	
+    }
+    /**
+     * returns an active nodes Port given only the IP Address 
+     */
+    @WebMethod
+    public Integer getBootstrapPort(String bootstrapNode) {
+    	Integer port=null;
+    	for (String currentNode : this.list.keySet()) {
+    		if (currentNode.startsWith(bootstrapNode)){
+    			if (this.list.get(currentNode).status==Node.CONNECTED) {
+    				port= Integer.parseInt(currentNode.split(":")[1]);
+    			}
+    		}
+    		this.list.get(currentNode);
+    	}
+    	return port;
     }
     /*
      * this method allows the client to send its physical topology information to the StatServer
@@ -192,7 +209,7 @@ public class StatServer {
             Node current = currentList.get(key);
             graph.addNode(current);
         }
-        graph.toXML(fileName + "topo.gexf");
+        graph.toXML(fileName + "topo");
     }
     /**
      * alternative to writeXML(File fileName) for big result files
@@ -208,7 +225,7 @@ public class StatServer {
             Node current = currentList.get(key);
             graph.addNode(current);
         } 
-        graph.toXML(fileName + ".gexf");
+        graph.toXML(fileName  + "");
     }
     
     @WebMethod

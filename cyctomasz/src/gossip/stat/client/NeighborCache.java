@@ -224,7 +224,7 @@ public class NeighborCache {
     }
 
     public boolean isEmpty() {
-    	return neighbors.size() <= 1;
+    	return neighbors.size() <= 0;
     }
     /**
      * @param in list of neighbors
