@@ -2,23 +2,24 @@
 \label{chap:evaluation}
 
 \FloatBarrier
-\section{Summary}
-	This section contains a summary of the results discussed above.
-	The experiments have shown that Cyclon provides an overlay topology that does
-	not loose connectivity once established even with moderate package loss and a
-	high churn of clients. They have also shown that the topology metrics converge
-	to certain values. The typical out-degree in an overlay topology created by
-	Cyclon has shown to be close to the cache size. Although with moderate package
-	loss the mean out-degree is smaller than without, it is a small difference.
-	Most in-degrees in a topology have shown to be close to the cache size if the
-	shuffle length was small enough. The experiments node count has shown to be to
-	small to show the same for bigger shuffle lengths. The average cluster
-	coefficients of all experiments have not been bigger than twice the average
-	cluster coefficients of comparable random graphs. Packet loss seems to also
-	have a small negative impact on cluster coefficients. The diameter of the
-	network is similar to those of small world networks. The betweenness
-	centrality for a sufficiently small shuffle length shows that Cyclon does not
-	create super nodes, that would be weak points in topology structure. \\
+\section{Result Summary}
+	This section contains a summary of the results presented in chapter
+	\ref{chap:results}. The experiments have shown that Cyclon provides an overlay
+	topology, that does not loose connectivity once established, even with moderate
+	package loss and a high churn of clients. They have also shown that the
+	topology metrics converge to certain values. The typical out-degree in an
+	overlay topology created by Cyclon has shown to be close to the cache size.
+	Although with moderate package loss the mean out-degree is smaller than
+	without, it is a small difference. Most in-degrees in a topology have shown to
+	be close to the cache size if the shuffle length was small enough. The
+	experiments node count has shown to be to small to show the same for bigger
+	shuffle lengths. The average cluster coefficients of all experiments have not
+	been bigger than twice the average cluster coefficients of comparable random
+	graphs. Packet loss seems to also have a small negative impact on cluster
+	coefficients. The diameter of the network is similar to those of small world
+	networks. The betweenness centrality for a sufficiently small shuffle length
+	shows that Cyclon does not create super nodes, that would be weak points in
+	topology structure. 
 	
 	The number of nodes in the experiment has shown to be too small for most of the
 	experiment parameters. Especially the shuffle length to cache size ratio has
@@ -28,7 +29,6 @@
 	initial boundary. Nodes with high in-degree are especially prone to this
 	behaviour. The effects of network behaviour will be described in the next
 	subsection
-	
 	
 \subsection{Impacts of Package Loss on Topology Development}
 	The goal of the experiments was to find what impact package loss has on the

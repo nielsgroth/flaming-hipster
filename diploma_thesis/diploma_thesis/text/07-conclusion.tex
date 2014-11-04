@@ -1,5 +1,38 @@
 \chapter{Conclusion} 
 \label{chap:conclusion}
+This thesis has studied the behaviour of Cyclon in realistic conditions on a
+real network. The different metrics of complex networks have been discussed and
+the measured results have helped to better understand, how Cyclon behaves under
+various conditions. The use of a wireless ad-hoc network has helped to examine
+the impact of package loss and latency on Cyclon.  Some of the experiments
+conducted redeemed to be of little use, due to the small network size. Still,
+the remaining experiments have shown, that Cyclon copes well under harsh network
+conditions. With moderate package loss Cyclon shows to perform slightly worse
+than in theory, but the impact is not breaking the basic functionality.
+Latencies can pose a problem in rare cases, but the protocol could be altered,
+so that those cases add to the package loss. A high churn rate is met with
+Cyclon's capability to quickly react to network changes. During the
+implementation of Cyclon in JAVA it showed to have a minor problem with
+latency, that cannot be solved to full satisfaction. The same was discovered
+in \cite{matoslaystream}. Despite this weaknesses, its overall robustness in
+face of moderate package loss and a high churn rate showed to be very good. Paired
+with the simplicity and light weight, Cyclon shows good properties and it has
+shown that it withstands the moderate package loss and high churn rates of the
+experiment environment. Another important contribution is the statistics
+gathering framework, which can be used for other topology related experiments,
+with any programming language that supports web services.
+From the findings of this thesis Cyclon has to be be improved, by changing the
+way it behaves in in the case of incoming shuffle requests while the node is
+waiting for a response. This could not have been discovered without considering
+network latencies.
 
-\section{Possible Improvements}
-\section{Future Development}
+To my knowledge, there has been no experiments yet, where peer sampling
+services have been tested under realistic network conditions to this extend.
+Most of the experiments have been simulated with dedicated peer-to-peer
+simulators like \cite{montresor2009peersim}. In this light a major contribution
+of this thesis is to show the importance of package loss and network latency,
+when considering gossiping algorithms. The science field of gossiping protocols
+would greatly benefit from an experiment framework, that takes into
+consideration the conditions, that a physical network produces. As a
+contribution the statistics server introduced and implemented in this thesis, takes a step
+towards such a framework.

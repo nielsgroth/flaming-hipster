@@ -3,8 +3,8 @@
 
 \section{Introduction}
 % What is the problem? Why is it important? 
-Since their introduction in the late 1990's peer-to-peer Networks have become an
-important part of the Internet. Multiple peer-to-peer based applications like
+Since their introduction in the late 1990's, peer-to-peer Networks have become
+an important part of the Internet. Multiple peer-to-peer based applications like
 file sharing, real time audio or video streaming and others make up for an average of
 79\% network traffic and 42\% of connections \cite{John+:InetTraffic}.
 Peer-to-Peer networks have very large numbers of participants with high
@@ -12,7 +12,7 @@ fluctuations in activity. According to \cite{bittorrent} Bittorrent and
 $\mu$Torrent, the two main clients for the Bittorrent file sharing network, had
 150 million distinct users in December 2011. Several studies have shown that the network size remains stable,
 but that al lot of peer join and leave the network over time. In fact those
-studies show that within an hour up to 50\% of the network peers have
+studies show that within an hour up to 50\% of the network, peers have
 changed\cite{stutzbach2006understanding} \cite{falkner2007profiling}. This
 dynamic behaviour of the peers is called churn. There are different types of
 peer-to-peer systems depending on their level of decentralization. In
@@ -20,32 +20,32 @@ unstructured pure peer-to-peer networks it is desired to manage the
 infrastructure decentrally. This means that there needs to be a
 decentral mechanism to manage the network itself and the service provided by
 the network. A crucial part of managing such a network is knowing which peers belong
-to it. This is called membership management. Since the networks are very big the
-membership managing solution has to be scalable. In order to deal with the high
-churn rates present in peer-to-peer networks a solution has to quickly adapt to
+to it. This is called membership management. Since the networks are very big,
+the membership managing solution has to be scalable. In order to deal with the high
+churn rates present in peer-to-peer networks, a solution has to quickly adapt to
 changes in the networks to provide a reliable service. For network performance
-it is also required that peers can reach other peers in a short time despite
+it is also required that peers can reach other peers in a short time, despite
 the size of the network. Membership management is mainly the task to keep
 information about all participating peers accessible for all peers. This is
-done by dividing the information so that every peer stores a partial view of
+done by dividing the information, so that every peer stores a partial view of
 the network. In membership management this information usually consists out of
 the IP address, port and any other protocol specific metrics. The membership
-management therefore provides a structure which can also be called an overlay
+management therefore provides a structure, which can also be called an overlay
 topology.
 
 Cyclon introduced by \cite{voulgaris2005cyclon} is an inexpensive membership
-management algorithm that provides an overlay topology with similar properties
+management algorithm, that provides an overlay topology with similar properties
 to random graphs \cite{Bollobas1985}. It uses gossiping to introduce randomness
 and quick information dissemination. The Cyclon algorithm has so far been only
 tested in a simulated environment.
 
 \section{Objective of the Thesis} 
-%What is the thesis? WHat is my contribution?
-The goal of this thesis is to examine Cyclon's behaviour under realistic
+%What is the thesis? What is my contribution?
+The main goal of this thesis is to examine Cyclon's behaviour under realistic
 network conditions, including packet loss, latency and high churn rates. The
 overlay topology provided by Cyclon is analyzed for its functionality,
-reliability and robustness. To achieve this a JAVA implementation of Cyclon
-together with a statistics server for topology information gathering is
+reliability and robustness. To achieve this, a JAVA implementation of Cyclon,
+together with a statistics server for topology information gathering, is
 provided. Experiments are conducted in a wireless ad-hoc network and an
 analysis of the results is conducted to examine the impact of packet loss and
 latency on the topology. 
@@ -54,7 +54,7 @@ latency on the topology.
 % Thesis Structure How is this thesis structures? Which chapter contains what?
 This thesis is structured as follows. This chapter \ref{chap:introduction}
 introduces the problem and shows what Cyclon can achieve. There is also a quick
-survey of the state of the art in unstructured Peer-to-Peer membership
+survey of the state of the art in unstructured peer-to-peer membership
 management field. Chapter \ref{chap:gossiping} will describe more deeply where
 in peer-to-peer networks Cyclon can be used, what gossiping is and how Cyclon
 works basically. In Chapter \ref{chap:properties} the requirements for and
@@ -70,29 +70,30 @@ and gives and outlook for future development.
 %alternative title:
 % related work Lpbcast Newscast
 This section describes the state of the art in membership and gossiping
-protocols.The service that is provided by gossiping peer sampling services is
+protocols.The service, that is provided by gossiping peer sampling services, is
 described in \cite{jelasity2004peer}. A performance analysis of Cyclon can be
-foun in \cite{Bonnet2006}. Other protocols using gossiping for membership
-management are HyParView \cite{leitao2007hyparview} and Scamp \cite{ganesh2001scamp} which use a reactive strategy rather than a proactive
-one. This means that the peers do not adjust the topology until there is a
-change in the peer set. In \cite{maniymaran2007build} it is shown that when
-creating an unstructured overlay the randomness can be used to create a
+found in \cite{Bonnet2006}. Other protocols using gossiping for membership
+management are HyParView \cite{leitao2007hyparview} and Scamp
+\cite{ganesh2001scamp}, which both use a reactive strategy rather than a
+proactive one. This means that the peers do not adjust the topology until there is a
+change in the peer set. In \cite{maniymaran2007build}, it is shown that when
+creating an unstructured overlay, the randomness can be used to create a
 parallel structured overlay, so that either one can be used depending on the
-application. In \cite{khelghatdoust2014gossip} a gossiping protocol is
-introduced which is designed for use in restricted networks. The problem that
+application. In \cite{khelghatdoust2014gossip}, a gossiping protocol is
+introduced, which is designed for use in restricted networks. The problem that
 it tries to solve is, that in some networks a peer might not be able to reach
-every other peer. Tis can be due to Network Address Translation Gateways,
+every other peer. This can be due to Network Address Translation Gateways (NAT),
 firewalls or is also the case in wireless environments. All these are
 conditions that restricts the randomness of gossiping protocols. In this
-approach the peers do not only store pointers to other peers but also the
+approach the peers do not only store pointers to other peers, but also the
 routing information. The same problem is approached with WPSS
-\cite{roverso2013through}. It also states that traditional gossiping protocols
+\cite{roverso2013through}. It also states, that traditional gossiping protocols
 like Cyclon have high costs in connection establishment, since the links are
-changed frequently. The authors of \cite{jesi2007identifying} describe a peer sampling service
-addition that secures the service against malicious nodes executing ``hub
-attacks``. These are attacks where nodes try to interfere in the network by
-trying to concentrate links to themselves or other known malicius nodes,
-creating hubs. These hubs then can do all kind of destruction up to network
-partitioning. In \cite{matoslaystream} Cyclon is used in the gossiping protocol
-stack for live video streaming.
+changed frequently. The authors of \cite{jesi2007identifying} describe a peer
+sampling service addition that secures the service against malicious nodes
+executing ``hub attacks``. These are attacks where nodes try to interfere in
+the network, by trying to concentrate links to themselves or other known
+malicious nodes, creating hubs. These hubs then can do all kind of destruction
+up to network partitioning. In \cite{matoslaystream} Cyclon is used in the
+gossiping protocol stack for live video streaming.
 

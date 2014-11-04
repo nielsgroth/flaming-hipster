@@ -78,6 +78,7 @@ Cyclon behaves in a more realistic environment.
 \section{Experiment Results}
 
 \subsection{Connectivity}
+\label{subsec:connectivity}
 In all experiments the initial topology after bootstrapping is a network with a
 single weakly connected component. That means that each node is either known by
 or knows about a node in the component. This is to ensure no node starts
@@ -297,7 +298,7 @@ every node is as good represented in the accumulated network cache as
 possible.
 
 \begin{figure}
-	\includegraphics[width=\textwidth,keepaspectratio]{./graphics/analysis/degreeGraphB05.pdf}
+	\includegraphics[width=\textwidth,keepaspectratio]{./graphics/analysis/inDegreeGraphB05.pdf}
 	\caption{In-Degree Distribution in wireless static mode, cache size=10, shuffle
 	length=2}
 	\label{fig:inDegreeDistB05}
@@ -387,49 +388,49 @@ and $P(X_B)$ remain constant.
 
 \begin{figure}
 \begin{subfigure}{.5\textwidth}
-	\includegraphics[width=\textwidth,keepaspectratio]{./graphics/analysis/degreeGraphB00.pdf}
+	\includegraphics[width=\textwidth,keepaspectratio]{./graphics/analysis/inDegreeGraphB00.pdf}
 	\caption{cache size=20, shuffle
 	length=10}
 	\label{fig:inDegreeDistB00small}
 \end{subfigure}%
 \begin{subfigure}{.5\textwidth}
-	\includegraphics[width=\textwidth,keepaspectratio]{./graphics/analysis/degreeGraphB01.pdf}
+	\includegraphics[width=\textwidth,keepaspectratio]{./graphics/analysis/inDegreeGraphB01.pdf}
 	\caption{cache size=20, shuffle
 	length=5}
 	\label{fig:inDegreeDistB01small}
 \end{subfigure}
 \begin{subfigure}{.5\textwidth}
-	\includegraphics[width=\textwidth,keepaspectratio]{./graphics/analysis/degreeGraphB02.pdf}
+	\includegraphics[width=\textwidth,keepaspectratio]{./graphics/analysis/inDegreeGraphB02.pdf}
 	\caption{cache size=20, shuffle
 	length=2}
 	\label{fig:inDegreeDistB02small}
 \end{subfigure}%
 \begin{subfigure}{.5\textwidth}
-	\includegraphics[width=\textwidth,keepaspectratio]{./graphics/analysis/degreeGraphB03.pdf}
+	\includegraphics[width=\textwidth,keepaspectratio]{./graphics/analysis/inDegreeGraphB03.pdf}
 	\caption{cache size=10, shuffle
 	length=10}
 	\label{fig:inDegreeDistB03small}
 \end{subfigure}
 \begin{subfigure}{.5\textwidth}
-	\includegraphics[width=\textwidth,keepaspectratio]{./graphics/analysis/degreeGraphB04.pdf}
+	\includegraphics[width=\textwidth,keepaspectratio]{./graphics/analysis/inDegreeGraphB04.pdf}
 	\caption{cache size=10, shuffle
 	length=5}
 	\label{fig:inDegreeDistB04small}
 \end{subfigure}%
 \begin{subfigure}{.5\textwidth}
-	\includegraphics[width=\textwidth,keepaspectratio]{./graphics/analysis/degreeGraphB05.pdf}
+	\includegraphics[width=\textwidth,keepaspectratio]{./graphics/analysis/inDegreeGraphB05.pdf}
 	\caption{cache size=10, shuffle
 	length=2}
 	\label{fig:inDegreeDistB05small}
 \end{subfigure}
 \begin{subfigure}{.5\textwidth}
-	\includegraphics[width=\textwidth,keepaspectratio]{./graphics/analysis/degreeGraphB06.pdf}
+	\includegraphics[width=\textwidth,keepaspectratio]{./graphics/analysis/inDegreeGraphB06.pdf}
 	\caption{cache size=5, shuffle
 	length=5}
 	\label{fig:inDegreeDistB06small}
 \end{subfigure}%
 \begin{subfigure}{.5\textwidth}
-	\includegraphics[width=\textwidth,keepaspectratio]{./graphics/analysis/degreeGraphB07.pdf}
+	\includegraphics[width=\textwidth,keepaspectratio]{./graphics/analysis/inDegreeGraphB07.pdf}
 	\caption{cache size=5, shuffle
 	length=2}
 	\label{fig:inDegreeDistB07small}
@@ -439,49 +440,49 @@ and $P(X_B)$ remain constant.
 
 \begin{figure}
 \begin{subfigure}{.5\textwidth}
-	\includegraphics[width=\textwidth,keepaspectratio]{./graphics/analysis/degreeGraphT00.pdf}
+	\includegraphics[width=\textwidth,keepaspectratio]{./graphics/analysis/inDegreeGraphT00.pdf}
 	\caption{cache size=20, shuffle
 	length=10}
 	\label{fig:inDegreeDistT00small}
 \end{subfigure}%
 \begin{subfigure}{.5\textwidth}
-	\includegraphics[width=\textwidth,keepaspectratio]{./graphics/analysis/degreeGraphT01.pdf}
+	\includegraphics[width=\textwidth,keepaspectratio]{./graphics/analysis/inDegreeGraphT01.pdf}
 	\caption{cache size=20, shuffle
 	length=5}
 	\label{fig:inDegreeDistT01small}
 \end{subfigure}
 \begin{subfigure}{.5\textwidth}
-	\includegraphics[width=\textwidth,keepaspectratio]{./graphics/analysis/degreeGraphT02.pdf}
+	\includegraphics[width=\textwidth,keepaspectratio]{./graphics/analysis/inDegreeGraphT02.pdf}
 	\caption{cache size=20, shuffle
 	length=2}
 	\label{fig:inDegreeDistT02small}
 \end{subfigure}%
 \begin{subfigure}{.5\textwidth}
-	\includegraphics[width=\textwidth,keepaspectratio]{./graphics/analysis/degreeGraphT03.pdf}
+	\includegraphics[width=\textwidth,keepaspectratio]{./graphics/analysis/inDegreeGraphT03.pdf}
 	\caption{cache size=10, shuffle
 	length=10}
 	\label{fig:inDegreeDistT03small}
 \end{subfigure}
 \begin{subfigure}{.5\textwidth}
-	\includegraphics[width=\textwidth,keepaspectratio]{./graphics/analysis/degreeGraphT04.pdf}
+	\includegraphics[width=\textwidth,keepaspectratio]{./graphics/analysis/inDegreeGraphT04.pdf}
 	\caption{cache size=10, shuffle
 	length=5}
 	\label{fig:inDegreeDistT04small}
 \end{subfigure}%
 \begin{subfigure}{.5\textwidth}
-	\includegraphics[width=\textwidth,keepaspectratio]{./graphics/analysis/degreeGraphT05.pdf}
+	\includegraphics[width=\textwidth,keepaspectratio]{./graphics/analysis/inDegreeGraphT05.pdf}
 	\caption{cache size=10, shuffle
 	length=2}
 	\label{fig:inDegreeDistT05small}
 \end{subfigure}
 \begin{subfigure}{.5\textwidth}
-	\includegraphics[width=\textwidth,keepaspectratio]{./graphics/analysis/degreeGraphT06.pdf}
+	\includegraphics[width=\textwidth,keepaspectratio]{./graphics/analysis/inDegreeGraphT06.pdf}
 	\caption{cache size=5, shuffle
 	length=5}
 	\label{fig:inDegreeDistT06small}
 \end{subfigure}%
 \begin{subfigure}{.5\textwidth}
-	\includegraphics[width=\textwidth,keepaspectratio]{./graphics/analysis/degreeGraphT07.pdf}
+	\includegraphics[width=\textwidth,keepaspectratio]{./graphics/analysis/inDegreeGraphT07.pdf}
 	\caption{cache size=5, shuffle
 	length=2}
 	\label{fig:inDegreeDistT07small}
@@ -523,9 +524,12 @@ lower than the others. An exception might be the runs with cache size 20, and
 indeed, as we can see in figure \ref{fig:ClusterCoef20small}, the cluster
 coefficient is generally closer to the ideal for graphs with cache size 20.
 
+
+
+
 \begin{figure}
 	\centering
-	\includegraphics[width=0.6501\textwidth,keepaspectratio]{./graphics/analysis/clusterGraphNWI.pdf}
+	\includegraphics[width=\textwidth,keepaspectratio]{./graphics/analysis/clusterGraphNWI.pdf}
 	\caption{Cluster Coefficient in wireless and wired static mode}
 	\label{fig:ClusterCoefNWI}
 \end{figure}
@@ -551,6 +555,7 @@ coefficient is generally closer to the ideal for graphs with cache size 20.
 	\label{fig:ClusterCoef20small}
 \end{subfigure}
 \caption{Cluster coefficient in wireless static mode by cache size}
+\label{fig:ClusterCoef}
 \end{figure}
 
 \begin{figure}
@@ -575,6 +580,20 @@ coefficient is generally closer to the ideal for graphs with cache size 20.
 \caption{Cluster Coefficient in wireless static scenario by shuffle length}
 \end{figure}
 
+\subsubsection{Cluster Coefficient in Churn Mode}
+As described above in section \ref{subsec:connectivity}, the experiments in
+churn mode have produced a mainly intact network. In this section the cluster
+coefficients of those experiments will be discussed. In figure
+\ref{fig:ClusterCoefChurn} the cluster coefficients of churn mode experiments
+can be seen. Each figure depicts a comparison between wired an wireless modes
+with otherwise identical parameters. One can see, that in all experiments the
+wireless scenario converges to a lower value, than the corresponding wired
+scenario. This is consistent with the static scenario. It is also observable, 
+that the wireless values converge to the same values of the corresponding static
+scenarios depicted in figure \ref{fig:ClusterCoef}. Since the nodes in the churn
+scenario live a random number of cycles between 100 and 300 cycles, it can be
+said that despite the high churn rates Cyclon keeps its cluster coefficient
+value at normal levels. 
 \begin{figure}
 \begin{subfigure}{\textwidth}
 	\centering
@@ -586,15 +605,16 @@ coefficient is generally closer to the ideal for graphs with cache size 20.
 	\centering
 	\includegraphics[height=.34\textheight,keepaspectratio]{./graphics/analysis/clusterGraphChurn10.pdf}
 	\caption{cache size 10}
-	\label{fig:ClusterCoefChurn5small}
+	\label{fig:ClusterCoefChurn10small}
 \end{subfigure}
 \begin{subfigure}{\textwidth}
 	\centering
 	\includegraphics[height=.34\textheight,keepaspectratio]{./graphics/analysis/clusterGraphChurn20.pdf}
 	\caption{cache size 20}
-	\label{fig:ClusterCoefChurn5small}
+	\label{fig:ClusterCoefChurn20small}
 \end{subfigure}
-\caption{Cluster Coefficient in wireless static scenario by shuffle length}
+\caption{Cluster Coefficient in wired and wireless churn scenario by cache size}
+\label{fig:ClusterCoefChurn}
 \end{figure}
 
 

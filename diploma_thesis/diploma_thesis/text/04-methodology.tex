@@ -10,18 +10,18 @@ the last section of this chapter.
 
 \section{DES-Testbed}
 %What is this? How does it work? Why do I use this?
-The DES-Testbed is a wireless adhoc mesh network environment developed and
-deployed at Freie Universität Berlin to test network protocols for embedded
-systems under real conditions. It consists of currently 51 mesh routers each
-with 3 wireless network interfaces and 2 ethernet interfaces. The mesh routers
-are placed in mostly seperate rooms at the Institute of Computer Science, the
-Institute of Mathematics and the Intitute of Physics at the Freie Universtät
-Berlin. They are connected through an ethernet network to the main entry point,
-which in the experiments described in this thesis is also used as a statistics
+The DES-Testbed \cite{blywis2011properties} is a wireless ad-hoc mesh network
+environment developed and deployed at Freie Universität Berlin to test network protocols for embedded
+systems under real conditions. It consists of currently 50 mesh routers each
+with 3 wireless network interfaces and 2 Ethernet interfaces. The mesh routers
+are placed indoors in separate rooms at the Institute of Computer
+Science, the Institute of Mathematics and the Intitute of Physics at the Freie Universtät
+Berlin. They are connected through an Ethernet network to the main entry point,
+which in the experiments described in this thesis, is also used as a statistics
 server for gathering experiment related information. Further the wireless mesh
 network is used to introduce network faults like packet loss and a
 dynamic layer 3 routing topology to the experiments. The network is also used
-for experiments in ethernet environment to obtain comparable results without the
+for experiments in Ethernet environment to obtain comparable results without the
 afore mentioned network faults.
 %
 
@@ -247,9 +247,10 @@ gathering in other experiments.
 
 \subsection{Gephi and GEXF File Format}
 To calculate most of the topology parameters, the network analyzing tool Gephi
-is used. The tool provides a graphical interface to visualize and analyze Graphs
-given in the gexf-format. The GEXF File Format is a simple XML-style file
-format. An example is given in the listing \ref{lst:gephiFormat}\\
+\cite{bastian2009gephi} is used. The tool provides a graphical interface to
+visualize and analyze Graphs given in the gexf-format. The GEXF File Format is
+a simple XML-style file format. An example is given in the listing
+\ref{lst:gephiFormat}\\
 
 \begin{lstlisting}[caption=Example of a graph in GEXF file
 format,label=lst:gephiFormat, language=XML] 
