@@ -2,7 +2,7 @@
 	
 	<property name="buildpath" value="/tmp/cyclon-des"/>
 	<property name="NetworkInterfaceName" value="en1"/>
-	<property name="DESuser" value="larissazech"/>
+	<property name="DESuser" value="grothniels"/>
 	<property name="DEStbms" value="uhu.imp.fu-berlin.de"/>
 	<property name="DEStbmsport" value="2222"/>
 	<property name="JAVAC" value="/System/Library/Java/JavaVirtualMachines/1.6.0.jdk/Contents/Home/bin/javac"/>
@@ -10,7 +10,7 @@
 	<target name="00getlocalStatServerIP">
 		<exec executable="bash" outputproperty="localStatServerIP">
 			<arg value="-c"/>
-			<arg value=" ifconfig ${NetworkInterfaceName} | grep 'inet ' | awk '{ print $2}'"/>
+			<arg value="ifconfig ${NetworkInterfaceName} | grep 'inet ' | awk '{ print $2}'"/>
 		</exec>
 	</target>
 	
